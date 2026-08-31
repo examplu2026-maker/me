@@ -5,27 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome to EXAMPLUS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root{
     --bg:#faf7f1;
     --card:#ffffff;
     --ink:#1e2340;
-    --ink-dim:#8a8778;
-    --line:#ece5d6;
+    --ink-dim:#95917f;
+    --line:#eee7d8;
 
-    --superadmin:#4c5fd5;   --superadmin-bg:#eaecfb;
-    --schooladmin:#1f9e85;  --schooladmin-bg:#e2f5f1;
-    --bursar:#2f9e52;       --bursar-bg:#e3f5e9;
-    --teacher:#d8862a;      --teacher-bg:#faf0dc;
-    --signup:#8b5cf6;       --signup-bg:#f1ebfe;
+    --superadmin-a:#4c5fd5;  --superadmin-b:#7b8af0;  --superadmin-bg:#eceefc;
+    --schooladmin-a:#0e9a80; --schooladmin-b:#43c9ac; --schooladmin-bg:#e2f6f1;
+    --bursar-a:#279c4c;      --bursar-b:#5fc57f;      --bursar-bg:#e5f6ea;
+    --teacher-a:#d9791d;     --teacher-b:#f0a94e;     --teacher-bg:#fcefdd;
+    --signup-a:#8148e0;      --signup-b:#ab7ef2;      --signup-bg:#f2ebfe;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--bg);
-    background-image:radial-gradient(ellipse 900px 500px at 50% -10%, rgba(76,95,213,0.07), transparent);
+    background-image:
+      radial-gradient(ellipse 700px 420px at 12% -6%, rgba(76,95,213,0.09), transparent),
+      radial-gradient(ellipse 700px 420px at 88% 4%, rgba(129,72,224,0.07), transparent);
     color:var(--ink);
     font-family:'Inter', sans-serif;
     min-height:100vh;
@@ -34,79 +36,111 @@
   a, button{text-decoration:none; color:inherit; font-family:inherit;}
   button{background:none; border:none; cursor:pointer;}
 
-  .wrap{max-width:1000px; margin:0 auto; padding:56px 20px 70px;}
+  .wrap{max-width:1020px; margin:0 auto; padding:60px 22px 80px;}
 
   /* ---- hero ---- */
-  .hero{text-align:center; margin-bottom:48px;}
+  .hero{text-align:center; margin-bottom:54px;}
+  .greeting{
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--superadmin-a);
+    margin-bottom:14px;
+    opacity:0;
+    animation:rise .6s ease forwards;
+  }
   .hero .badge{
-    width:64px; height:64px;
-    margin:0 auto 20px;
-    border-radius:20px;
+    width:72px; height:72px;
+    margin:0 auto 22px;
+    border-radius:22px;
     display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg, var(--superadmin), var(--signup));
-    color:#fff; font-size:26px;
-    box-shadow:0 12px 28px rgba(76,95,213,0.25);
+    background:linear-gradient(135deg, var(--superadmin-a), var(--signup-a));
+    color:#fff; font-size:28px;
+    box-shadow:0 16px 32px rgba(76,95,213,0.28);
+    opacity:0;
+    animation:rise .6s ease .08s forwards;
   }
   h1{
     font-family:'Fraunces', serif;
     font-weight:600;
-    font-size:clamp(2.1rem, 6vw, 3.1rem);
+    font-size:clamp(2.2rem, 6vw, 3.4rem);
     margin:0;
-    line-height:1.08;
+    line-height:1.06;
+    opacity:0;
+    animation:rise .6s ease .14s forwards;
   }
-  h1 span{color:var(--superadmin);}
+  h1 span{
+    background:linear-gradient(135deg, var(--superadmin-a), var(--signup-a));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .sub{
+    margin:14px 0 0;
+    font-size:14.5px;
+    color:var(--ink-dim);
+    opacity:0;
+    animation:rise .6s ease .2s forwards;
+  }
+  @keyframes rise{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
 
   /* ---- grid shared ---- */
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
-    gap:16px;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+    max-width:420px;
+    margin:0 auto;
   }
 
   .card{
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:20px;
-    padding:26px 12px 18px;
+    border-radius:22px;
+    padding:30px 14px 22px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:14px;
+    gap:16px;
     text-align:center;
     opacity:0;
-    transform:translateY(10px);
-    animation:rise .5s ease forwards;
-    transition:transform .18s ease, box-shadow .18s ease;
+    transform:translateY(12px);
+    animation:cardrise .55s cubic-bezier(.2,.8,.2,1) forwards;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    box-shadow:0 1px 2px rgba(30,35,64,0.03);
   }
   .card:hover, .card:focus-visible{
-    transform:translateY(-4px);
-    box-shadow:0 14px 26px rgba(30,35,64,0.09);
+    transform:translateY(-5px);
+    box-shadow:0 18px 34px rgba(30,35,64,0.10);
+    border-color:transparent;
     outline:none;
   }
-  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+  @keyframes cardrise{ to{ opacity:1; transform:translateY(0); } }
 
   .icon{
-    width:58px; height:58px;
-    border-radius:16px;
+    width:60px; height:60px;
+    border-radius:18px;
     display:flex; align-items:center; justify-content:center;
-    font-size:22px;
-    transition:transform .18s ease;
+    font-size:23px;
+    color:#fff;
+    transition:transform .2s ease;
   }
-  .card:hover .icon{transform:scale(1.06);}
+  .card:hover .icon{transform:scale(1.07) rotate(-2deg);}
 
-  .card .label{font-size:14px; font-weight:600; color:var(--ink); line-height:1.25;}
+  .card .label{font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.25;}
 
-  /* role color classes */
-  .role-superadmin  .icon{ background:var(--superadmin-bg);  color:var(--superadmin); }
-  .role-schooladmin .icon{ background:var(--schooladmin-bg); color:var(--schooladmin); }
-  .role-bursar      .icon{ background:var(--bursar-bg);      color:var(--bursar); }
-  .role-teacher     .icon{ background:var(--teacher-bg);     color:var(--teacher); }
-  .role-signup      .icon{ background:var(--signup-bg);      color:var(--signup); }
+  /* role gradient icon backgrounds */
+  .role-superadmin  .icon{ background:linear-gradient(135deg, var(--superadmin-a), var(--superadmin-b)); }
+  .role-schooladmin .icon{ background:linear-gradient(135deg, var(--schooladmin-a), var(--schooladmin-b)); }
+  .role-bursar      .icon{ background:linear-gradient(135deg, var(--bursar-a), var(--bursar-b)); }
+  .role-teacher     .icon{ background:linear-gradient(135deg, var(--teacher-a), var(--teacher-b)); }
+  .role-signup      .icon{ background:linear-gradient(135deg, var(--signup-a), var(--signup-b)); }
 
-  /* sub-card sizes slightly smaller */
-  .subgrid .card{padding:22px 10px 16px;}
-  .subgrid .icon{width:50px; height:50px; font-size:19px;}
-  .subgrid .label{font-size:13px;}
+  /* sub-card slightly smaller */
+  .subgrid .card{padding:26px 12px 18px;}
+  .subgrid .icon{width:54px; height:54px; font-size:20px;}
+  .subgrid .label{font-size:13.5px;}
 
   /* ---- detail view ---- */
   #detail{display:none;}
@@ -114,23 +148,24 @@
     display:inline-flex; align-items:center; gap:8px;
     font-size:13px; font-weight:600;
     color:var(--ink-dim);
-    margin-bottom:22px;
-    padding:8px 4px;
+    margin-bottom:26px;
+    padding:9px 6px;
+    transition:color .15s ease, transform .15s ease;
   }
-  .back:hover{color:var(--ink);}
-  .detail-head{display:flex; align-items:center; gap:14px; margin-bottom:28px;}
-  .detail-head .icon{width:48px; height:48px; font-size:19px; flex-shrink:0;}
+  .back:hover{color:var(--ink); transform:translateX(-2px);}
+  .detail-head{display:flex; align-items:center; gap:16px; margin-bottom:32px;}
+  .detail-head .icon{width:52px; height:52px; font-size:20px; flex-shrink:0; border-radius:16px;}
   .detail-head h2{
     font-family:'Fraunces', serif;
     font-weight:600;
-    font-size:1.5rem;
+    font-size:1.6rem;
     margin:0;
   }
 
   #home.hidden, #detail.hidden{display:none;}
 
   @media (prefers-reduced-motion: reduce){
-    .card{animation:none; opacity:1; transform:none;}
+    .card, .greeting, .badge, h1, .sub{animation:none; opacity:1; transform:none;}
   }
 </style>
 </head>
@@ -139,8 +174,10 @@
 <div class="wrap">
 
   <div class="hero">
+    <div class="greeting" id="greeting"></div>
     <div class="badge"><i class="fa-solid fa-graduation-cap"></i></div>
     <h1>Welcome to <span>EXAMPLUS</span></h1>
+    <p class="sub">Choose a role to get started</p>
   </div>
 
   <div id="home">
@@ -161,10 +198,7 @@
 <script>
 /* ============================================================
    ROLE CONFIG — edit to match your repo.
-   Each role has an id (used for color class role-{id}), title,
-   icon, and a list of sub-pages (file + title + icon).
-   Files marked "PLACEHOLDER" don't exist yet — replace with the
-   real filename once created.
+   Files marked PLACEHOLDER don't exist yet — replace once created.
    ============================================================ */
 const ROLES = [
   {
@@ -182,15 +216,15 @@ const ROLES = [
     title: "School Admin",
     icon: "fa-solid fa-building-user",
     subs: [
-      { file: "school.html",             title: "School Details",  icon: "fa-solid fa-school" },
-      { file: "students.html",           title: "Student Details", icon: "fa-solid fa-user-graduate" },
-      { file: "classes.html",            title: "All Classes",     icon: "fa-solid fa-layer-group" },      /* PLACEHOLDER */
-      { file: "subjects.html",           title: "All Subjects",    icon: "fa-solid fa-book" },
-      { file: "students-bulk.html",      title: "Bulk Student",    icon: "fa-solid fa-users" },
-      { file: "report.html",             title: "Report Card",     icon: "fa-solid fa-file-lines" },
-      { file: "settings.html",           title: "Term & Score Settings", icon: "fa-solid fa-gear" },
-      { file: "contacts.html",           title: "Contacts",        icon: "fa-solid fa-address-book" },      /* PLACEHOLDER */
-      { file: "teacher-bursar.html",     title: "Teacher / Bursar", icon: "fa-solid fa-user-tie" }          /* PLACEHOLDER */
+      { file: "school.html",         title: "School Details",  icon: "fa-solid fa-school" },
+      { file: "students.html",       title: "Student Details", icon: "fa-solid fa-user-graduate" },
+      { file: "classes.html",        title: "All Classes",     icon: "fa-solid fa-layer-group" },      /* PLACEHOLDER */
+      { file: "subjects.html",       title: "All Subjects",    icon: "fa-solid fa-book" },
+      { file: "students-bulk.html",  title: "Bulk Student",    icon: "fa-solid fa-users" },
+      { file: "report.html",         title: "Report Card",     icon: "fa-solid fa-file-lines" },
+      { file: "settings.html",       title: "Term & Score Settings", icon: "fa-solid fa-gear" },
+      { file: "contacts.html",       title: "Contacts",        icon: "fa-solid fa-address-book" },     /* PLACEHOLDER */
+      { file: "teacher-bursar.html", title: "Teacher / Bursar", icon: "fa-solid fa-user-tie" }         /* PLACEHOLDER */
     ]
   },
   {
@@ -207,8 +241,9 @@ const ROLES = [
     title: "Teacher",
     icon: "fa-solid fa-chalkboard-user",
     subs: [
-      { file: "upload-result.html", title: "Add Score",    icon: "fa-solid fa-upload" },
-      { file: "view-results.html",  title: "View Record",  icon: "fa-solid fa-chart-line" }
+      { file: "upload-result.html", title: "Upload Result", icon: "fa-solid fa-upload" },
+      { file: "view-results.html",  title: "View Record",   icon: "fa-solid fa-chart-line" },
+      { file: "assessment.htm",     title: "Assessment",    icon: "fa-solid fa-clipboard-check" }
     ]
   },
   {
@@ -216,23 +251,23 @@ const ROLES = [
     title: "Signup / Activate",
     icon: "fa-solid fa-user-plus",
     subs: [
-      { file: "signup.html",   title: "Registration", icon: "fa-solid fa-user-plus" },   /* filename unconfirmed */
-      { file: "activate.html", title: "Activate",     icon: "fa-solid fa-key" }           /* PLACEHOLDER */
+      { file: "signup.html",   title: "Registration", icon: "fa-solid fa-user-plus" },  /* filename unconfirmed */
+      { file: "activate.html", title: "Activate",     icon: "fa-solid fa-key" }          /* PLACEHOLDER */
     ]
   }
 ];
 /* ============================================================ */
 
-const roleGrid  = document.getElementById('roleGrid');
-const homeView  = document.getElementById('home');
-const detailView= document.getElementById('detail');
-const subGrid   = document.getElementById('subGrid');
-const detailIcon= document.getElementById('detailIcon');
-const detailTitle=document.getElementById('detailTitle');
-const backBtn   = document.getElementById('backBtn');
+const roleGrid   = document.getElementById('roleGrid');
+const homeView   = document.getElementById('home');
+const detailView = document.getElementById('detail');
+const subGrid    = document.getElementById('subGrid');
+const detailIcon = document.getElementById('detailIcon');
+const detailTitle= document.getElementById('detailTitle');
+const backBtn    = document.getElementById('backBtn');
 
 roleGrid.innerHTML = ROLES.map((r, i) => `
-  <button class="card role-${r.id}" style="animation-delay:${(i*0.05).toFixed(2)}s" data-role="${r.id}">
+  <button class="card role-${r.id}" style="animation-delay:${(i*0.06).toFixed(2)}s" data-role="${r.id}">
     <div class="icon"><i class="${r.icon}"></i></div>
     <span class="label">${r.title}</span>
   </button>
@@ -248,14 +283,15 @@ function openRole(id){
   const role = ROLES.find(r => r.id === id);
   if (!role) return;
 
-  detailIcon.className = `icon role-${role.id}-icon-standalone`;
+  const refIcon = document.querySelector(`.role-${role.id} .icon`);
+  const cs = getComputedStyle(refIcon);
   detailIcon.innerHTML = `<i class="${role.icon}"></i>`;
-  detailIcon.style.background = getComputedStyle(document.querySelector(`.role-${role.id} .icon`)).backgroundColor;
-  detailIcon.style.color = getComputedStyle(document.querySelector(`.role-${role.id} .icon`)).color;
+  detailIcon.style.background = cs.backgroundImage !== 'none' ? cs.backgroundImage : cs.backgroundColor;
+  detailIcon.style.color = '#fff';
   detailTitle.textContent = role.title;
 
   subGrid.innerHTML = role.subs.map((s, i) => `
-    <a class="card role-${role.id}" style="animation-delay:${(i*0.05).toFixed(2)}s" href="${s.file}">
+    <a class="card role-${role.id}" style="animation-delay:${(i*0.06).toFixed(2)}s" href="${s.file}">
       <div class="icon"><i class="${s.icon}"></i></div>
       <span class="label">${s.title}</span>
     </a>
@@ -270,6 +306,11 @@ backBtn.addEventListener('click', () => {
   detailView.style.display = 'none';
   homeView.classList.remove('hidden');
 });
+
+/* time-based greeting */
+const hour = new Date().getHours();
+const greetEl = document.getElementById('greeting');
+greetEl.textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 </script>
 
 </body>
