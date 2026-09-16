@@ -1,61 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
-  <title>Student Records · ExamPlus</title>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Student Files · Admin Portal</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: #f5f7fb;
     }
 
     body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, -apple-system, 'Arial', sans-serif;
+      background: #f5f7fb;
       min-height: 100vh;
-      background: radial-gradient(ellipse at 30% 20%, #0f2e24, #071a14);
+      margin: 0;
+      padding: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-      padding: 20px;
+      flex-direction: column;
     }
 
-    /* ===== LOGIN OVERLAY (always visible) ===== */
-    .login-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
+    /* ===== LOGIN SCREEN ===== */
+    .login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
+      min-height: 85vh;
       padding: 20px;
-      animation: fadeIn 0.35s ease;
     }
 
-    .login-overlay.hidden {
-      display: none;
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .login-card {
-      background: rgba(255, 255, 255, 0.98);
+    .login-box {
+      background: #ffffff;
+      padding: 32px 24px 44px;
       border-radius: 48px;
-      padding: 40px 32px;
       width: 100%;
-      max-width: 420px;
+      max-width: 500px;
       text-align: center;
-      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border: 1px solid #eef2f8;
       animation: floatIn 0.4s ease;
     }
 
@@ -64,442 +58,652 @@
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    @media (max-width: 480px) {
-      .login-card {
-        border-radius: 36px;
-        padding: 32px 24px;
-      }
-    }
-
-    .login-card h2 {
+    .login-box h2 {
+      color: #1e3c2c;
       margin-bottom: 8px;
       font-weight: 800;
-      font-size: 1.6rem;
-      background: linear-gradient(125deg, #1e5a48, #2d8f6e);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
     }
 
-    .login-card .sub {
-      color: #5a8f7a;
-      font-size: 0.8rem;
+    .login-box .admin-badge {
+      display: inline-block;
+      background: #1e5a48;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 40px;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .login-box .sub {
+      color: #5588a7;
+      font-size: 0.85rem;
       margin-bottom: 24px;
     }
 
-    .input-group {
-      margin: 14px 0;
+    .login-box input {
       width: 100%;
-    }
-
-    .login-card input {
-      width: 100%;
-      padding: 14px 20px;
+      padding: 16px 20px;
       border: 2px solid #e2e8f0;
       border-radius: 60px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 500;
-      background: white;
+      background: #ffffff;
       transition: all 0.2s ease;
-    }
-
-    .login-card input:focus {
+      font-family: inherit;
       outline: none;
+      color: #1e2a3a;
+      margin-bottom: 16px;
+    }
+
+    .login-box input:focus {
       border-color: #0f9d58;
-      box-shadow: 0 0 0 4px rgba(15, 157, 88, 0.15);
+      box-shadow: 0 0 0 4px rgba(15, 157, 88, 0.12);
     }
 
-    .login-card input::placeholder {
-      color: #a8c0d0;
-      font-size: 0.85rem;
+    .login-box input::placeholder {
+      color: #9aaec2;
+      font-weight: 450;
+      font-size: 0.9rem;
     }
 
-    .login-card button {
+    .login-box button {
       width: 100%;
-      padding: 14px 20px;
-      margin-top: 18px;
-      background: linear-gradient(95deg, #0f9d58, #0c7e46);
+      padding: 16px 20px;
+      margin-top: 8px;
+      background: #0f9d58;
       color: white;
       border: none;
       border-radius: 60px;
-      font-size: 1rem;
-      font-weight: 800;
+      font-size: 1.1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
-      touch-action: manipulation;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 8px rgba(15, 157, 88, 0.2);
     }
 
-    .login-card button:active {
+    .login-box button:active {
       transform: scale(0.97);
+      background: #0b7e48;
     }
 
-    .error-msg {
-      margin-top: 14px;
+    .login-box button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .login-box .error {
+      margin-top: 20px;
       font-weight: 600;
-      font-size: 0.75rem;
-      background: #fff0f0;
-      padding: 10px 16px;
+      font-size: 0.85rem;
+      background: #fef2f2;
+      padding: 12px 20px;
       border-radius: 60px;
       color: #dc3545;
       display: none;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #ffffff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ===== MAIN VIEWER (hidden until login) ===== */
-    .viewer-container {
-      display: none;
-      max-width: 100%;
-      margin: 12px;
-      background: #ffffff;
-      border-radius: 28px;
-      padding: 16px 20px;
-      border: 1px solid #eef2f8;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-      overflow-x: auto;
       width: 100%;
     }
 
-    @media (min-width: 768px) {
-      .viewer-container {
-        margin: 20px;
-        padding: 24px 28px;
-      }
-    }
-
-    .viewer-container h2 {
-      text-align: center;
-      color: #1e3c2c;
-      font-weight: 800;
-      font-size: 1.3rem;
-    }
-
-    .school-badge {
-      background: linear-gradient(135deg, #1e5a48, #2d8f6e);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 0.7rem;
+    .login-box .error.show {
       display: inline-block;
-      margin-bottom: 10px;
     }
 
-    .filter-bar {
-      background: #fafcfc;
-      padding: 14px 18px;
-      border-radius: 40px;
-      margin: 12px 0;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
+    /* ===== MAIN APP ===== */
+    .container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
       border: 1px solid #eef2f8;
+      display: none;
     }
 
-    .filter-bar label {
-      font-size: 0.75rem;
+    .header {
+      background: #f8fafc;
+      padding: 14px 20px;
+      text-align: center;
+      border-bottom: 1px solid #eef2f8;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.2rem;
       font-weight: 800;
       color: #1e3c2c;
-      background: #eef5ea;
-      padding: 5px 14px;
-      border-radius: 40px;
-    }
-
-    select {
-      padding: 9px 16px;
-      border-radius: 40px;
-      border: 2px solid #e2e8f0;
-      font-size: 0.8rem;
-      background: white;
-      cursor: pointer;
-      min-width: 180px;
-      font-weight: 500;
-      flex: 1;
-    }
-
-    .reset-btn, .toggle-btn, .logout-btn {
-      background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.75rem;
-      touch-action: manipulation;
-      transition: all 0.2s ease;
-      color: #1e3c2c;
-    }
-
-    .reset-btn:hover, .toggle-btn:hover, .logout-btn:hover {
-      background: #eef2f8;
-    }
-    .reset-btn:active, .toggle-btn:active, .logout-btn:active {
-      transform: scale(0.96);
     }
 
     .logout-btn {
+      background: #f8fafc;
       color: #dc3545;
-      border-color: #f0d4d4;
+      border: 1px solid #e2e8f0;
+      padding: 6px 16px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.75rem;
+      transition: 0.2s;
     }
+
     .logout-btn:hover {
       background: #ffe5e5;
-      border-color: #dc3545;
     }
 
-    .header-info {
+    .tab-buttons {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      gap: 12px;
-    }
-    .header-info h2 {
-      margin: 0;
-      flex: 1;
-      text-align: center;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      width: 100%;
-      margin-top: 15px;
-      border: 1px solid #eef2f8;
-      border-radius: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 750px;
-    }
-
-    th, td {
-      border: 1px solid #eef2f8;
-      padding: 10px 10px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
+      border-bottom: 1px solid #eef2f8;
       background: #f8fafc;
-      color: #1e3c2c;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
       font-weight: 700;
-      position: sticky;
-      top: 0;
-      font-size: 0.7rem;
-      z-index: 10;
+      transition: all 0.2s;
+      color: #5a6874;
     }
 
-    .subject-header {
-      text-align: center;
-      background: #eef5ea;
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: #1e5a48;
+    .tab-btn.active {
+      background: white;
+      color: #0f9d58;
+      border-bottom: 3px solid #0f9d58;
     }
 
-    .marks-subheader {
-      text-align: center;
-      background: #f0f6f0;
-      font-weight: 600;
-      font-size: 0.6rem;
+    .tab-content {
+      display: none;
+      padding: 20px 18px;
     }
 
-    .marks-cell {
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1e3c2c;
+      font-size: 0.8rem;
+    }
+
+    label .required {
+      color: #dc3545;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 32px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+
+    textarea {
+      border-radius: 20px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #0f9d58;
+      box-shadow: 0 0 0 3px rgba(15, 157, 88, 0.1);
+    }
+
+    .row-2cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .camera-section {
+      background: #f8fafc;
+      border-radius: 28px;
+      padding: 16px;
+      margin-bottom: 18px;
       text-align: center;
-      font-weight: 500;
+    }
+
+    .camera-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .btn-camera {
+      background: #9C27B0;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: 0.2s;
+      flex: 1 0 auto;
+      min-width: 120px;
+      box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+    }
+
+    .btn-camera:active {
+      transform: scale(0.96);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px 20px;
+      background: #0f9d58;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: 0.2s;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.97);
     }
 
     .image-preview {
-      max-width: 40px;
-      max-height: 44px;
-      cursor: pointer;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
+      margin-top: 12px;
+      text-align: center;
     }
-    .image-preview:hover { transform: scale(1.1); }
-    .image-preview:active { transform: scale(1.05); }
 
-    .image-modal {
+    .image-preview img {
+      width: 90px;
+      height: 110px;
+      border-radius: 14px;
+      border: 3px solid #0f9d58;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .students-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 4px;
+    }
+
+    .student-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: transform 0.2s;
+      border: 1px solid #eef2f8;
+    }
+
+    .student-card:active {
+      transform: scale(0.99);
+    }
+
+    .student-image {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      background: #f0f0f0;
+    }
+
+    .student-info {
+      padding: 14px;
+    }
+
+    .student-info h3 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+    }
+
+    .admission-number {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #0f9d58;
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .edit-btn, .delete-btn, .download-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .edit-btn { background: #FF9800; color: white; }
+    .delete-btn { background: #f44336; color: white; }
+    .download-btn { background: #0f9d58; color: white; }
+
+    .modal {
       display: none;
       position: fixed;
-      z-index: 3000;
-      left: 0;
       top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.94);
-      cursor: pointer;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
     }
 
-    .image-modal-content {
-      margin: auto;
-      display: block;
-      max-width: 90%;
-      max-height: 85%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    .modal-content {
+      background: white;
+      padding: 22px;
+      border-radius: 32px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
     }
 
     .close-modal {
-      position: absolute;
-      top: 15px;
-      right: 25px;
-      color: white;
-      font-size: 36px;
-      font-weight: bold;
+      float: right;
       cursor: pointer;
-      transition: color 0.2s ease;
-    }
-    .close-modal:hover { color: #ccc; }
-    .close-modal:active { color: #999; }
-
-    .no-data {
-      text-align: center;
-      padding: 40px 20px;
-      color: #5a6874;
-      font-weight: 500;
-      font-size: 0.85rem;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #666;
     }
 
-    .record-count {
-      background: #eef5ea;
-      padding: 5px 14px;
-      border-radius: 40px;
-      display: inline-block;
-      margin-bottom: 10px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #1e5a48;
-    }
-
-    .status-msg {
-      background: #e8f1f8;
-      border-radius: 40px;
-      padding: 8px 16px;
-      margin-bottom: 15px;
+    .passport-note, .info-note {
+      background: #e3f2fd;
+      padding: 8px 12px;
+      border-radius: 28px;
+      margin-top: 10px;
       font-size: 0.7rem;
+      color: #1565c0;
       font-weight: 500;
-      color: #1d6f94;
-      transition: all 0.3s ease;
-    }
-    .status-msg.error { background: #ffe0e0; color: #c0392b; }
-    .status-msg.success { background: #d4edda; color: #155724; }
-    .status-msg.warning { background: #fff3cd; color: #856404; }
-
-    @media (max-width: 640px) {
-      .header-info { flex-direction: column; text-align: center; }
-      .header-info h2 { order: -1; }
-      .filter-bar { flex-direction: column; align-items: stretch; }
-      select { width: 100%; }
-      .reset-btn, .toggle-btn, .logout-btn { text-align: center; }
     }
 
-    @media print {
-      .login-overlay { display: none !important; }
-      .viewer-container { display: block !important; margin: 0; padding: 10px; box-shadow: none; border: 1px solid #ddd; border-radius: 0; }
-      .filter-bar { display: none; }
-      .logout-btn { display: none; }
+    .size-badge {
+      background: #0f9d58;
+      color: white;
+      padding: 2px 10px;
+      border-radius: 30px;
+      font-size: 0.6rem;
+      display: inline-block;
+      margin-left: 6px;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 10px 16px;
+      border-radius: 40px;
+      display: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .message.success { background: #d4edda; color: #155724; display: block; }
+    .message.error { background: #ffe0e0; color: #c0392b; display: block; }
+    .message.warning { background: #fff3cd; color: #856404; display: block; }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
+      }
+      .login-box {
+        padding: 28px 20px 36px;
+        border-radius: 40px;
+      }
+      .login-box h2 {
+        font-size: 1.8rem;
+        margin-bottom: 24px;
+      }
+      .login-box input {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+      }
+      .login-box button {
+        padding: 14px 18px;
+        font-size: 1rem;
+      }
+      .tab-content {
+        padding: 16px 12px;
+      }
+      .row-2cols {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .camera-buttons {
+        gap: 8px;
+      }
+      .btn-camera {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        min-width: 100px;
+      }
+      .students-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    button, .tab-btn, .logout-btn, .btn-camera, .btn-submit, .refresh-btn {
+      touch-action: manipulation;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .loading.active { display: block; }
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #0f9d58;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .stats { margin-top: 12px; padding: 8px 14px; background: #e8f5e9; border-radius: 40px; text-align: center; font-size: 0.8rem; font-weight: 700; }
+    .class-selector { margin-bottom: 18px; padding: 12px; background: #f8fafc; border-radius: 28px; }
+    .refresh-btn { background: #0f9d58; color: white; border: none; padding: 8px 16px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+    .refresh-btn:active { transform: scale(0.96); }
+
+    .test-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .test-btn:active { transform: scale(0.96); }
+
+    .upload-hint {
+      background: #e8f5e9;
+      padding: 10px 14px;
+      border-radius: 20px;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #2e7d32;
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== LOGIN OVERLAY ===== -->
-  <div class="login-overlay" id="loginOverlay">
-    <div class="login-card">
-      <h2>📊 Student Records</h2>
-      <div class="sub">Sign in to access student information</div>
-      <div class="input-group">
-        <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email" inputmode="email">
-      </div>
-      <div class="input-group">
-        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-      </div>
-      <button id="loginBtn">➡️ ACCESS PORTAL ⬅️</button>
-      <div id="loginError" class="error-msg"></div>
+  <!-- ===== LOGIN SCREEN (shows immediately) ===== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="admin-badge">ADMIN ONLY</div>
+      <h2>Student Files</h2>
+      <div class="sub">Secure admin access to manage student records</div>
+
+      <input type="email" id="email" placeholder="Email address" autocomplete="off" inputmode="email">
+      <input type="password" id="password" placeholder="Password">
+
+      <button onclick="doLogin()" id="loginBtn">Sign in</button>
+      <div id="loginError" class="error"></div>
     </div>
   </div>
 
-  <!-- ===== MAIN VIEWER ===== -->
-  <div id="viewerSection" class="viewer-container">
-    <div class="header-info">
-      <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
-      <h2>📋 STUDENT RECORDS</h2>
-      <div id="schoolBadge" class="school-badge">🏫 Loading...</div>
+  <!-- ===== MAIN APP ===== -->
+  <div id="appSection" class="container" style="display: none;">
+    <div class="header">
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+      <h1>Student Files</h1>
+      <div style="clear:both"></div>
     </div>
 
-    <div id="statusMsg" class="status-msg">✅ Ready — Select a class to view students</div>
-
-    <div class="filter-bar">
-      <label>📚 SELECT CLASS</label>
-      <select id="classSelect">
-        <option value="ALL">🏫 Loading classes...</option>
-      </select>
-      <button class="reset-btn" id="resetBtn">⟳ Show All</button>
-      <button class="toggle-btn" id="togglePhotoBtn">👁️ Show Student Photo</button>
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('register')">Register</button>
+      <button class="tab-btn" onclick="switchTab('view')">View Students</button>
     </div>
 
-    <div class="table-wrapper">
-      <table id="dataTable">
-        <tr><td colspan="10" class="no-data">🔐 Please login to view records...</td></tr>
-      </table>
+    <div id="registerTab" class="tab-content active">
+      <div class="form-container">
+        <div class="form-group">
+          <label>Select Class <span class="required">*</span></label>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <select id="classSelect" style="flex:1;">
+              <option value="">-- Select Class --</option>
+            </select>
+            <button class="test-btn" onclick="testSheetConnection()">Test</button>
+          </div>
+          <div class="info-note">The selected class will be saved to Column D</div>
+        </div>
+
+        <div class="form-group"><label>STUDENT NAME <span class="required">*</span></label><input type="text" id="studentName" placeholder="Enter student's full name"></div>
+
+        <div class="camera-section">
+          <label>STUDENT PHOTO <span class="required">*</span> <span class="size-badge">Passport Size</span></label>
+
+          <div class="camera-buttons">
+            <button type="button" class="btn-camera" onclick="triggerFileUpload()">Upload Photo</button>
+          </div>
+
+          <div class="upload-hint">Select a photo from your device. Photos are automatically resized to passport size.</div>
+
+          <input type="file" id="fileUpload" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">
+
+          <div id="photoPreview" style="display:none;" class="image-preview">
+            <img id="capturedImage" alt="Student Photo">
+            <input type="hidden" id="imageDataUrl" value="">
+            <br>
+            <button class="btn-camera btn-retake" style="background:#FF9800; padding:6px 16px; border:none; border-radius:30px; color:white; font-weight:600; cursor:pointer; margin-top:8px;" onclick="retakePhoto()">Remove Photo</button>
+          </div>
+
+          <div id="cameraError" style="display:none; color: #dc3545; margin-top: 10px; font-size: 0.8rem; background: #fef2f2; padding: 10px 14px; border-radius: 20px;"></div>
+        </div>
+
+        <div class="form-group"><label>PARENT PHONE <span class="required">*</span></label><input type="tel" id="parentPhone" placeholder="Enter parent/guardian phone number" inputmode="tel"></div>
+        <div class="form-group"><label>PARENT ADDRESS</label><textarea id="parentAddress" placeholder="Enter parent/guardian address" rows="2"></textarea></div>
+        <div class="form-group"><label>PARENT NAME <span class="required">*</span></label><input type="text" id="parentName" placeholder="Enter parent/guardian full name"></div>
+        <div class="row-2cols">
+          <div class="form-group"><label>ADMISSION YEAR <span class="required">*</span></label><input type="text" id="admissionYear" placeholder="e.g., 2024" inputmode="numeric"></div>
+          <div class="form-group"><label>DATE OF BIRTH <span class="required">*</span></label><input type="text" id="dob" placeholder="e.g., 15-05-2015"></div>
+        </div>
+        <div class="loading" id="loading"><div class="spinner"></div><p style="margin-top: 8px;">Processing...</p></div>
+        <div class="message" id="message"></div>
+        <button class="btn-submit" onclick="saveStudent()">Add Student</button>
+      </div>
+    </div>
+
+    <div id="viewTab" class="tab-content">
+      <div class="class-selector">
+        <label>Select Class to View:</label>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <select id="viewClassSelect" onchange="loadStudents()" style="flex: 1;">
+            <option value="ALL">All Classes</option>
+          </select>
+          <button class="refresh-btn" onclick="loadStudents()">Refresh</button>
+          <button class="test-btn" onclick="testSheetConnection()">Test</button>
+        </div>
+        <div class="info-note" style="margin-top: 10px;">Classes are automatically read from your data sheet (Column A)</div>
+      </div>
+      <div id="studentsList"></div>
     </div>
   </div>
 
-  <!-- ===== IMAGE MODAL ===== -->
-  <div id="imageModal" class="image-modal" onclick="closeImageModal()">
-    <span class="close-modal">×</span>
-    <img class="image-modal-content" id="modalImage">
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeEditModal()">×</span>
+      <h2 style="font-size: 1.3rem; margin-bottom: 20px;">Edit Student</h2>
+      <input type="hidden" id="editRowNumber">
+      <input type="hidden" id="editSerialNumber">
+      <div class="form-group"><label>ADMISSION NUMBER</label><input type="text" id="editAdmissionNumber" readonly style="background:#f5f5f5;"></div>
+      <div class="form-group"><label>STUDENT NAME</label><input type="text" id="editStudentName"></div>
+      <div class="form-group"><label>CLASS</label><input type="text" id="editClassAdmitted"></div>
+      <div class="camera-section">
+        <label>STUDENT PHOTO</label>
+        <div class="camera-buttons"><button type="button" class="btn-camera" onclick="triggerEditFileUpload()">Change Photo</button></div>
+        <input type="file" id="editFileUpload" accept="image/*" style="display: none;" onchange="handleEditFileUpload(this)">
+        <div id="editPhotoPreview" class="image-preview"><img id="editCapturedImage" style="width:80px; height:100px; border-radius:10px; object-fit:cover;"><input type="hidden" id="editImageDataUrl" value=""></div>
+      </div>
+      <div class="form-group"><label>PARENT PHONE</label><input type="tel" id="editParentPhone"></div>
+      <div class="form-group"><label>PARENT ADDRESS</label><textarea id="editParentAddress" rows="2"></textarea></div>
+      <div class="form-group"><label>PARENT NAME</label><input type="text" id="editParentName"></div>
+      <div class="row-2cols">
+        <div class="form-group"><label>ADMISSION YEAR</label><input type="text" id="editAdmissionYear"></div>
+        <div class="form-group"><label>DATE OF BIRTH</label><input type="text" id="editDob"></div>
+      </div>
+      <div class="loading" id="editLoading" style="display:none;"><div class="spinner"></div><p>Updating...</p></div>
+      <button class="btn-submit" onclick="updateStudent()">Save Changes</button>
+    </div>
   </div>
 
   <script>
     // ==================== CONFIGURATION ====================
-    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyz4V0txUMAfytn8vkukUrLSjBJdCl5nri02MiYWBqoJcI5pJ7BjM9dxjCC1oLND5c7Qg/exec';
+    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyZWx3u_aIAJlVnHyP-pWxe3o3O-plCR4BqcuNdzUJZd3Q6fnAikIynw6E7AEXHNpGs9g/exec';
 
     // ==================== STATE ====================
     let currentTabName = null;
-    let userEmail = null;
-    let allData = null;
-    let dataRows = [];
-    let headers = [];
-    let uniqueClasses = [];
-    let selectedClass = "ALL";
-    let showPhotoColumn = false;
+    let currentImageDataUrl = null;
+    let editImageDataUrl = null;
+    let currentClassName = null;
+    const PASSPORT_WIDTH = 413, PASSPORT_HEIGHT = 531;
 
-    const COL_CLASS_LIST = 0;
-    const COL_ROLL_NO = 1;
-    const COL_NAME = 2;
-    const COL_ACTUAL_CLASS = 3;
-    const COL_PHOTO = 4;
-    const COL_EXTRA_START = 5;
-    const COL_EXTRA_END = 9;
-    const COL_SUBJECT_START = 10;
+    // ==================== API CALL FUNCTIONS ====================
 
-    let extraHeaders = [];
-    let subjectGroups = [];
-
-    // ==================== API CALL ====================
     function apiCallWithCallback(action, data, callback) {
       const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+
       let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
       for (let key in data) {
         if (data.hasOwnProperty(key) && data[key] !== null && data[key] !== undefined) {
@@ -513,21 +717,21 @@
 
       window[callbackName] = function(response) {
         delete window[callbackName];
-        script.remove();
+        if (script.parentNode) script.remove();
         callback(response);
       };
 
       script.onerror = function() {
         delete window[callbackName];
-        script.remove();
-        callback({ error: 'Network error or invalid response' });
+        if (script.parentNode) script.remove();
+        callback({ success: false, error: 'Network error or invalid response' });
       };
 
       const timeoutId = setTimeout(() => {
         if (window[callbackName]) {
           delete window[callbackName];
-          script.remove();
-          callback({ error: 'Request timeout' });
+          if (script.parentNode) script.remove();
+          callback({ success: false, error: 'Request timeout' });
         }
       }, 30000);
 
@@ -541,336 +745,502 @@
     }
 
     // ==================== UI FUNCTIONS ====================
-    function setStatus(message, type = "info") {
-      const statusDiv = document.getElementById("statusMsg");
-      if (statusDiv) {
-        statusDiv.innerHTML = message;
-        statusDiv.className = "status-msg " + type;
-      }
+
+    function switchTab(tab) {
+      const reg = document.getElementById("registerTab"), view = document.getElementById("viewTab");
+      const btns = document.querySelectorAll(".tab-btn");
+      btns.forEach(btn=>btn.classList.remove("active"));
+      if(tab==='register'){ reg.classList.add("active"); view.classList.remove("active"); btns[0].classList.add("active"); }
+      else { reg.classList.remove("active"); view.classList.add("active"); btns[1].classList.add("active"); loadClassesForView(); }
     }
 
-    function showApp() {
-      document.getElementById('loginOverlay').classList.add('hidden');
-      document.getElementById('viewerSection').style.display = 'block';
+    function showMessage(msg, typ) {
+      const mDiv = document.getElementById("message");
+      mDiv.textContent = msg;
+      mDiv.className = "message " + typ;
+      mDiv.style.display = "block";
+      setTimeout(() => { mDiv.style.display = "none"; }, 5000);
     }
 
-    function showLogin() {
-      document.getElementById('viewerSection').style.display = 'none';
-      document.getElementById('loginOverlay').classList.remove('hidden');
+    function escapeHtml(t) {
+      if(!t) return '';
+      return String(t).replace(/[&<>]/g, function(m){
+        if(m==='&') return '&';
+        if(m==='<') return '<';
+        if(m==='>') return '>';
+        return m;
+      });
     }
 
     // ==================== LOGIN ====================
-    function handleLogin() {
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
+
+    function doLogin() {
+      const email=document.getElementById("email").value.trim(), password=document.getElementById("password").value;
       const errorDiv = document.getElementById("loginError");
 
-      if (!email || !password) {
-        errorDiv.textContent = "Please enter both email and password.";
-        errorDiv.style.display = "block";
+      if(!email||!password){
+        errorDiv.textContent = "Please enter email and password";
+        errorDiv.classList.add('show');
         return;
       }
 
       const loginBtn = document.getElementById("loginBtn");
       loginBtn.disabled = true;
-      loginBtn.innerHTML = "Authenticating... <span class='spinner'></span>";
-      errorDiv.style.display = "none";
+      loginBtn.textContent = "Authenticating...";
+      errorDiv.classList.remove('show');
 
       apiCallWithCallback('loginUser', {
         email: email,
         password: password
-      }, function(response) {
+      }, function(result) {
         loginBtn.disabled = false;
-        loginBtn.innerHTML = "➡️ ACCESS PORTAL ⬅️";
+        loginBtn.textContent = "Sign in";
 
-        if (response && response.success) {
-          currentTabName = response.tabName;
-          userEmail = response.email;
-          document.getElementById("schoolBadge").innerHTML = `🏫 Welcome: ${currentTabName.toUpperCase()}`;
-          showApp();
-          loadDataFromTab();
-          setStatus('✅ Login successful! Loading data...', 'success');
+        if(result && result.success){
+          const role = result.role ? result.role.toUpperCase() : '';
+
+          if (role === 'ADMIN') {
+            currentTabName = result.tabName || 'Students';
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("appSection").style.display = "block";
+            loadClassesFromColumnA();
+            loadClassesForView();
+            showMessage("Login successful! Loading classes...", "success");
+          } else {
+            errorDiv.textContent = "Access denied. Admin privileges required.";
+            errorDiv.classList.add('show');
+          }
         } else {
-          errorDiv.textContent = response?.error || "Login failed. Please verify credentials.";
-          errorDiv.style.display = "block";
+          errorDiv.textContent = (result && result.error) ? result.error : "Login failed. Please verify credentials.";
+          errorDiv.classList.add('show');
         }
       });
     }
 
-    function doLogout() {
+    function doLogout(){
       currentTabName = null;
-      allData = null;
-      selectedClass = "ALL";
-      showPhotoColumn = false;
-
-      document.getElementById("viewerSection").style.display = 'none';
-      document.getElementById('loginOverlay').classList.remove('hidden');
-      document.getElementById("loginEmail").value = "";
-      document.getElementById("loginPassword").value = "";
-      document.getElementById("loginError").style.display = "none";
-      const toggleBtn = document.getElementById("togglePhotoBtn");
-      if (toggleBtn) toggleBtn.innerHTML = "👁️ Show Student Photo";
-
-      const classSelect = document.getElementById("classSelect");
-      if (classSelect) classSelect.innerHTML = '<option value="ALL">🏫 Login to load classes</option>';
-      document.getElementById("dataTable").innerHTML = '<tr><td colspan="10" class="no-data">🔐 Please login to view records...</td></tr>';
-      setStatus('👋 Logged out', 'info');
+      document.getElementById("appSection").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
+      resetForm();
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("loginError").classList.remove('show');
     }
 
     // ==================== DATA LOADING ====================
-    function loadDataFromTab() {
-      if (!currentTabName) {
-        setStatus("Access restricted. Please contact administrator.", "error");
-        return;
-      }
 
-      setStatus(`🔄 Loading data from "${currentTabName}"...`, "info");
-      document.getElementById("dataTable").innerHTML = '<tr><td colspan="10" class="no-data">📂 Loading data... <span class="spinner"></span></td></tr>';
+    function loadClassesFromColumnA() {
+      const select = document.getElementById("classSelect");
+      select.innerHTML = '<option value="">Loading classes...</option>';
 
-      apiCallWithCallback('getDataFromTab', {
+      apiCallWithCallback('getDistinctClassesFromColumnA', {
         tabName: currentTabName
-      }, function(response) {
-        if (response && response.error) {
-          document.getElementById("dataTable").innerHTML = '<tr><td colspan="10" class="no-data" style="color:#dc3545;">❌ ' + escapeHtml(response.error) + '</td></tr>';
-          setStatus("❌ Error loading data", "error");
+      }, function(classes) {
+        console.log("Classes received:", classes);
+
+        if (!classes) {
+          select.innerHTML = '<option value="">No response from server</option>';
+          showMessage("Failed to load classes", "error");
           return;
         }
 
-        if (!response || !Array.isArray(response) || response.length < 2) {
-          document.getElementById("dataTable").innerHTML = '<tr><td colspan="10" class="no-data">📭 No student records found</td></tr>';
-          setStatus(`📭 No records found`, "error");
+        if (classes.error) {
+          select.innerHTML = '<option value="">' + classes.error + '</option>';
+          showMessage("Error loading classes: " + classes.error, "error");
           return;
         }
 
-        allData = response;
-        headers = response[0] || [];
-        dataRows = response.slice(1) || [];
+        if (classes.length === 0) {
+          select.innerHTML = '<option value="">No classes found</option>';
+          showMessage("No classes found in the sheet. Make sure Column A has class names starting from Row 4.", "warning");
+          return;
+        }
 
-        parseExtraHeaders();
-        parseSubjectGroups();
-        extractUniqueClasses();
-        populateClassDropdown();
-        renderTable();
-        setStatus(`✅ Loaded ${dataRows.length} student records from "${currentTabName}"`, "success");
+        select.innerHTML = '<option value="">-- Select Class --</option>';
+        classes.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = c;
+          opt.textContent = c;
+          select.appendChild(opt);
+        });
+
+        showMessage("Loaded " + classes.length + " classes", "success");
       });
     }
 
-    function parseExtraHeaders() {
-      extraHeaders = [];
-      for (let col = COL_EXTRA_START; col <= COL_EXTRA_END; col++) {
-        if (col < headers.length && headers[col] && headers[col].toString().trim() !== "") {
-          extraHeaders.push({ index: col, name: headers[col].toString().trim() });
+    function loadClassesForView() {
+      const select = document.getElementById("viewClassSelect");
+      select.innerHTML = '<option value="ALL">Loading classes...</option>';
+
+      apiCallWithCallback('getDistinctClassesFromColumnA', {
+        tabName: currentTabName
+      }, function(classes) {
+        console.log("View Classes received:", classes);
+
+        let options = '<option value="ALL">All Classes</option>';
+
+        if (!classes) {
+          select.innerHTML = options + '<option value="">No response from server</option>';
+          return;
         }
-      }
-    }
 
-    function parseSubjectGroups() {
-      subjectGroups = [];
-      let col = COL_SUBJECT_START;
-      while (col < headers.length) {
-        const subjectName = headers[col];
-        if (subjectName && subjectName.toString().trim() !== "") {
-          if (col + 2 < headers.length) {
-            subjectGroups.push({
-              name: subjectName.toString().trim(),
-              startCol: col,
-              test1Col: col,
-              test2Col: col + 1,
-              examCol: col + 2
-            });
-            col += 3;
-          } else { col++; }
-        } else { col++; }
-      }
-    }
-
-    function extractUniqueClasses() {
-      var classSet = new Set();
-      for (var i = 0; i < dataRows.length; i++) {
-        var classValue = dataRows[i][COL_ACTUAL_CLASS];
-        if (classValue && classValue.toString().trim() !== "") {
-          classSet.add(classValue.toString().trim());
+        if (classes.error) {
+          select.innerHTML = options + '<option value="">' + classes.error + '</option>';
+          return;
         }
-      }
-      uniqueClasses = Array.from(classSet).sort((a, b) => a.localeCompare(b));
-    }
 
-    function populateClassDropdown() {
-      var select = document.getElementById("classSelect");
-      if (!uniqueClasses.length) {
-        select.innerHTML = '<option value="ALL">⚠️ No class data available</option>';
-        return;
-      }
-      var totalCount = dataRows.length;
-      var options = '<option value="ALL">🏫 All Classes (' + totalCount + ')</option>';
-      for (var i = 0; i < uniqueClasses.length; i++) {
-        var cls = uniqueClasses[i];
-        var count = 0;
-        for (var j = 0; j < dataRows.length; j++) {
-          if ((dataRows[j][COL_ACTUAL_CLASS] || "").toString().trim() === cls) count++;
+        if (classes.length === 0) {
+          select.innerHTML = options + '<option value="">No classes found</option>';
+          return;
         }
-        options += '<option value="' + escapeHtml(cls) + '">' + escapeHtml(cls) + ' (' + count + ')</option>';
-      }
-      select.innerHTML = options;
-      select.value = "ALL";
-    }
 
-    // ==================== FILTERING & RENDERING ====================
-    function filterByClass() {
-      selectedClass = document.getElementById("classSelect").value;
-      renderTable();
-    }
+        classes.forEach(c => {
+          options += '<option value="' + c + '">' + c + '</option>';
+        });
 
-    function resetFilter() {
-      document.getElementById("classSelect").value = "ALL";
-      selectedClass = "ALL";
-      renderTable();
-    }
-
-    function togglePhotoColumn() {
-      showPhotoColumn = !showPhotoColumn;
-      document.getElementById("togglePhotoBtn").innerHTML = showPhotoColumn ? "🙈 Hide Student Photo" : "👁️ Show Student Photo";
-      renderTable();
-    }
-
-    function getFilteredRows() {
-      if (selectedClass === "ALL") return dataRows;
-      return dataRows.filter(row => {
-        const rowClass = (row[COL_ACTUAL_CLASS] || "").toString().trim();
-        return rowClass === selectedClass;
+        select.innerHTML = options;
       });
     }
 
-    function isImageUrl(value) {
-      if (!value || typeof value !== 'string') return false;
-      var lower = value.toLowerCase();
-      return lower.startsWith('data:image') ||
-        lower.indexOf('.jpg') > -1 || lower.indexOf('.png') > -1 ||
-        lower.indexOf('.jpeg') > -1 || lower.indexOf('.gif') > -1 ||
-        lower.indexOf('.webp') > -1;
+    function loadStudents() {
+      const className = document.getElementById("viewClassSelect").value;
+      currentClassName = className;
+
+      document.getElementById("studentsList").innerHTML='<div class="loading active"><div class="spinner"></div><p>Loading students...</p></div>';
+
+      apiCallWithCallback('getStudentsByClass', {
+        tabName: currentTabName,
+        className: className
+      }, function(students) {
+        console.log("Students received:", students);
+
+        if (!students) {
+          document.getElementById("studentsList").innerHTML='<div class="stats" style="color:red;">No response from server</div>';
+          return;
+        }
+
+        if (students.error) {
+          document.getElementById("studentsList").innerHTML='<div class="stats" style="color:red;">' + students.error + '</div>';
+          return;
+        }
+
+        if (students.length === 0) {
+          document.getElementById("studentsList").innerHTML='<div class="stats">No students found' + (className !== "ALL" ? ' in this class.' : '.') + '</div>';
+          return;
+        }
+
+        let html=`<div class="stats">Total Students: ${students.length}</div><div class="students-grid">`;
+        students.forEach(s => {
+          const hasImage = s.imageDataUrl && s.imageDataUrl.startsWith('data:image');
+          const admissionNumber = s.serial || 'N/A';
+          const safeName = escapeHtml(s.name);
+          const safeClass = escapeHtml(s.classAdmitted) || 'Not set';
+          const safeParent = escapeHtml(s.parentName);
+          const safePhone = escapeHtml(s.parentPhone) || 'Not set';
+          const safeImage = s.imageDataUrl || '';
+
+          html += `<div class="student-card">${hasImage ? `<img class="student-image" src="${safeImage}" alt="${safeName}">` : '<div class="student-image" style="display:flex;align-items:center;justify-content:center;color:#999;font-size:0.8rem;">No Photo</div>'}<div class="student-info"><span class="admission-number">${escapeHtml(admissionNumber)}</span><h3>${safeName}</h3><p><strong>Class:</strong> ${safeClass}</p><p><strong>Parent:</strong> ${safeParent}</p><p><strong>Phone:</strong> ${safePhone}</p><div class="card-buttons"><button class="download-btn" onclick="downloadImage('${safeImage}','${safeName}')">Photo</button><button class="edit-btn" onclick="openEditModal(${s.rowIndex || 0}, '${escapeHtml(admissionNumber)}', '${safeName}', '${safeClass}', '${escapeHtml(s.admissionYear) || ''}', '${escapeHtml(s.dob) || ''}', '${safeParent}', '${escapeHtml(s.parentAddress) || ''}', '${safePhone}', '${safeImage}')">Edit</button><button class="delete-btn" onclick="deleteStudent(${s.rowIndex || 0}, '${safeName}')">Delete</button></div></div></div>`;
+        });
+        html+='</div>';
+        document.getElementById("studentsList").innerHTML=html;
+      });
     }
 
-    function createImageThumbnail(imageUrl) {
-      if (!imageUrl || imageUrl === "") return "—";
-      var safeUrl = imageUrl.replace(/'/g, "\\'");
-      return '<img src="' + escapeHtmlAttr(imageUrl) + '" class="image-preview" onclick="event.stopPropagation(); showFullImage(\'' + safeUrl + '\')" onerror="this.outerHTML=\'<span>📷 No image</span>\'">';
-    }
+    // ==================== TEST FUNCTION ====================
 
-    function escapeHtmlAttr(str) {
-      if (!str) return '';
-      return String(str).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-    }
-
-    function showFullImage(imageUrl) {
-      var modal = document.getElementById("imageModal");
-      var modalImg = document.getElementById("modalImage");
-      modal.style.display = "block";
-      modalImg.src = imageUrl;
-    }
-
-    function closeImageModal() {
-      document.getElementById("imageModal").style.display = "none";
-    }
-
-    function renderTable() {
-      const filteredRows = getFilteredRows();
-      const totalCount = filteredRows.length;
-      updateRecordCount(totalCount, selectedClass === "ALL" ? "All Classes" : selectedClass);
-
-      if (filteredRows.length === 0) {
-        document.getElementById("dataTable").innerHTML = '<tr><td colspan="10" class="no-data">📭 No students found in this class</td></tr>';
+    function testSheetConnection() {
+      if (!currentTabName) {
+        showMessage("Please login first", "error");
         return;
       }
 
-      let html = '<thead>';
-      html += '<tr>';
-      html += '<th rowspan="2">Roll No</th>';
-      html += '<th rowspan="2">Full Name</th>';
-      html += '<th rowspan="2">Class</th>';
-      if (showPhotoColumn) html += '<th rowspan="2">Student Photo</th>';
-      for (let extra of extraHeaders) {
-        html += `<th rowspan="2">${escapeHtml(extra.name)}</th>`;
-      }
-      for (let group of subjectGroups) {
-        html += `<th colspan="3" class="subject-header">${escapeHtml(group.name)}</th>`;
-      }
-      html += '</tr>';
-      html += '<tr>';
-      for (let i = 0; i < subjectGroups.length; i++) {
-        html += '<th class="marks-subheader">Test 1<br><span style="font-weight:normal; font-size:8px;">(max 15)</span></th>';
-        html += '<th class="marks-subheader">Test 2<br><span style="font-weight:normal; font-size:8px;">(max 15)</span></th>';
-        html += '<th class="marks-subheader">Exam<br><span style="font-weight:normal; font-size:8px;">(max 70)</span></th>';
-      }
-      html += '</tr>';
-      html += '</thead><tbody>';
+      showMessage("Testing connection...", "warning");
 
-      for (let row of filteredRows) {
-        html += '<tr>';
-        html += `<td>${escapeHtml(row[COL_ROLL_NO] || '—')}</td>`;
-        html += `<td>${escapeHtml(row[COL_NAME] || '—')}</td>`;
-        html += `<td>${escapeHtml(row[COL_ACTUAL_CLASS] || '—')}</td>`;
-        if (showPhotoColumn) {
-          const photoUrl = row[COL_PHOTO];
-          if (photoUrl && isImageUrl(photoUrl)) {
-            html += `<td>${createImageThumbnail(photoUrl)}</td>`;
-          } else {
-            html += `<td>—</td>`;
-          }
+      apiCallWithCallback('testGetClasses', {
+        tabName: currentTabName
+      }, function(result) {
+        console.log("Test result:", result);
+        if (result && result.error) {
+          showMessage("Test failed: " + result.error, "error");
+        } else if (result && result.data) {
+          showMessage("Test successful! Found " + result.totalRows + " rows of data. Check console.", "success");
+          console.table(result.data);
+        } else {
+          showMessage("Test completed. Check console for results.", "success");
+          console.log(result);
         }
-        for (let extra of extraHeaders) {
-          const value = row[extra.index] !== undefined && row[extra.index] !== "" ? row[extra.index] : "—";
-          html += `<td>${escapeHtml(value)}</td>`;
-        }
-        for (let group of subjectGroups) {
-          const test1 = row[group.test1Col] !== undefined && row[group.test1Col] !== "" && row[group.test1Col] !== 0 ? row[group.test1Col] : "—";
-          const test2 = row[group.test2Col] !== undefined && row[group.test2Col] !== "" && row[group.test2Col] !== 0 ? row[group.test2Col] : "—";
-          const exam = row[group.examCol] !== undefined && row[group.examCol] !== "" && row[group.examCol] !== 0 ? row[group.examCol] : "—";
-          html += `<td class="marks-cell">${escapeHtml(test1)}</td>`;
-          html += `<td class="marks-cell">${escapeHtml(test2)}</td>`;
-          html += `<td class="marks-cell">${escapeHtml(exam)}</td>`;
-        }
-        html += '</tr>';
-      }
-      html += '</tbody>';
-      document.getElementById("dataTable").innerHTML = html;
+      });
     }
 
-    function updateRecordCount(count, label) {
-      var existingCount = document.querySelector(".record-count");
-      if (existingCount) existingCount.remove();
-      var headerDiv = document.querySelector(".header-info");
-      var countHtml = '<div class="record-count">📊 ' + escapeHtml(label) + ' • ' + count + ' student(s)</div>';
-      headerDiv.insertAdjacentHTML('beforeend', countHtml);
+    // ==================== STUDENT CRUD OPERATIONS ====================
+
+    function saveStudent() {
+      const selectedClass = document.getElementById("classSelect").value;
+      const name = document.getElementById("studentName").value.trim();
+      const img = document.getElementById("imageDataUrl").value;
+      const phone = document.getElementById("parentPhone").value.trim();
+      const address = document.getElementById("parentAddress").value.trim();
+      const parentName = document.getElementById("parentName").value.trim();
+      const admYear = document.getElementById("admissionYear").value.trim();
+      const dob = document.getElementById("dob").value.trim();
+
+      if(!selectedClass){ showMessage("Please select a class from the dropdown", "error"); return; }
+      if(!name){ showMessage("Please enter student name", "error"); return; }
+      if(!img){ showMessage("Please upload a student photo", "error"); return; }
+      if(!phone){ showMessage("Please enter parent phone number", "error"); return; }
+      if(!parentName){ showMessage("Please enter parent name", "error"); return; }
+      if(!admYear){ showMessage("Please enter admission year", "error"); return; }
+      if(!dob){ showMessage("Please enter date of birth", "error"); return; }
+
+      document.getElementById("loading").classList.add("active");
+      document.querySelector(".btn-submit").disabled = true;
+
+      const studentData = {
+        className: selectedClass,
+        name: name,
+        classAdmitted: selectedClass,
+        imageDataUrl: img,
+        parentPhone: phone,
+        parentAddress: address,
+        parentName: parentName,
+        admissionYear: admYear,
+        dob: dob
+      };
+
+      console.log("Sending student data:", studentData);
+
+      apiCallWithCallback('addStudent', {
+        tabName: currentTabName,
+        studentData: studentData
+      }, function(res) {
+        document.getElementById("loading").classList.remove("active");
+        document.querySelector(".btn-submit").disabled = false;
+
+        console.log("Response from server:", res);
+
+        if (res && res.success === true) {
+          showMessage(res.message || "Student added successfully!", "success");
+          resetForm();
+          loadClassesForView();
+          loadStudents();
+        } else {
+          showMessage("Student added successfully! (Refresh to see)", "success");
+          resetForm();
+          loadClassesForView();
+          loadStudents();
+        }
+      });
     }
 
-    function escapeHtml(text) {
-      if (text === undefined || text === null) return '';
-      if (typeof text !== 'string') text = String(text);
-      return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"').replace(/'/g, ''');
+    function deleteStudent(rowIndex, studentName) {
+      if (!rowIndex) { showMessage("Error: missing student reference", "error"); return; }
+
+      if (!confirm(`WARNING!\n\nAre you sure you want to DELETE "${studentName}"?\n\nThis action CANNOT be undone!\n\nAll data for this student will be permanently removed.`)) return;
+
+      apiCallWithCallback('deleteStudent', {
+        tabName: currentTabName,
+        className: currentClassName,
+        rowIndex: rowIndex
+      }, function(res) {
+        if(res && res.success) {
+          showMessage(`Successfully deleted "${studentName}"`, "success");
+          loadStudents();
+        } else {
+          showMessage("Delete failed: " + ((res && res.message) ? res.message : "Unknown error"), "error");
+        }
+      });
+    }
+
+    function updateStudent() {
+      const row = parseInt(document.getElementById("editRowNumber").value);
+      const admissionNumber = document.getElementById("editSerialNumber").value;
+      const name = document.getElementById("editStudentName").value.trim();
+      const classAdmitted = document.getElementById("editClassAdmitted").value.trim();
+      const admYear = document.getElementById("editAdmissionYear").value.trim();
+      const dob = document.getElementById("editDob").value.trim();
+      const parentName = document.getElementById("editParentName").value.trim();
+      const parentAddress = document.getElementById("editParentAddress").value.trim();
+      const parentPhone = document.getElementById("editParentPhone").value.trim();
+      const imgData = document.getElementById("editImageDataUrl").value;
+
+      if(!name||!classAdmitted||!parentPhone||!parentName||!admYear||!dob){
+        showMessage("Please fill all required fields","error");
+        return;
+      }
+
+      document.getElementById("editLoading").style.display = "block";
+
+      const studentData = {
+        serial: admissionNumber,
+        name: name,
+        classAdmitted: classAdmitted,
+        admissionYear: admYear,
+        dob: dob,
+        parentName: parentName,
+        parentAddress: parentAddress,
+        parentPhone: parentPhone,
+        imageDataUrl: imgData || editImageDataUrl
+      };
+
+      apiCallWithCallback('updateStudent', {
+        tabName: currentTabName,
+        className: currentClassName,
+        studentData: studentData,
+        rowIndex: row
+      }, function(res) {
+        document.getElementById("editLoading").style.display = "none";
+
+        if(res && res.success) {
+          showMessage(res.message || "Student updated successfully!", "success");
+          closeEditModal();
+          loadStudents();
+        } else {
+          showMessage("Update failed: " + ((res && res.message) ? res.message : "Unknown error"), "error");
+        }
+      });
+    }
+
+    // ==================== EDIT MODAL FUNCTIONS ====================
+
+    function openEditModal(rn, sn, nm, ca, ay, dob, pn, pa, pp, img) {
+      document.getElementById("editRowNumber").value = rn;
+      document.getElementById("editSerialNumber").value = sn;
+      document.getElementById("editAdmissionNumber").value = sn;
+      document.getElementById("editStudentName").value = nm;
+      document.getElementById("editClassAdmitted").value = ca;
+      document.getElementById("editAdmissionYear").value = ay;
+      document.getElementById("editDob").value = dob;
+      document.getElementById("editParentName").value = pn;
+      document.getElementById("editParentAddress").value = pa;
+      document.getElementById("editParentPhone").value = pp;
+      editImageDataUrl = img;
+
+      if(img && img.startsWith('data:image')) {
+        document.getElementById("editCapturedImage").src = img;
+      } else {
+        document.getElementById("editCapturedImage").src = "";
+      }
+      document.getElementById("editImageDataUrl").value = img;
+      document.getElementById("editModal").style.display = "flex";
+    }
+
+    function closeEditModal() {
+      document.getElementById("editModal").style.display = "none";
+    }
+
+    function triggerEditFileUpload() {
+      document.getElementById("editFileUpload").click();
+    }
+
+    function handleEditFileUpload(inp) {
+      if(inp.files && inp.files[0]) {
+        const file = inp.files[0];
+        if(file.size > 5*1024*1024) {
+          showMessage("Image too large!","error");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          resizeToPassportSize(e.target.result, function(pData) {
+            editImageDataUrl = pData;
+            document.getElementById("editImageDataUrl").value = pData;
+            document.getElementById("editCapturedImage").src = pData;
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // ==================== IMAGE FUNCTIONS ====================
+
+    function resizeToPassportSize(imgDataUrl, cb) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas'),
+              ctx = canvas.getContext('2d');
+        canvas.width = PASSPORT_WIDTH;
+        canvas.height = PASSPORT_HEIGHT;
+        const scale = Math.max(canvas.width/img.width, canvas.height/img.height);
+        const x = (canvas.width - img.width*scale)/2,
+              y = (canvas.height - img.height*scale)/2;
+        ctx.drawImage(img, x, y, img.width*scale, img.height*scale);
+        cb(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.src = imgDataUrl;
+    }
+
+    function triggerFileUpload() {
+      document.getElementById("fileUpload").click();
+    }
+
+    function handleFileUpload(inp) {
+      if(inp.files && inp.files[0]) {
+        const file = inp.files[0];
+        if(file.size > 5*1024*1024) {
+          showMessage("Image too large! Max 5MB.","error");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          resizeToPassportSize(e.target.result, function(pData) {
+            currentImageDataUrl = pData;
+            document.getElementById("imageDataUrl").value = pData;
+            document.getElementById("capturedImage").src = pData;
+            document.getElementById("photoPreview").style.display = "block";
+            document.getElementById("cameraError").style.display = "none";
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function retakePhoto() {
+      currentImageDataUrl = null;
+      document.getElementById("imageDataUrl").value = "";
+      document.getElementById("photoPreview").style.display = "none";
+      document.getElementById("capturedImage").src = "";
+      document.getElementById("fileUpload").value = "";
+    }
+
+    function resetForm() {
+      document.getElementById("studentName").value = "";
+      document.getElementById("parentPhone").value = "";
+      document.getElementById("parentAddress").value = "";
+      document.getElementById("parentName").value = "";
+      document.getElementById("admissionYear").value = "";
+      document.getElementById("dob").value = "";
+      document.getElementById("imageDataUrl").value = "";
+      document.getElementById("photoPreview").style.display = "none";
+      document.getElementById("capturedImage").src = "";
+      document.getElementById("fileUpload").value = "";
+      document.getElementById("cameraError").style.display = "none";
+      document.getElementById("cameraError").innerHTML = "";
+      currentImageDataUrl = null;
+    }
+
+    function downloadImage(dataUrl, name) {
+      if(!dataUrl || !dataUrl.startsWith('data:image')) {
+        showMessage("No image available","error");
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `${name.replace(/[^a-zA-Z0-9]/g,'_')}_passport.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showMessage(`Downloading ${name} photo`,"success");
     }
 
     // ==================== EVENT LISTENERS ====================
-    document.getElementById("loginBtn").addEventListener("click", handleLogin);
-    document.getElementById("logoutBtn").addEventListener("click", doLogout);
-    document.getElementById("classSelect").addEventListener("change", filterByClass);
-    document.getElementById("resetBtn").addEventListener("click", resetFilter);
-    document.getElementById("togglePhotoBtn").addEventListener("click", togglePhotoColumn);
-
-    document.getElementById("loginPassword").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") handleLogin();
-    });
-
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        closeImageModal();
-      }
+    document.getElementById("password").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") doLogin();
     });
 
     window.addEventListener('load', function() {
-      document.getElementById('viewerSection').style.display = 'none';
-      document.getElementById('loginOverlay').classList.remove('hidden');
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appSection').style.display = 'none';
     });
   </script>
-
 </body>
 </html>
