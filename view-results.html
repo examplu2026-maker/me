@@ -1,1246 +1,521 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <base target="_top">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Student Files · Admin Portal</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Student Marks Manager - School Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
-    html, body {
-      width: 100%;
-      min-height: 100vh;
-      background: #f5f7fb;
-    }
+.login-fullscreen { position:fixed; inset:0; background: radial-gradient(circle at 10% 30%,#0b2b3f,#071a24);
+  display:flex; justify-content:center; align-items:center; z-index:2000; padding:20px;
+  -webkit-overflow-scrolling: touch; }
+.login-card { background:rgba(255,255,255,0.98); border-radius:48px; padding:40px 32px;
+  width:100%; max-width:460px; text-align:center; box-shadow:0 30px 50px rgba(0,0,0,0.3);
+  animation:floatIn 0.5s ease; position:relative; z-index:1; }
+@keyframes floatIn { 0%{opacity:0;transform:scale(0.96) translateY(20px);} 100%{opacity:1;transform:none;} }
+.login-card h1 { font-size:1.8rem; font-weight:800;
+  background: linear-gradient(125deg,#0f5c7a,#1d8fbb); -webkit-background-clip:text; background-clip:text;
+  color:transparent; margin-bottom:10px; }
+.login-card .sub { color:#5588a7; font-size:0.85rem; margin-bottom:28px; }
+.input-group { margin-bottom:20px; text-align:left; }
+.input-group label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase;
+  color:#1c6a8f; margin-bottom:6px; letter-spacing:0.5px; }
+.input-group input { width:100%; padding:14px 18px; border:2px solid #d4e3ef; border-radius:60px;
+  font-size:0.95rem; background:white; transition:all 0.2s ease;
+  -webkit-appearance: none; appearance: none; }
+.input-group input:focus { outline:none; border-color:#1f8fc7; box-shadow:0 0 0 4px rgba(31,143,199,0.15); }
+.login-btn { width:100%; padding:16px 20px; background: linear-gradient(95deg,#1a6d8f,#0e5270);
+  color:white; border:none; border-radius:60px; font-size:1rem; font-weight:700; cursor:pointer;
+  margin-top:8px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none; position:relative; z-index:5; }
+.login-btn:active { transform:scale(0.97); }
+.login-btn:disabled { opacity:0.6; cursor:not-allowed; }
+.error-msg { color:#dc3545; font-size:0.8rem; margin-top:16px; background:#fff0f0;
+  border-radius:40px; padding:10px 16px; display:none; }
+.spinner { display:inline-block; width:18px; height:18px; border:2px solid #fff;
+  border-top-color:transparent; border-radius:50%; animation:spin 0.6s linear infinite;
+  margin-left:8px; vertical-align:middle; }
+@keyframes spin { to { transform:rotate(360deg); } }
 
-    body {
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, -apple-system, 'Arial', sans-serif;
-      background: #f5f7fb;
-      min-height: 100vh;
-      margin: 0;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    /* ===== LOGIN SCREEN ===== */
-    .login-screen {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      min-height: 85vh;
-      padding: 20px;
-    }
-
-    .login-box {
-      background: #ffffff;
-      padding: 32px 24px 44px;
-      border-radius: 48px;
-      width: 100%;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      border: 1px solid #eef2f8;
-      animation: floatIn 0.4s ease;
-    }
-
-    @keyframes floatIn {
-      0% { opacity: 0; transform: translateY(30px) scale(0.96); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .login-box h2 {
-      color: #1e3c2c;
-      margin-bottom: 8px;
-      font-weight: 800;
-      font-size: 2rem;
-      letter-spacing: -0.5px;
-    }
-
-    .login-box .admin-badge {
-      display: inline-block;
-      background: #1e5a48;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 4px 16px;
-      border-radius: 40px;
-      margin-bottom: 16px;
-      letter-spacing: 0.5px;
-    }
-
-    .login-box .sub {
-      color: #5588a7;
-      font-size: 0.85rem;
-      margin-bottom: 24px;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 16px 20px;
-      border: 2px solid #e2e8f0;
-      border-radius: 60px;
-      font-size: 1rem;
-      font-weight: 500;
-      background: #ffffff;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      outline: none;
-      color: #1e2a3a;
-      margin-bottom: 16px;
-    }
-
-    .login-box input:focus {
-      border-color: #0f9d58;
-      box-shadow: 0 0 0 4px rgba(15, 157, 88, 0.12);
-    }
-
-    .login-box input::placeholder {
-      color: #9aaec2;
-      font-weight: 450;
-      font-size: 0.9rem;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 16px 20px;
-      margin-top: 8px;
-      background: #0f9d58;
-      color: white;
-      border: none;
-      border-radius: 60px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 8px rgba(15, 157, 88, 0.2);
-    }
-
-    .login-box button:active {
-      transform: scale(0.97);
-      background: #0b7e48;
-    }
-
-    .login-box button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .login-box .error {
-      margin-top: 20px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      background: #fef2f2;
-      padding: 12px 20px;
-      border-radius: 60px;
-      color: #dc3545;
-      display: none;
-      width: 100%;
-    }
-
-    .login-box .error.show {
-      display: inline-block;
-    }
-
-    /* ===== MAIN APP ===== */
-    .container {
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      background: white;
-      border-radius: 32px;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
-      overflow: hidden;
-      border: 1px solid #eef2f8;
-      display: none;
-    }
-
-    .header {
-      background: #f8fafc;
-      padding: 14px 20px;
-      text-align: center;
-      border-bottom: 1px solid #eef2f8;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #1e3c2c;
-    }
-
-    .logout-btn {
-      background: #f8fafc;
-      color: #dc3545;
-      border: 1px solid #e2e8f0;
-      padding: 6px 16px;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.75rem;
-      transition: 0.2s;
-    }
-
-    .logout-btn:hover {
-      background: #ffe5e5;
-    }
-
-    .tab-buttons {
-      display: flex;
-      border-bottom: 1px solid #eef2f8;
-      background: #f8fafc;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 14px 12px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 700;
-      transition: all 0.2s;
-      color: #5a6874;
-    }
-
-    .tab-btn.active {
-      background: white;
-      color: #0f9d58;
-      border-bottom: 3px solid #0f9d58;
-    }
-
-    .tab-content {
-      display: none;
-      padding: 20px 18px;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #1e3c2c;
-      font-size: 0.8rem;
-    }
-
-    label .required {
-      color: #dc3545;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 32px;
-      font-size: 0.9rem;
-      font-family: inherit;
-      transition: all 0.2s ease;
-      background: #ffffff;
-    }
-
-    textarea {
-      border-radius: 20px;
-      resize: vertical;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #0f9d58;
-      box-shadow: 0 0 0 3px rgba(15, 157, 88, 0.1);
-    }
-
-    .row-2cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .camera-section {
-      background: #f8fafc;
-      border-radius: 28px;
-      padding: 16px;
-      margin-bottom: 18px;
-      text-align: center;
-    }
-
-    .camera-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: 12px 0;
-    }
-
-    .btn-camera {
-      background: #9C27B0;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 700;
-      transition: 0.2s;
-      flex: 1 0 auto;
-      min-width: 120px;
-      box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
-    }
-
-    .btn-camera:active {
-      transform: scale(0.96);
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 14px 20px;
-      background: #0f9d58;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: 0.2s;
-    }
-
-    .btn-submit:active {
-      transform: scale(0.97);
-    }
-
-    .image-preview {
-      margin-top: 12px;
-      text-align: center;
-    }
-
-    .image-preview img {
-      width: 90px;
-      height: 110px;
-      border-radius: 14px;
-      border: 3px solid #0f9d58;
-      object-fit: cover;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .students-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-      margin-top: 18px;
-      max-height: 60vh;
-      overflow-y: auto;
-      padding: 4px;
-    }
-
-    .student-card {
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      overflow: hidden;
-      transition: transform 0.2s;
-      border: 1px solid #eef2f8;
-    }
-
-    .student-card:active {
-      transform: scale(0.99);
-    }
-
-    .student-image {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      background: #f0f0f0;
-    }
-
-    .student-info {
-      padding: 14px;
-    }
-
-    .student-info h3 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-    }
-
-    .admission-number {
-      display: inline-block;
-      background: #e8f5e9;
-      color: #0f9d58;
-      padding: 2px 12px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .card-buttons {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .edit-btn, .delete-btn, .download-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    .edit-btn { background: #FF9800; color: white; }
-    .delete-btn { background: #f44336; color: white; }
-    .download-btn { background: #0f9d58; color: white; }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 22px;
-      border-radius: 32px;
-      max-width: 500px;
-      width: 100%;
-      max-height: 90%;
-      overflow-y: auto;
-    }
-
-    .close-modal {
-      float: right;
-      cursor: pointer;
-      font-size: 1.6rem;
-      font-weight: bold;
-      color: #666;
-    }
-
-    .passport-note, .info-note {
-      background: #e3f2fd;
-      padding: 8px 12px;
-      border-radius: 28px;
-      margin-top: 10px;
-      font-size: 0.7rem;
-      color: #1565c0;
-      font-weight: 500;
-    }
-
-    .size-badge {
-      background: #0f9d58;
-      color: white;
-      padding: 2px 10px;
-      border-radius: 30px;
-      font-size: 0.6rem;
-      display: inline-block;
-      margin-left: 6px;
-    }
-
-    .message {
-      margin-top: 14px;
-      padding: 10px 16px;
-      border-radius: 40px;
-      display: none;
-      font-weight: 600;
-      font-size: 0.8rem;
-    }
-
-    .message.success { background: #d4edda; color: #155724; display: block; }
-    .message.error { background: #ffe0e0; color: #c0392b; display: block; }
-    .message.warning { background: #fff3cd; color: #856404; display: block; }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 8px;
-      }
-      .login-box {
-        padding: 28px 20px 36px;
-        border-radius: 40px;
-      }
-      .login-box h2 {
-        font-size: 1.8rem;
-        margin-bottom: 24px;
-      }
-      .login-box input {
-        padding: 14px 16px;
-        font-size: 0.9rem;
-      }
-      .login-box button {
-        padding: 14px 18px;
-        font-size: 1rem;
-      }
-      .tab-content {
-        padding: 16px 12px;
-      }
-      .row-2cols {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      .camera-buttons {
-        gap: 8px;
-      }
-      .btn-camera {
-        padding: 10px 16px;
-        font-size: 0.85rem;
-        min-width: 100px;
-      }
-      .students-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    button, .tab-btn, .logout-btn, .btn-camera, .btn-submit, .refresh-btn {
-      touch-action: manipulation;
-    }
-
-    .loading {
-      display: none;
-      text-align: center;
-      margin-top: 15px;
-    }
-    .loading.active { display: block; }
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #0f9d58;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .stats { margin-top: 12px; padding: 8px 14px; background: #e8f5e9; border-radius: 40px; text-align: center; font-size: 0.8rem; font-weight: 700; }
-    .class-selector { margin-bottom: 18px; padding: 12px; background: #f8fafc; border-radius: 28px; }
-    .refresh-btn { background: #0f9d58; color: white; border: none; padding: 8px 16px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
-    .refresh-btn:active { transform: scale(0.96); }
-
-    .test-btn {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-left: 10px;
-    }
-    .test-btn:active { transform: scale(0.96); }
-
-    .upload-hint {
-      background: #e8f5e9;
-      padding: 10px 14px;
-      border-radius: 20px;
-      margin-top: 10px;
-      font-size: 0.75rem;
-      color: #2e7d32;
-    }
-  </style>
+.app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
+.header-area { margin-bottom:20px; }
+.header-area h1 { font-size:1.3rem; font-weight:800;
+  background: linear-gradient(135deg,#1a5d7a,#2c9bcf); -webkit-background-clip:text; background-clip:text;
+  color:transparent; }
+.school-badge { background: linear-gradient(135deg,#1a5d7a,#2c9bcf); color:white; padding:6px 16px;
+  border-radius:30px; font-size:0.7rem; display:inline-block; margin-top:8px; }
+.user-info-bar { background:white; border-radius:48px; padding:12px 20px; margin-bottom:20px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  border:1px solid #e2edf7; }
+.user-details { font-size:0.75rem; font-weight:500; color:#2c6f91; word-break:break-word; }
+.logout-btn { background:#dc3545; padding:8px 24px; font-size:0.8rem; border-radius:40px;
+  font-weight:600; cursor:pointer; border:none; color:white;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.card-control { background:white; border-radius:36px; padding:20px; margin-bottom:24px;
+  display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; border:1px solid #e9f1f8; }
+.field-group { display:flex; flex-direction:column; gap:8px; min-width:150px; flex:1; }
+.field-group label { font-size:0.6rem; font-weight:800; text-transform:uppercase;
+  letter-spacing:0.5px; color:#2c6f91; }
+select, button { padding:11px 16px; border-radius:32px; font-weight:600; background:white;
+  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button { background:#1f6e93; color:white; border:none; }
+.btn-outline { background:white; color:#1f6e93; border:1px solid #1f6e93; }
+.action-group { display:flex; gap:10px; flex-wrap:wrap; }
+.status-bar { background:#e8f1f8; border-radius:60px; padding:10px 18px; margin-bottom:20px;
+  font-size:0.75rem; font-weight:500; color:#1d6f94; display:flex; justify-content:space-between;
+  align-items:center; flex-wrap:wrap; gap:8px; }
+.status-bar.error { background:#ffe0e0; color:#c0392b; }
+.status-bar.success { background:#d4edda; color:#155724; }
+.status-bar.warning { background:#fff3cd; color:#856404; }
+.sync-indicator { font-size:0.65rem; background:rgba(0,0,0,0.05); padding:4px 12px;
+  border-radius:20px; white-space:nowrap; }
+.table-wrapper { background:white; border-radius:28px; overflow-x:auto;
+  border:1px solid #e6eff8; margin-bottom:20px; padding:8px 6px; }
+.marks-table { width:100%; border-collapse:collapse; font-size:0.78rem; min-width:420px;
+  table-layout:fixed; }
+.marks-table th { background:#fafeff; padding:10px 8px; font-weight:700; font-size:0.7rem;
+  color:#1b5a7c; border-bottom:2px solid #d4e3ef; text-align:center; }
+.marks-table td { padding:8px 6px; border-bottom:1px solid #f0f6fc; text-align:center;
+  vertical-align:middle; }
+.col-roll { width:12%; } .col-name { width:40%; }
+.col-test1,.col-test2 { width:15%; } .col-exam { width:18%; }
+.student-name { text-align:left; font-weight:500; font-size:0.78rem; padding-left:6px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.marks-input { width:100%; max-width:75px; padding:7px 4px; border-radius:20px;
+  border:1px solid #cbdef0; text-align:center; font-weight:500; font-size:0.78rem;
+  background:#fafffe; -webkit-appearance: none; appearance: none; }
+.marks-input:focus { border-color:#1f8fc7; outline:none;
+  box-shadow:0 0 0 3px rgba(31,143,199,0.12); background:white; }
+.marks-input.invalid { border-color:#dc3545; background:#fff0f0; }
+.empty-msg { text-align:center; padding:30px 10px !important; color:#6c8faa; font-size:0.85rem; }
+.footer-note { margin-top:20px; text-align:right; font-size:0.6rem; color:#3a789b;
+  background:#eef4fa; padding:8px 16px; border-radius:60px; }
+.save-footer { display:flex; justify-content:flex-end; gap:12px; margin-top:10px;
+  margin-bottom:20px; flex-wrap:wrap; }
+.save-footer button { padding:12px 20px; font-size:0.8rem; border-radius:60px; font-weight:700;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.save-footer .btn-primary { background:#28a745; }
+@media (max-width:640px) {
+  .save-footer button { width:100%; }
+  .login-card { border-radius:36px; padding:32px 24px; }
+}
+</style>
 </head>
 <body>
 
-  <!-- ===== LOGIN SCREEN (shows immediately) ===== -->
-  <div class="login-screen" id="loginScreen">
-    <div class="login-box">
-      <div class="admin-badge">ADMIN ONLY</div>
-      <h2>Student Files</h2>
-      <div class="sub">Secure admin access to manage student records</div>
+<div id="loginFullscreen" class="login-fullscreen">
+  <div class="login-card">
+    <h1>🏫 School Marks Manager</h1>
+    <div class="sub">Sign in to access your school's marks dashboard</div>
+    <div class="input-group">
+      <label>📧 EMAIL ADDRESS</label>
+      <input type="email" id="loginEmail" placeholder="teacher@school.edu" autocomplete="off" inputmode="email">
+    </div>
+    <div class="input-group">
+      <label>🔒 PASSWORD</label>
+      <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="loginBtn" type="button">➡️ SIGN IN</button>
+    <div id="loginError" class="error-msg"></div>
+  </div>
+</div>
 
-      <input type="email" id="email" placeholder="Email address" autocomplete="off" inputmode="email">
-      <input type="password" id="password" placeholder="Password">
+<div id="appContainer" class="app-container">
+  <div class="header-area">
+    <h1>📋 School Marks Manager</h1>
+    <div class="school-badge" id="schoolBadge">🏫 Loading school data...</div>
+  </div>
 
-      <button onclick="doLogin()" id="loginBtn">Sign in</button>
-      <div id="loginError" class="error"></div>
+  <div class="user-info-bar">
+    <div class="user-details" id="userInfoDisplay"></div>
+    <button id="logoutBtn" class="logout-btn" type="button">🚪 Logout</button>
+  </div>
+
+  <div class="card-control">
+    <div class="field-group">
+      <label>🏫 SELECT CLASS</label>
+      <select id="classSelect"><option value="">-- Loading classes... --</option></select>
+    </div>
+    <div class="field-group">
+      <label>📖 SELECT SUBJECT</label>
+      <select id="subjectSelect"><option value="">-- Loading subjects... --</option></select>
+    </div>
+    <div class="field-group">
+      <label>📅 SELECT TERM</label>
+      <select id="termSelect">
+        <option value="Term 1">Term 1</option>
+        <option value="Term 2">Term 2</option>
+        <option value="Term 3">Term 3</option>
+      </select>
+    </div>
+    <div class="action-group">
+      <button id="refreshBtn" class="btn-outline" type="button">🔄 Reload</button>
     </div>
   </div>
 
-  <!-- ===== MAIN APP ===== -->
-  <div id="appSection" class="container" style="display: none;">
-    <div class="header">
-      <button class="logout-btn" onclick="doLogout()">Logout</button>
-      <h1>Student Files</h1>
-      <div style="clear:both"></div>
-    </div>
-
-    <div class="tab-buttons">
-      <button class="tab-btn active" onclick="switchTab('register')">Register</button>
-      <button class="tab-btn" onclick="switchTab('view')">View Students</button>
-    </div>
-
-    <div id="registerTab" class="tab-content active">
-      <div class="form-container">
-        <div class="form-group">
-          <label>Select Class <span class="required">*</span></label>
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <select id="classSelect" style="flex:1;">
-              <option value="">-- Select Class --</option>
-            </select>
-            <button class="test-btn" onclick="testSheetConnection()">Test</button>
-          </div>
-          <div class="info-note">The selected class will be saved to Column D</div>
-        </div>
-
-        <div class="form-group"><label>STUDENT NAME <span class="required">*</span></label><input type="text" id="studentName" placeholder="Enter student's full name"></div>
-
-        <div class="camera-section">
-          <label>STUDENT PHOTO <span class="required">*</span> <span class="size-badge">Passport Size</span></label>
-
-          <div class="camera-buttons">
-            <button type="button" class="btn-camera" onclick="triggerFileUpload()">Upload Photo</button>
-          </div>
-
-          <div class="upload-hint">Select a photo from your device. Photos are automatically resized to passport size.</div>
-
-          <input type="file" id="fileUpload" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">
-
-          <div id="photoPreview" style="display:none;" class="image-preview">
-            <img id="capturedImage" alt="Student Photo">
-            <input type="hidden" id="imageDataUrl" value="">
-            <br>
-            <button class="btn-camera btn-retake" style="background:#FF9800; padding:6px 16px; border:none; border-radius:30px; color:white; font-weight:600; cursor:pointer; margin-top:8px;" onclick="retakePhoto()">Remove Photo</button>
-          </div>
-
-          <div id="cameraError" style="display:none; color: #dc3545; margin-top: 10px; font-size: 0.8rem; background: #fef2f2; padding: 10px 14px; border-radius: 20px;"></div>
-        </div>
-
-        <div class="form-group"><label>PARENT PHONE <span class="required">*</span></label><input type="tel" id="parentPhone" placeholder="Enter parent/guardian phone number" inputmode="tel"></div>
-        <div class="form-group"><label>PARENT ADDRESS</label><textarea id="parentAddress" placeholder="Enter parent/guardian address" rows="2"></textarea></div>
-        <div class="form-group"><label>PARENT NAME <span class="required">*</span></label><input type="text" id="parentName" placeholder="Enter parent/guardian full name"></div>
-        <div class="row-2cols">
-          <div class="form-group"><label>ADMISSION YEAR <span class="required">*</span></label><input type="text" id="admissionYear" placeholder="e.g., 2024" inputmode="numeric"></div>
-          <div class="form-group"><label>DATE OF BIRTH <span class="required">*</span></label><input type="text" id="dob" placeholder="e.g., 15-05-2015"></div>
-        </div>
-        <div class="loading" id="loading"><div class="spinner"></div><p style="margin-top: 8px;">Processing...</p></div>
-        <div class="message" id="message"></div>
-        <button class="btn-submit" onclick="saveStudent()">Add Student</button>
-      </div>
-    </div>
-
-    <div id="viewTab" class="tab-content">
-      <div class="class-selector">
-        <label>Select Class to View:</label>
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-          <select id="viewClassSelect" onchange="loadStudents()" style="flex: 1;">
-            <option value="ALL">All Classes</option>
-          </select>
-          <button class="refresh-btn" onclick="loadStudents()">Refresh</button>
-          <button class="test-btn" onclick="testSheetConnection()">Test</button>
-        </div>
-        <div class="info-note" style="margin-top: 10px;">Classes are automatically read from your data sheet (Column A)</div>
-      </div>
-      <div id="studentsList"></div>
-    </div>
+  <div id="statusMsg" class="status-bar">
+    <span>✅ Ready — Test 1 / Test 2 max 15, Exam max 70</span>
+    <span id="syncStatus" class="sync-indicator">📡 Online</span>
   </div>
 
-  <div id="editModal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeEditModal()">×</span>
-      <h2 style="font-size: 1.3rem; margin-bottom: 20px;">Edit Student</h2>
-      <input type="hidden" id="editRowNumber">
-      <input type="hidden" id="editSerialNumber">
-      <div class="form-group"><label>ADMISSION NUMBER</label><input type="text" id="editAdmissionNumber" readonly style="background:#f5f5f5;"></div>
-      <div class="form-group"><label>STUDENT NAME</label><input type="text" id="editStudentName"></div>
-      <div class="form-group"><label>CLASS</label><input type="text" id="editClassAdmitted"></div>
-      <div class="camera-section">
-        <label>STUDENT PHOTO</label>
-        <div class="camera-buttons"><button type="button" class="btn-camera" onclick="triggerEditFileUpload()">Change Photo</button></div>
-        <input type="file" id="editFileUpload" accept="image/*" style="display: none;" onchange="handleEditFileUpload(this)">
-        <div id="editPhotoPreview" class="image-preview"><img id="editCapturedImage" style="width:80px; height:100px; border-radius:10px; object-fit:cover;"><input type="hidden" id="editImageDataUrl" value=""></div>
-      </div>
-      <div class="form-group"><label>PARENT PHONE</label><input type="tel" id="editParentPhone"></div>
-      <div class="form-group"><label>PARENT ADDRESS</label><textarea id="editParentAddress" rows="2"></textarea></div>
-      <div class="form-group"><label>PARENT NAME</label><input type="text" id="editParentName"></div>
-      <div class="row-2cols">
-        <div class="form-group"><label>ADMISSION YEAR</label><input type="text" id="editAdmissionYear"></div>
-        <div class="form-group"><label>DATE OF BIRTH</label><input type="text" id="editDob"></div>
-      </div>
-      <div class="loading" id="editLoading" style="display:none;"><div class="spinner"></div><p>Updating...</p></div>
-      <button class="btn-submit" onclick="updateStudent()">Save Changes</button>
-    </div>
+  <div class="table-wrapper">
+    <table class="marks-table">
+      <thead>
+        <tr>
+          <th class="col-roll">Roll</th>
+          <th class="col-name">Student Name</th>
+          <th class="col-test1">Test 1</th>
+          <th class="col-test2">Test 2</th>
+          <th class="col-exam">Exam</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="5" class="empty-msg">🔐 Please login to continue...</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <script>
-    // ==================== CONFIGURATION ====================
-    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyZWx3u_aIAJlVnHyP-pWxe3o3O-plCR4BqcuNdzUJZd3Q6fnAikIynw6E7AEXHNpGs9g/exec';
+  <div class="save-footer">
+    <button id="saveBtnBottom" class="btn-primary" type="button">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
+  </div>
 
-    // ==================== STATE ====================
-    let currentTabName = null;
-    let currentImageDataUrl = null;
-    let editImageDataUrl = null;
-    let currentClassName = null;
-    const PASSPORT_WIDTH = 413, PASSPORT_HEIGHT = 531;
+  <div class="footer-note">
+    ⭐ Each school's scores go to its own "<em><slug> student results <year></em>" tab<br>
+    📏 <strong>Validation:</strong> Test marks ≤ 15 | Exam marks ≤ 70
+  </div>
+</div>
 
-    // ==================== API CALL FUNCTIONS ====================
+<script>
+// ⚠️ REPLACE with your deployment URL
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyuIWxD7aL8VcYAmzRP4e8frveTCh8dnag6fDgVTRqzz2W50AWWe4cLOSzACXunHuQpdA/exec';
 
-    function apiCallWithCallback(action, data, callback) {
-      const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+let sessionToken = null;
+let userMasterTab = null;
+let userSchoolName = null;
+let userResultsTabName = null;
+let userYear = null;
 
-      let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
-      for (let key in data) {
-        if (data.hasOwnProperty(key) && data[key] !== null && data[key] !== undefined) {
-          url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(data[key]));
-        }
-      }
-      url += '&callback=' + callbackName;
+let studentMaster = [];
+let subjectsCatalog = [];
+let marksCache = {};
+let currentClass = '';
+let currentSubject = '';
+let currentTerm = 'Term 1';
 
-      const script = document.createElement('script');
-      script.src = url;
-
-      window[callbackName] = function(response) {
-        delete window[callbackName];
-        if (script.parentNode) script.remove();
-        callback(response);
-      };
-
-      script.onerror = function() {
-        delete window[callbackName];
-        if (script.parentNode) script.remove();
-        callback({ success: false, error: 'Network error or invalid response' });
-      };
-
-      const timeoutId = setTimeout(() => {
-        if (window[callbackName]) {
-          delete window[callbackName];
-          if (script.parentNode) script.remove();
-          callback({ success: false, error: 'Request timeout' });
-        }
-      }, 30000);
-
-      const originalCallback = window[callbackName];
-      window[callbackName] = function(response) {
-        clearTimeout(timeoutId);
-        originalCallback(response);
-      };
-
-      document.body.appendChild(script);
+/* ============ JSONP ============ */
+function apiCall(action, data, callback) {
+  const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+  let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
+  for (let k in data) {
+    if (data.hasOwnProperty(k) && data[k] !== null && data[k] !== undefined) {
+      url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(JSON.stringify(data[k]));
     }
+  }
+  url += '&callback=' + cb;
+  const s = document.createElement('script');
+  s.src = url;
+  const timer = setTimeout(() => {
+    delete window[cb];
+    if (s.parentNode) s.remove();
+    callback({ error: 'Request timeout' });
+  }, 30000);
+  window[cb] = function(resp) {
+    clearTimeout(timer);
+    delete window[cb];
+    if (s.parentNode) s.remove();
+    callback(resp);
+  };
+  s.onerror = function() {
+    clearTimeout(timer);
+    delete window[cb];
+    if (s.parentNode) s.remove();
+    callback({ error: 'Network error' });
+  };
+  document.body.appendChild(s);
+}
 
-    // ==================== UI FUNCTIONS ====================
+/* ============ UI helpers ============ */
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.toString().replace(/[&<>"']/g, m => ({
+    '&':'&','<':'<','>':'>','"':'"',"'":'''
+  }[m]));
+}
+function setStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.className = 'status-bar ' + (type || '');
+  const span = el.querySelector('span:not(#syncStatus)');
+  if (span) span.textContent = msg;
+}
+function naturalSort(arr) {
+  return arr.sort((a,b) => {
+    const mA = a.match(/^([A-Za-z\s-]+?)(\d*)$/);
+    const mB = b.match(/^([A-Za-z\s-]+?)(\d*)$/);
+    const tA = mA ? mA[1].trim() : a;
+    const tB = mB ? mB[1].trim() : b;
+    const nA = mA && mA[2] ? parseInt(mA[2],10) : -1;
+    const nB = mB && mB[2] ? parseInt(mB[2],10) : -1;
+    if (tA === tB) return nA - nB;
+    return tA.localeCompare(tB);
+  });
+}
 
-    function switchTab(tab) {
-      const reg = document.getElementById("registerTab"), view = document.getElementById("viewTab");
-      const btns = document.querySelectorAll(".tab-btn");
-      btns.forEach(btn=>btn.classList.remove("active"));
-      if(tab==='register'){ reg.classList.add("active"); view.classList.remove("active"); btns[0].classList.add("active"); }
-      else { reg.classList.remove("active"); view.classList.add("active"); btns[1].classList.add("active"); loadClassesForView(); }
-    }
+/* ============ LOGIN ============ */
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const err = document.getElementById('loginError');
+  if (!email || !password) {
+    err.textContent = 'Please enter both email and password.';
+    err.style.display = 'block'; return;
+  }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = 'Authenticating... <span class="spinner"></span>';
+  err.style.display = 'none';
 
-    function showMessage(msg, typ) {
-      const mDiv = document.getElementById("message");
-      mDiv.textContent = msg;
-      mDiv.className = "message " + typ;
-      mDiv.style.display = "block";
-      setTimeout(() => { mDiv.style.display = "none"; }, 5000);
-    }
+  apiCall('authenticateUser', { email, password }, function(resp) {
+    btn.disabled = false; btn.innerHTML = '➡️ SIGN IN';
+    if (resp && resp.success) {
+      sessionToken = resp.token;
+      userMasterTab = resp.tabName;
+      userSchoolName = resp.schoolName;
+      userResultsTabName = resp.resultsTabName;
+      userYear = resp.year;
 
-    function escapeHtml(t) {
-      if(!t) return '';
-      return String(t).replace(/[&<>]/g, function(m){
-        if(m==='&') return '&';
-        if(m==='<') return '<';
-        if(m==='>') return '>';
-        return m;
-      });
-    }
-
-    // ==================== LOGIN ====================
-
-    function doLogin() {
-      const email=document.getElementById("email").value.trim(), password=document.getElementById("password").value;
-      const errorDiv = document.getElementById("loginError");
-
-      if(!email||!password){
-        errorDiv.textContent = "Please enter email and password";
-        errorDiv.classList.add('show');
-        return;
-      }
-
-      const loginBtn = document.getElementById("loginBtn");
-      loginBtn.disabled = true;
-      loginBtn.textContent = "Authenticating...";
-      errorDiv.classList.remove('show');
-
-      apiCallWithCallback('loginUser', {
-        email: email,
-        password: password
-      }, function(result) {
-        loginBtn.disabled = false;
-        loginBtn.textContent = "Sign in";
-
-        if(result && result.success){
-          const role = result.role ? result.role.toUpperCase() : '';
-
-          if (role === 'ADMIN') {
-            currentTabName = result.tabName || 'Students';
-            document.getElementById("loginScreen").style.display = "none";
-            document.getElementById("appSection").style.display = "block";
-            loadClassesFromColumnA();
-            loadClassesForView();
-            showMessage("Login successful! Loading classes...", "success");
-          } else {
-            errorDiv.textContent = "Access denied. Admin privileges required.";
-            errorDiv.classList.add('show');
-          }
-        } else {
-          errorDiv.textContent = (result && result.error) ? result.error : "Login failed. Please verify credentials.";
-          errorDiv.classList.add('show');
-        }
-      });
-    }
-
-    function doLogout(){
-      currentTabName = null;
-      document.getElementById("appSection").style.display = "none";
-      document.getElementById("loginScreen").style.display = "flex";
-      resetForm();
-      document.getElementById("email").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("loginError").classList.remove('show');
-    }
-
-    // ==================== DATA LOADING ====================
-
-    function loadClassesFromColumnA() {
-      const select = document.getElementById("classSelect");
-      select.innerHTML = '<option value="">Loading classes...</option>';
-
-      apiCallWithCallback('getDistinctClassesFromColumnA', {
-        tabName: currentTabName
-      }, function(classes) {
-        console.log("Classes received:", classes);
-
-        if (!classes) {
-          select.innerHTML = '<option value="">No response from server</option>';
-          showMessage("Failed to load classes", "error");
-          return;
-        }
-
-        if (classes.error) {
-          select.innerHTML = '<option value="">' + classes.error + '</option>';
-          showMessage("Error loading classes: " + classes.error, "error");
-          return;
-        }
-
-        if (classes.length === 0) {
-          select.innerHTML = '<option value="">No classes found</option>';
-          showMessage("No classes found in the sheet. Make sure Column A has class names starting from Row 4.", "warning");
-          return;
-        }
-
-        select.innerHTML = '<option value="">-- Select Class --</option>';
-        classes.forEach(c => {
-          const opt = document.createElement("option");
-          opt.value = c;
-          opt.textContent = c;
-          select.appendChild(opt);
-        });
-
-        showMessage("Loaded " + classes.length + " classes", "success");
-      });
-    }
-
-    function loadClassesForView() {
-      const select = document.getElementById("viewClassSelect");
-      select.innerHTML = '<option value="ALL">Loading classes...</option>';
-
-      apiCallWithCallback('getDistinctClassesFromColumnA', {
-        tabName: currentTabName
-      }, function(classes) {
-        console.log("View Classes received:", classes);
-
-        let options = '<option value="ALL">All Classes</option>';
-
-        if (!classes) {
-          select.innerHTML = options + '<option value="">No response from server</option>';
-          return;
-        }
-
-        if (classes.error) {
-          select.innerHTML = options + '<option value="">' + classes.error + '</option>';
-          return;
-        }
-
-        if (classes.length === 0) {
-          select.innerHTML = options + '<option value="">No classes found</option>';
-          return;
-        }
-
-        classes.forEach(c => {
-          options += '<option value="' + c + '">' + c + '</option>';
-        });
-
-        select.innerHTML = options;
-      });
-    }
-
-    function loadStudents() {
-      const className = document.getElementById("viewClassSelect").value;
-      currentClassName = className;
-
-      document.getElementById("studentsList").innerHTML='<div class="loading active"><div class="spinner"></div><p>Loading students...</p></div>';
-
-      apiCallWithCallback('getStudentsByClass', {
-        tabName: currentTabName,
-        className: className
-      }, function(students) {
-        console.log("Students received:", students);
-
-        if (!students) {
-          document.getElementById("studentsList").innerHTML='<div class="stats" style="color:red;">No response from server</div>';
-          return;
-        }
-
-        if (students.error) {
-          document.getElementById("studentsList").innerHTML='<div class="stats" style="color:red;">' + students.error + '</div>';
-          return;
-        }
-
-        if (students.length === 0) {
-          document.getElementById("studentsList").innerHTML='<div class="stats">No students found' + (className !== "ALL" ? ' in this class.' : '.') + '</div>';
-          return;
-        }
-
-        let html=`<div class="stats">Total Students: ${students.length}</div><div class="students-grid">`;
-        students.forEach(s => {
-          const hasImage = s.imageDataUrl && s.imageDataUrl.startsWith('data:image');
-          const admissionNumber = s.serial || 'N/A';
-          const safeName = escapeHtml(s.name);
-          const safeClass = escapeHtml(s.classAdmitted) || 'Not set';
-          const safeParent = escapeHtml(s.parentName);
-          const safePhone = escapeHtml(s.parentPhone) || 'Not set';
-          const safeImage = s.imageDataUrl || '';
-
-          html += `<div class="student-card">${hasImage ? `<img class="student-image" src="${safeImage}" alt="${safeName}">` : '<div class="student-image" style="display:flex;align-items:center;justify-content:center;color:#999;font-size:0.8rem;">No Photo</div>'}<div class="student-info"><span class="admission-number">${escapeHtml(admissionNumber)}</span><h3>${safeName}</h3><p><strong>Class:</strong> ${safeClass}</p><p><strong>Parent:</strong> ${safeParent}</p><p><strong>Phone:</strong> ${safePhone}</p><div class="card-buttons"><button class="download-btn" onclick="downloadImage('${safeImage}','${safeName}')">Photo</button><button class="edit-btn" onclick="openEditModal(${s.rowIndex || 0}, '${escapeHtml(admissionNumber)}', '${safeName}', '${safeClass}', '${escapeHtml(s.admissionYear) || ''}', '${escapeHtml(s.dob) || ''}', '${safeParent}', '${escapeHtml(s.parentAddress) || ''}', '${safePhone}', '${safeImage}')">Edit</button><button class="delete-btn" onclick="deleteStudent(${s.rowIndex || 0}, '${safeName}')">Delete</button></div></div></div>`;
-        });
-        html+='</div>';
-        document.getElementById("studentsList").innerHTML=html;
-      });
-    }
-
-    // ==================== TEST FUNCTION ====================
-
-    function testSheetConnection() {
-      if (!currentTabName) {
-        showMessage("Please login first", "error");
-        return;
+      if (resp.term) {
+        const tsel = document.getElementById('termSelect');
+        tsel.value = resp.term;
+        currentTerm = resp.term;
+        document.getElementById('saveTermLabel').textContent = resp.term;
       }
 
-      showMessage("Testing connection...", "warning");
+      document.getElementById('userInfoDisplay').innerHTML =
+        `👤 ${escapeHtml(resp.email)} | 🏷️ Slug: ${escapeHtml(userMasterTab)} | 📅 Year: ${escapeHtml(userYear)} | 📊 Tab: "${escapeHtml(userResultsTabName)}"`;
+      document.getElementById('schoolBadge').innerHTML =
+        `🏫 ${escapeHtml(userSchoolName)} — ${escapeHtml(resp.sessionRaw || userYear)}`;
 
-      apiCallWithCallback('testGetClasses', {
-        tabName: currentTabName
-      }, function(result) {
-        console.log("Test result:", result);
-        if (result && result.error) {
-          showMessage("Test failed: " + result.error, "error");
-        } else if (result && result.data) {
-          showMessage("Test successful! Found " + result.totalRows + " rows of data. Check console.", "success");
-          console.table(result.data);
-        } else {
-          showMessage("Test completed. Check console for results.", "success");
-          console.log(result);
-        }
+      showApp();
+      loadInitialData();
+    } else {
+      err.textContent = (resp && resp.error) || 'Login failed.';
+      err.style.display = 'block';
+    }
+  });
+}
+function handleLogout() {
+  sessionToken = null; userMasterTab = null;
+  document.getElementById('loginFullscreen').style.display = 'flex';
+  document.getElementById('appContainer').style.display = 'none';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+}
+function showApp() {
+  document.getElementById('loginFullscreen').style.display = 'none';
+  document.getElementById('appContainer').style.display = 'block';
+}
+
+/* ============ LOAD DATA ============ */
+function loadInitialData() {
+  if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
+  setStatus(`🔄 Loading data from "${userMasterTab}"...`);
+
+  apiCall('getStudentData', { token: sessionToken }, function(students) {
+    if (students && students.error) { setStatus(students.error, 'error'); return; }
+    studentMaster = students || [];
+
+    apiCall('getSubjects', { token: sessionToken }, function(subjects) {
+      if (subjects && subjects.error) { setStatus(subjects.error, 'error'); return; }
+      subjectsCatalog = subjects || [];
+      populateSubjectDropdown();
+
+      apiCall('getMarksData', { token: sessionToken }, function(marks) {
+        if (marks && marks.error) { setStatus(marks.error, 'error'); return; }
+        marksCache = marks || {};
+        populateClassDropdown();
+        renderTable();
+        setStatus(`✅ Loaded ${studentMaster.length} students, ${subjectsCatalog.length} subjects.`, 'success');
       });
-    }
-
-    // ==================== STUDENT CRUD OPERATIONS ====================
-
-    function saveStudent() {
-      const selectedClass = document.getElementById("classSelect").value;
-      const name = document.getElementById("studentName").value.trim();
-      const img = document.getElementById("imageDataUrl").value;
-      const phone = document.getElementById("parentPhone").value.trim();
-      const address = document.getElementById("parentAddress").value.trim();
-      const parentName = document.getElementById("parentName").value.trim();
-      const admYear = document.getElementById("admissionYear").value.trim();
-      const dob = document.getElementById("dob").value.trim();
-
-      if(!selectedClass){ showMessage("Please select a class from the dropdown", "error"); return; }
-      if(!name){ showMessage("Please enter student name", "error"); return; }
-      if(!img){ showMessage("Please upload a student photo", "error"); return; }
-      if(!phone){ showMessage("Please enter parent phone number", "error"); return; }
-      if(!parentName){ showMessage("Please enter parent name", "error"); return; }
-      if(!admYear){ showMessage("Please enter admission year", "error"); return; }
-      if(!dob){ showMessage("Please enter date of birth", "error"); return; }
-
-      document.getElementById("loading").classList.add("active");
-      document.querySelector(".btn-submit").disabled = true;
-
-      const studentData = {
-        className: selectedClass,
-        name: name,
-        classAdmitted: selectedClass,
-        imageDataUrl: img,
-        parentPhone: phone,
-        parentAddress: address,
-        parentName: parentName,
-        admissionYear: admYear,
-        dob: dob
-      };
-
-      console.log("Sending student data:", studentData);
-
-      apiCallWithCallback('addStudent', {
-        tabName: currentTabName,
-        studentData: studentData
-      }, function(res) {
-        document.getElementById("loading").classList.remove("active");
-        document.querySelector(".btn-submit").disabled = false;
-
-        console.log("Response from server:", res);
-
-        if (res && res.success === true) {
-          showMessage(res.message || "Student added successfully!", "success");
-          resetForm();
-          loadClassesForView();
-          loadStudents();
-        } else {
-          showMessage("Student added successfully! (Refresh to see)", "success");
-          resetForm();
-          loadClassesForView();
-          loadStudents();
-        }
-      });
-    }
-
-    function deleteStudent(rowIndex, studentName) {
-      if (!rowIndex) { showMessage("Error: missing student reference", "error"); return; }
-
-      if (!confirm(`WARNING!\n\nAre you sure you want to DELETE "${studentName}"?\n\nThis action CANNOT be undone!\n\nAll data for this student will be permanently removed.`)) return;
-
-      apiCallWithCallback('deleteStudent', {
-        tabName: currentTabName,
-        className: currentClassName,
-        rowIndex: rowIndex
-      }, function(res) {
-        if(res && res.success) {
-          showMessage(`Successfully deleted "${studentName}"`, "success");
-          loadStudents();
-        } else {
-          showMessage("Delete failed: " + ((res && res.message) ? res.message : "Unknown error"), "error");
-        }
-      });
-    }
-
-    function updateStudent() {
-      const row = parseInt(document.getElementById("editRowNumber").value);
-      const admissionNumber = document.getElementById("editSerialNumber").value;
-      const name = document.getElementById("editStudentName").value.trim();
-      const classAdmitted = document.getElementById("editClassAdmitted").value.trim();
-      const admYear = document.getElementById("editAdmissionYear").value.trim();
-      const dob = document.getElementById("editDob").value.trim();
-      const parentName = document.getElementById("editParentName").value.trim();
-      const parentAddress = document.getElementById("editParentAddress").value.trim();
-      const parentPhone = document.getElementById("editParentPhone").value.trim();
-      const imgData = document.getElementById("editImageDataUrl").value;
-
-      if(!name||!classAdmitted||!parentPhone||!parentName||!admYear||!dob){
-        showMessage("Please fill all required fields","error");
-        return;
-      }
-
-      document.getElementById("editLoading").style.display = "block";
-
-      const studentData = {
-        serial: admissionNumber,
-        name: name,
-        classAdmitted: classAdmitted,
-        admissionYear: admYear,
-        dob: dob,
-        parentName: parentName,
-        parentAddress: parentAddress,
-        parentPhone: parentPhone,
-        imageDataUrl: imgData || editImageDataUrl
-      };
-
-      apiCallWithCallback('updateStudent', {
-        tabName: currentTabName,
-        className: currentClassName,
-        studentData: studentData,
-        rowIndex: row
-      }, function(res) {
-        document.getElementById("editLoading").style.display = "none";
-
-        if(res && res.success) {
-          showMessage(res.message || "Student updated successfully!", "success");
-          closeEditModal();
-          loadStudents();
-        } else {
-          showMessage("Update failed: " + ((res && res.message) ? res.message : "Unknown error"), "error");
-        }
-      });
-    }
-
-    // ==================== EDIT MODAL FUNCTIONS ====================
-
-    function openEditModal(rn, sn, nm, ca, ay, dob, pn, pa, pp, img) {
-      document.getElementById("editRowNumber").value = rn;
-      document.getElementById("editSerialNumber").value = sn;
-      document.getElementById("editAdmissionNumber").value = sn;
-      document.getElementById("editStudentName").value = nm;
-      document.getElementById("editClassAdmitted").value = ca;
-      document.getElementById("editAdmissionYear").value = ay;
-      document.getElementById("editDob").value = dob;
-      document.getElementById("editParentName").value = pn;
-      document.getElementById("editParentAddress").value = pa;
-      document.getElementById("editParentPhone").value = pp;
-      editImageDataUrl = img;
-
-      if(img && img.startsWith('data:image')) {
-        document.getElementById("editCapturedImage").src = img;
-      } else {
-        document.getElementById("editCapturedImage").src = "";
-      }
-      document.getElementById("editImageDataUrl").value = img;
-      document.getElementById("editModal").style.display = "flex";
-    }
-
-    function closeEditModal() {
-      document.getElementById("editModal").style.display = "none";
-    }
-
-    function triggerEditFileUpload() {
-      document.getElementById("editFileUpload").click();
-    }
-
-    function handleEditFileUpload(inp) {
-      if(inp.files && inp.files[0]) {
-        const file = inp.files[0];
-        if(file.size > 5*1024*1024) {
-          showMessage("Image too large!","error");
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          resizeToPassportSize(e.target.result, function(pData) {
-            editImageDataUrl = pData;
-            document.getElementById("editImageDataUrl").value = pData;
-            document.getElementById("editCapturedImage").src = pData;
-          });
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    // ==================== IMAGE FUNCTIONS ====================
-
-    function resizeToPassportSize(imgDataUrl, cb) {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement('canvas'),
-              ctx = canvas.getContext('2d');
-        canvas.width = PASSPORT_WIDTH;
-        canvas.height = PASSPORT_HEIGHT;
-        const scale = Math.max(canvas.width/img.width, canvas.height/img.height);
-        const x = (canvas.width - img.width*scale)/2,
-              y = (canvas.height - img.height*scale)/2;
-        ctx.drawImage(img, x, y, img.width*scale, img.height*scale);
-        cb(canvas.toDataURL('image/jpeg', 0.85));
-      };
-      img.src = imgDataUrl;
-    }
-
-    function triggerFileUpload() {
-      document.getElementById("fileUpload").click();
-    }
-
-    function handleFileUpload(inp) {
-      if(inp.files && inp.files[0]) {
-        const file = inp.files[0];
-        if(file.size > 5*1024*1024) {
-          showMessage("Image too large! Max 5MB.","error");
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          resizeToPassportSize(e.target.result, function(pData) {
-            currentImageDataUrl = pData;
-            document.getElementById("imageDataUrl").value = pData;
-            document.getElementById("capturedImage").src = pData;
-            document.getElementById("photoPreview").style.display = "block";
-            document.getElementById("cameraError").style.display = "none";
-          });
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function retakePhoto() {
-      currentImageDataUrl = null;
-      document.getElementById("imageDataUrl").value = "";
-      document.getElementById("photoPreview").style.display = "none";
-      document.getElementById("capturedImage").src = "";
-      document.getElementById("fileUpload").value = "";
-    }
-
-    function resetForm() {
-      document.getElementById("studentName").value = "";
-      document.getElementById("parentPhone").value = "";
-      document.getElementById("parentAddress").value = "";
-      document.getElementById("parentName").value = "";
-      document.getElementById("admissionYear").value = "";
-      document.getElementById("dob").value = "";
-      document.getElementById("imageDataUrl").value = "";
-      document.getElementById("photoPreview").style.display = "none";
-      document.getElementById("capturedImage").src = "";
-      document.getElementById("fileUpload").value = "";
-      document.getElementById("cameraError").style.display = "none";
-      document.getElementById("cameraError").innerHTML = "";
-      currentImageDataUrl = null;
-    }
-
-    function downloadImage(dataUrl, name) {
-      if(!dataUrl || !dataUrl.startsWith('data:image')) {
-        showMessage("No image available","error");
-        return;
-      }
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = `${name.replace(/[^a-zA-Z0-9]/g,'_')}_passport.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      showMessage(`Downloading ${name} photo`,"success");
-    }
-
-    // ==================== EVENT LISTENERS ====================
-    document.getElementById("password").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") doLogin();
     });
+  });
+}
 
-    window.addEventListener('load', function() {
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('appSection').style.display = 'none';
-    });
-  </script>
+function populateClassDropdown() {
+  const el = document.getElementById('classSelect');
+  const classes = naturalSort([...new Set(studentMaster.map(s => s.className).filter(Boolean))]);
+  el.innerHTML = '<option value="">-- Select Class --</option>';
+  classes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    el.appendChild(opt);
+  });
+}
+
+function populateSubjectDropdown() {
+  const el = document.getElementById('subjectSelect');
+  if (!subjectsCatalog.length) {
+    el.innerHTML = '<option value="">-- No subjects found --</option>';
+    return;
+  }
+  el.innerHTML = '<option value="">-- Select Subject --</option>';
+  subjectsCatalog.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id; opt.textContent = s.display;
+    el.appendChild(opt);
+  });
+  el.value = subjectsCatalog[0].id;
+  currentSubject = subjectsCatalog[0].id;
+}
+
+/* ============ RENDER TABLE ============ */
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const cls = document.getElementById('classSelect').value;
+  const subjId = document.getElementById('subjectSelect').value;
+  const term = document.getElementById('termSelect').value;
+
+  currentClass = cls; currentSubject = subjId; currentTerm = term;
+  document.getElementById('saveTermLabel').textContent = term;
+
+  if (!cls) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a class</td></tr>'; return; }
+  if (!subjId) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a subject</td></tr>'; return; }
+
+  const filtered = studentMaster.filter(s => s.className === cls);
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">🏫 No students in this class</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = '';
+  filtered.forEach(stu => {
+    let marks = { test1: 0, test2: 0, exam: 0 };
+    if (marksCache[subjId] && marksCache[subjId][cls] && marksCache[subjId][cls][stu.roll]
+        && marksCache[subjId][cls][stu.roll][term]) {
+      marks = marksCache[subjId][cls][stu.roll][term];
+    }
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-roll', stu.roll);
+    tr.innerHTML = `
+      <td class="col-roll">${escapeHtml(stu.roll)}</td>
+      <td class="col-name student-name">${escapeHtml(stu.name)}</td>
+      <td class="col-test1"><input type="number" step="0.5" value="${marks.test1}" class="marks-input t1-input" placeholder="0-15"></td>
+      <td class="col-test2"><input type="number" step="0.5" value="${marks.test2}" class="marks-input t2-input" placeholder="0-15"></td>
+      <td class="col-exam"><input type="number" step="0.5" value="${marks.exam}" class="marks-input exam-input" placeholder="0-70"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ============ VALIDATION ============ */
+function validateAll() {
+  const rows = document.querySelectorAll('#tableBody tr');
+  let ok = true;
+  let firstErr = '';
+  rows.forEach(tr => {
+    const t1 = tr.querySelector('.t1-input');
+    const t2 = tr.querySelector('.t2-input');
+    const ex = tr.querySelector('.exam-input');
+    if (!t1 || !t2 || !ex) return;
+    const check = (el, max) => {
+      const v = parseFloat(el.value);
+      const bad = isNaN(v) || v < 0 || v > max;
+      el.classList.toggle('invalid', bad);
+      if (bad && !firstErr) firstErr = `Value must be 0–${max}`;
+      return !bad;
+    };
+    if (!check(t1,15) || !check(t2,15) || !check(ex,70)) ok = false;
+  });
+  if (!ok) setStatus('❌ ' + firstErr, 'error');
+  return ok;
+}
+
+/* ============ SAVE ============ */
+function saveMarks() {
+  const cls = document.getElementById('classSelect').value;
+  const subjId = document.getElementById('subjectSelect').value;
+  const term = document.getElementById('termSelect').value;
+  if (!cls) return setStatus('⚠️ Select a class.', 'warning');
+  if (!subjId) return setStatus('⚠️ Select a subject.', 'warning');
+  if (!validateAll()) return;
+
+  const updates = [];
+  document.querySelectorAll('#tableBody tr').forEach(tr => {
+    const roll = tr.getAttribute('data-roll');
+    if (!roll) return;
+    const t1 = Math.min(15, Math.max(0, parseFloat(tr.querySelector('.t1-input').value) || 0));
+    const t2 = Math.min(15, Math.max(0, parseFloat(tr.querySelector('.t2-input').value) || 0));
+    const ex = Math.min(70, Math.max(0, parseFloat(tr.querySelector('.exam-input').value) || 0));
+    updates.push({ roll, test1: t1, test2: t2, exam: ex });
+  });
+
+  const btn = document.getElementById('saveBtnBottom');
+  btn.disabled = true; btn.innerHTML = 'Saving... <span class="spinner"></span>';
+
+  apiCall('saveMarksData', {
+    token: sessionToken,
+    subjectId: subjId,
+    className: cls,
+    term: term,
+    updates: updates
+  }, function(resp) {
+    btn.disabled = false;
+    btn.innerHTML = '💾 Save Marks for ' + term;
+
+    if (resp && resp.success) {
+      if (!marksCache[subjId]) marksCache[subjId] = {};
+      if (!marksCache[subjId][cls]) marksCache[subjId][cls] = {};
+      updates.forEach(u => {
+        const hasScore = (u.test1 || 0) !== 0 || (u.test2 || 0) !== 0 || (u.exam || 0) !== 0;
+        if (!hasScore) return;
+        if (!marksCache[subjId][cls][u.roll]) marksCache[subjId][cls][u.roll] = {};
+        marksCache[subjId][cls][u.roll][term] = { test1: u.test1, test2: u.test2, exam: u.exam };
+      });
+
+      const savedCount = resp.saved || 0;
+      const addedCount = resp.addedNew || 0;
+      const skipped   = resp.skippedZero || 0;
+
+      let msg = `✅ Saved ${savedCount} student(s) for ${term}`;
+      if (addedCount > 0) msg += ` — ${addedCount} newly added to results tab`;
+      if (skipped > 0)    msg += ` • Skipped ${skipped} with no scores`;
+      setStatus(msg + '.', 'success');
+    } else {
+      setStatus('⚠️ ' + ((resp && resp.error) || 'Save failed'), 'error');
+    }
+  });
+}
+
+/* ============ BIND BUTTONS (mobile-safe) ============ */
+function bindTapButton(id, handler) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var fired = false;
+  function trigger(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (fired) return;
+    fired = true;
+    setTimeout(function() { fired = false; }, 600);
+    try { handler(); } catch (err) { console.error('Handler error for ' + id + ':', err); }
+  }
+  el.addEventListener('click',       trigger, { passive: false });
+  el.addEventListener('touchend',    trigger, { passive: false });
+  el.addEventListener('pointerup',   trigger, { passive: false });
+}
+
+bindTapButton('loginBtn',       handleLogin);
+bindTapButton('logoutBtn',      handleLogout);
+bindTapButton('refreshBtn',     loadInitialData);
+bindTapButton('saveBtnBottom',  saveMarks);
+
+document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); handleLogin(); }
+});
+document.getElementById('classSelect').addEventListener('change', renderTable);
+document.getElementById('subjectSelect').addEventListener('change', renderTable);
+document.getElementById('termSelect').addEventListener('change', renderTable);
+</script>
 </body>
 </html>
