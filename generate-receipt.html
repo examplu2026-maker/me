@@ -42,7 +42,6 @@
                       color: #1a5dab; font-weight: 600; font-size: 13px; }
         .section-label { font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 14px; }
 
-        /* Tabs */
         .tabs { display: flex; gap: 8px; background: #f1f5f9; padding: 6px;
                 border-radius: 12px; margin-bottom: 22px; flex-wrap: wrap; }
         .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent;
@@ -104,7 +103,6 @@
         .receipt-placeholder { padding: 30px; text-align: center; color: #94a3b8; }
         .receipt-placeholder i { font-size: 40px; display: block; margin-bottom: 10px; }
 
-        /* Report table */
         .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
                           gap: 12px; margin: 15px 0; }
         .report-card { background: linear-gradient(135deg, #1a5dab, #124a8a); color: white;
@@ -173,13 +171,11 @@
             <div class="term-badge" id="termDisplay">📅 2025/2026</div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" data-tab="payTab" id="tabPay">💳 Record Payment</button>
             <button class="tab-btn" data-tab="reportTab" id="tabReport">📊 Paid Students Report</button>
         </div>
 
-        <!-- ============================== PAY TAB ============================== -->
         <div id="payTab">
             <div class="section-label">📚 Select Class</div>
             <select id="classSelect"><option value="">Loading classes...</option></select>
@@ -199,7 +195,7 @@
                 <div class="amount-group">
                     <label><i class="fas fa-money-bill"></i> School Fees</label>
                     <span class="currency">₦</span>
-                    <input type="number" id="schoolFees" value="6000" step="1000">
+                    <input type="number" id="schoolFees" value="5000" step="1000">
                 </div>
                 <div class="amount-group">
                     <label><i class="fas fa-clipboard"></i> Registration</label>
@@ -209,7 +205,7 @@
                 <div class="amount-group">
                     <label><i class="fas fa-book"></i> Books/Dev</label>
                     <span class="currency">₦</span>
-                    <input type="number" id="developmentLevy" value="0" step="500">
+                    <input type="number" id="developmentLevy" value="1500" step="500">
                 </div>
 
                 <div class="total-display">
@@ -235,7 +231,6 @@
             </div>
         </div>
 
-        <!-- ============================== REPORT TAB ============================== -->
         <div id="reportTab" class="hidden">
             <div class="section-label">📚 Select Class</div>
             <select id="reportClassSelect"><option value="">Loading classes...</option></select>
@@ -271,7 +266,7 @@
 // ============================================================
 // PASTE YOUR SCRIPT URL BETWEEN THE QUOTES
 // ============================================================
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO0sTcYXanhYRiF5iCr1-Alh5MydEwrZxhbNO1VNzw364_ntjL6NMYQ3IpXhaaeTTuHw/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBZSpQSKOUc0_hxzJQ3dMyTdkQep0_xfYP3DjsbV5jEkjgy0UH8OO7wKEDgGG6TUgiiA/exec';
 
 var currentUser = null;
 var students = [];
@@ -304,7 +299,6 @@ var registrationFee = $('registrationFee');
 var developmentLevy = $('developmentLevy');
 var totalAmount = $('totalAmount');
 
-// Report tab elements
 var reportClassSelect = $('reportClassSelect');
 var reportTermSelect  = $('reportTermSelect');
 var fetchReportBtn    = $('fetchReportBtn');
@@ -653,7 +647,6 @@ function renderReport(data, className, term) {
 
     reportOutput.innerHTML = html;
 
-    // Hook up print button
     var printBtn = $('printReportBtn');
     if (printBtn) {
         printBtn.addEventListener('click', function() { printReport(students, className, term, total); });
@@ -727,7 +720,6 @@ function logout() {
     studentCount.textContent = '0';
     receiptOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-receipt"></i>Select student, enter amounts, then generate receipt</div>';
     reportOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-chart-bar"></i>Select a class and a term, then click <b>Fetch Paid Students</b></div>';
-    // Reset tabs
     document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
     $('tabPay').classList.add('active');
     $('payTab').classList.remove('hidden');
