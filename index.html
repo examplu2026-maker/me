@@ -3,314 +3,306 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome to EXAMPLUS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>EXAMPLUS — School Management</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#faf7f1;
-    --card:#ffffff;
-    --ink:#1e2340;
-    --ink-dim:#95917f;
-    --line:#eee7d8;
-
-    --superadmin-a:#4c5fd5;  --superadmin-b:#7b8af0;  --superadmin-bg:#eceefc;
-    --schooladmin-a:#0e9a80; --schooladmin-b:#43c9ac; --schooladmin-bg:#e2f6f1;
-    --bursar-a:#279c4c;      --bursar-b:#5fc57f;      --bursar-bg:#e5f6ea;
-    --teacher-a:#d9791d;     --teacher-b:#f0a94e;     --teacher-bg:#fcefdd;
-    --signup-a:#8148e0;      --signup-b:#ab7ef2;      --signup-bg:#f2ebfe;
+    --ink:#1B2A4A;
+    --ink-soft:#4B5670;
+    --paper:#F6F4EF;
+    --card:#FFFFFF;
+    --line:#E4E0D6;
+    --gold:#B8863B;
+    --gold-soft:#F1E4C9;
+    --radius:16px;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    background-image:
-      radial-gradient(ellipse 700px 420px at 12% -6%, rgba(76,95,213,0.09), transparent),
-      radial-gradient(ellipse 700px 420px at 88% 4%, rgba(129,72,224,0.07), transparent);
+  body{margin:0;}
+  html,body{
+    background:var(--paper);
     color:var(--ink);
-    font-family:'Inter', sans-serif;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
+    font-family:'Public Sans',system-ui,sans-serif;
+    -webkit-tap-highlight-color:transparent;
   }
-  a, button{text-decoration:none; color:inherit; font-family:inherit;}
-  button{background:none; border:none; cursor:pointer;}
+  h1,h2,h3,.brand{font-family:'Fraunces',serif;}
 
-  .wrap{max-width:1020px; margin:0 auto; padding:60px 22px 80px;}
-
-  /* ---- hero ---- */
-  .hero{text-align:center; margin-bottom:54px;}
-  .greeting{
-    font-size:13px;
+  /* header */
+  header{
+    padding:28px 20px 20px;
+    border-bottom:1px solid var(--line);
+    background:var(--card);
+    text-align:center;
+  }
+  .brand-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;}
+  .brand-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--ink);color:var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:700;font-size:16px;
+  }
+  .brand{font-size:18px;font-weight:600;letter-spacing:0.2px;}
+  .brand span{color:var(--gold);}
+  #greeting{
+    margin:0 0 2px;
+    font-size:26px;
     font-weight:600;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-    color:var(--superadmin-a);
-    margin-bottom:14px;
-    opacity:0;
-    animation:rise .6s ease forwards;
+    line-height:1.25;
   }
-  .hero .badge{
-    width:72px; height:72px;
-    margin:0 auto 22px;
-    border-radius:22px;
-    display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg, var(--superadmin-a), var(--signup-a));
-    color:#fff; font-size:28px;
-    box-shadow:0 16px 32px rgba(76,95,213,0.28);
-    opacity:0;
-    animation:rise .6s ease .08s forwards;
-  }
-  h1{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:clamp(2.2rem, 6vw, 3.4rem);
-    margin:0;
-    line-height:1.06;
-    opacity:0;
-    animation:rise .6s ease .14s forwards;
-  }
-  h1 span{
-    background:linear-gradient(135deg, var(--superadmin-a), var(--signup-a));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-  }
-  .sub{
-    margin:14px 0 0;
-    font-size:14.5px;
-    color:var(--ink-dim);
-    opacity:0;
-    animation:rise .6s ease .2s forwards;
-  }
-  @keyframes rise{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  .subline{margin:0;color:var(--ink-soft);font-size:14.5px;}
 
-  /* ---- grid shared ---- */
-  .grid{
+  main{padding:22px 20px 60px;max-width:720px;margin:0 auto;}
+
+  /* home view */
+  .section-label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:26px 0 10px;
+    font-weight:600;
+  }
+  .section-label:first-child{margin-top:0;}
+
+  .role-grid{
     display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:18px;
-    max-width:420px;
-    margin:0 auto;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
   }
-
-  .card{
+  .role-card{
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:22px;
-    padding:30px 14px 22px;
+    border-radius:14px;
+    padding:16px 14px;
     display:flex;
     flex-direction:column;
-    align-items:center;
-    gap:16px;
-    text-align:center;
+    gap:12px;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    color:inherit;
     opacity:0;
-    transform:translateY(12px);
-    animation:cardrise .55s cubic-bezier(.2,.8,.2,1) forwards;
-    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    box-shadow:0 1px 2px rgba(30,35,64,0.03);
+    animation:rise .5s ease forwards;
   }
-  .card:hover, .card:focus-visible{
-    transform:translateY(-5px);
-    box-shadow:0 18px 34px rgba(30,35,64,0.10);
-    border-color:transparent;
-    outline:none;
+  .role-card:active{transform:scale(0.98);}
+  .role-icon{
+    width:36px;height:36px;
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;
+    background:var(--c-bg, var(--paper));
+    color:var(--c, var(--ink));
   }
-  @keyframes cardrise{ to{ opacity:1; transform:translateY(0); } }
+  .role-title{font-weight:500;font-size:13.5px;line-height:1.3;}
 
-  .icon{
-    width:60px; height:60px;
-    border-radius:18px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:23px;
-    color:#fff;
-    transition:transform .2s ease;
+  .account-row{
+    display:flex;gap:12px;
   }
-  .card:hover .icon{transform:scale(1.07) rotate(-2deg);}
-
-  .card .label{font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.25;}
-
-  /* role gradient icon backgrounds */
-  .role-superadmin  .icon{ background:linear-gradient(135deg, var(--superadmin-a), var(--superadmin-b)); }
-  .role-schooladmin .icon{ background:linear-gradient(135deg, var(--schooladmin-a), var(--schooladmin-b)); }
-  .role-bursar      .icon{ background:linear-gradient(135deg, var(--bursar-a), var(--bursar-b)); }
-  .role-teacher     .icon{ background:linear-gradient(135deg, var(--teacher-a), var(--teacher-b)); }
-  .role-signup      .icon{ background:linear-gradient(135deg, var(--signup-a), var(--signup-b)); }
-
-  /* sub-card slightly smaller */
-  .subgrid .card{padding:26px 12px 18px;}
-  .subgrid .icon{width:54px; height:54px; font-size:20px;}
-  .subgrid .label{font-size:13.5px;}
-
-  /* ---- detail view ---- */
-  #detail{display:none;}
-  .back{
-    display:inline-flex; align-items:center; gap:8px;
-    font-size:13px; font-weight:600;
-    color:var(--ink-dim);
-    margin-bottom:26px;
-    padding:9px 6px;
-    transition:color .15s ease, transform .15s ease;
+  .account-link{
+    flex:1;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--ink);
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
   }
-  .back:hover{color:var(--ink); transform:translateX(-2px);}
-  .detail-head{display:flex; align-items:center; gap:16px; margin-bottom:32px;}
-  .detail-head .icon{width:52px; height:52px; font-size:20px; flex-shrink:0; border-radius:16px;}
-  .detail-head h2{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:1.6rem;
-    margin:0;
+  .account-link i{color:var(--gold);font-size:16px;}
+
+  /* detail view */
+  #detailView{display:none;}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:none;border:none;
+    color:var(--ink-soft);
+    font-family:inherit;font-size:14px;font-weight:500;
+    padding:0 0 18px;cursor:pointer;
+  }
+  .detail-head{
+    display:flex;flex-direction:column;align-items:center;
+    text-align:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  #detailIcon{
+    width:52px;height:52px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;background:var(--c-bg, var(--ink));color:var(--c, #fff);
+  }
+  #detailTitle{margin:0;font-size:22px;font-weight:600;}
+
+  .sub-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .sub-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 14px;
+    display:flex;flex-direction:column;gap:12px;
+    text-decoration:none;color:var(--ink);
+    opacity:0;animation:rise .45s ease forwards;
+  }
+  .sub-card .icon{
+    width:36px;height:36px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--c-bg, var(--paper));
+    color:var(--c, var(--ink));
+    font-size:15px;
+  }
+  .sub-card .label{font-size:13.5px;font-weight:500;line-height:1.3;}
+
+  @keyframes rise{
+    from{opacity:0;transform:translateY(8px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .role-card,.sub-card{animation:none;opacity:1;}
   }
 
-  #home.hidden, #detail.hidden{display:none;}
-
-  @media (prefers-reduced-motion: reduce){
-    .card, .greeting, .badge, h1, .sub{animation:none; opacity:1; transform:none;}
+  @media (min-width:480px){
+    main{max-width:480px;}
   }
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<header>
+  <div class="brand-row">
+    <div class="brand-mark">E+</div>
+    <div class="brand">EXAM<span>PLUS</span></div>
+  </div>
+  <h1 id="greeting">Good day</h1>
+  <p class="subline">What would you like to do?</p>
+</header>
 
-  <div class="hero">
-    <div class="greeting" id="greeting"></div>
-    <div class="badge"><i class="fa-solid fa-graduation-cap"></i></div>
-    <h1>Welcome to <span>EXAMPLUS</span></h1>
-    <p class="sub">Choose a role to get started</p>
+<main>
+
+  <div id="homeView">
+    <div class="role-grid" id="grid-home"></div>
+
+    <div class="section-label">Get Started</div>
+    <div class="account-row">
+      <a class="account-link" href="signup.html"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+      <a class="account-link" href="activate.html"><i class="fa-solid fa-circle-check"></i> Activate</a>
+    </div>
   </div>
 
-  <div id="home">
-    <div class="grid" id="roleGrid"></div>
-  </div>
-
-  <div id="detail">
-    <button class="back" id="backBtn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+  <div id="detailView">
+    <button class="back-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i> Back</button>
     <div class="detail-head">
-      <div class="icon" id="detailIcon"></div>
+      <div id="detailIcon"></div>
       <h2 id="detailTitle"></h2>
     </div>
-    <div class="grid subgrid" id="subGrid"></div>
+    <div class="sub-grid" id="subGrid"></div>
   </div>
 
-</div>
+</main>
 
 <script>
-/* ============================================================
-   ROLE CONFIG — edit to match your repo.
-   Files marked PLACEHOLDER don't exist yet — replace once created.
-   ============================================================ */
-const ROLES = [
-  {
-    id: "superadmin",
-    title: "Super Admin",
-    icon: "fa-solid fa-user-shield",
-    subs: [
-      { file: "create-school.html", title: "Create School", icon: "fa-solid fa-square-plus" },
-      { file: "view-schools.html",  title: "View Schools",  icon: "fa-solid fa-building-columns" },
-      { file: "settings.html",      title: "Subscription & Payment Settings", icon: "fa-solid fa-sliders" }
-    ]
-  },
-  {
-    id: "schooladmin",
-    title: "School Admin",
-    icon: "fa-solid fa-building-user",
-    subs: [
-      { file: "school.html",         title: "School Details",  icon: "fa-solid fa-school" },
-      { file: "students.html",       title: "Student Details", icon: "fa-solid fa-user-graduate" },
-      { file: "classes.html",        title: "All Classes",     icon: "fa-solid fa-layer-group" },      /* PLACEHOLDER */
-      { file: "subjects.html",       title: "All Subjects",    icon: "fa-solid fa-book" },
-      { file: "students-bulk.html",  title: "Bulk Student",    icon: "fa-solid fa-users" },
-      { file: "report.html",         title: "Report Card",     icon: "fa-solid fa-file-lines" },
-      { file: "settings.html",       title: "Term & Score Settings", icon: "fa-solid fa-gear" },
-      { file: "contacts.html",       title: "Contacts",        icon: "fa-solid fa-address-book" },     /* PLACEHOLDER */
-      { file: "teacher-bursar.html", title: "Teacher / Bursar", icon: "fa-solid fa-user-tie" }         /* PLACEHOLDER */
-    ]
-  },
-  {
-    id: "bursar",
-    title: "Bursar",
-    icon: "fa-solid fa-cash-register",
-    subs: [
-      { file: "generate-receipt.html", title: "Payment",      icon: "fa-solid fa-receipt" },
-      { file: "receipt-history.html",  title: "View Records", icon: "fa-solid fa-clock-rotate-left" }
-    ]
-  },
-  {
-    id: "teacher",
-    title: "Teacher",
-    icon: "fa-solid fa-chalkboard-user",
-    subs: [
-      { file: "upload-results.html", title: "upload Results", icon: "fa-solid fa-upload" },
-      { file: "view-results.html",  title: "View Record",   icon: "fa-solid fa-chart-line" },
-      { file: "assessment.htm",     title: "Assessment",    icon: "fa-solid fa-clipboard-check" }
-    ]
-  },
-  {
-    id: "signup",
-    title: "Signup / Activate",
-    icon: "fa-solid fa-user-plus",
-    subs: [
-      { file: "signup.html",   title: "Registration", icon: "fa-solid fa-user-plus" },  /* filename unconfirmed */
-      { file: "activate.html", title: "Activate",     icon: "fa-solid fa-key" }          /* PLACEHOLDER */
-    ]
-  }
-];
-/* ============================================================ */
+  const GROUPS = {
+    superadmin: {
+      title: "Super Admin",
+      icon: "fa-solid fa-user-shield",
+      c: "#4F46E5", bg: "#E6E4FC",
+      pages: [
+        { file: "create-school.html", title: "Create School", icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#E6E4FC" },
+        { file: "view-schools.html",  title: "View Schools",  icon: "fa-solid fa-building-columns", c: "#0891B2", bg: "#DBF3F8" },
+        { file: "settings.html",      title: "System Settings", icon: "fa-solid fa-gear", c: "#334155", bg: "#E4E7EC" }
+      ]
+    },
+    schooladmin: {
+      title: "School Admin",
+      icon: "fa-solid fa-building-user",
+      c: "#0E9F6E", bg: "#DBF5EA",
+      pages: [
+        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school", c: "#0E9F6E", bg: "#DBF5EA" },
+        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate", c: "#3B5BDB", bg: "#E3E8FF" },
+        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group", c: "#7C3AED", bg: "#EDE4FB" },
+        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book", c: "#D97706", bg: "#FCEACB" },
+        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users", c: "#0891B2", bg: "#DBF3F8" },
+        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines", c: "#DC2626", bg: "#FCE1E1" },
+        { file: "contacts.html",      title: "Contact Us",      icon: "fa-solid fa-address-book", c: "#65A30D", bg: "#EAF5D6" }
+      ]
+    },
+    teacher: {
+      title: "Teacher",
+      icon: "fa-solid fa-chalkboard-user",
+      c: "#D97706", bg: "#FCEACB",
+      pages: [
+        { file: "teacher.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F1E4C9" },
+        { file: "upload-result.html",    title: "Upload Result",   icon: "fa-solid fa-upload", c: "#D97706", bg: "#FCEACB" },
+        { file: "view-results.html",     title: "View Results",    icon: "fa-solid fa-eye", c: "#0E9F6E", bg: "#DBF5EA" }
+      ]
+    },
+    bursar: {
+      title: "Bursar",
+      icon: "fa-solid fa-money-check-dollar",
+      c: "#DB2777", bg: "#FBE0EC",
+      pages: [
+        { file: "bursar.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F1E4C9" },
+        { file: "generate-receipt.html", title: "Generate Receipt",icon: "fa-solid fa-receipt", c: "#DB2777", bg: "#FBE0EC" },
+        { file: "receipt-history.html",  title: "Receipt History", icon: "fa-solid fa-clock-rotate-left", c: "#7C3AED", bg: "#EDE4FB" }
+      ]
+    }
+  };
 
-const roleGrid   = document.getElementById('roleGrid');
-const homeView   = document.getElementById('home');
-const detailView = document.getElementById('detail');
-const subGrid    = document.getElementById('subGrid');
-const detailIcon = document.getElementById('detailIcon');
-const detailTitle= document.getElementById('detailTitle');
-const backBtn    = document.getElementById('backBtn');
+  const homeView = document.getElementById('homeView');
+  const detailView = document.getElementById('detailView');
+  const detailIcon = document.getElementById('detailIcon');
+  const detailTitle = document.getElementById('detailTitle');
+  const subGrid = document.getElementById('subGrid');
+  const backBtn = document.getElementById('backBtn');
 
-roleGrid.innerHTML = ROLES.map((r, i) => `
-  <button class="card role-${r.id}" style="animation-delay:${(i*0.06).toFixed(2)}s" data-role="${r.id}">
-    <div class="icon"><i class="${r.icon}"></i></div>
-    <span class="label">${r.title}</span>
-  </button>
-`).join('');
+  const homeGrid = document.getElementById('grid-home');
 
-roleGrid.addEventListener('click', e => {
-  const btn = e.target.closest('.card');
-  if (!btn) return;
-  openRole(btn.dataset.role);
-});
-
-function openRole(id){
-  const role = ROLES.find(r => r.id === id);
-  if (!role) return;
-
-  const refIcon = document.querySelector(`.role-${role.id} .icon`);
-  const cs = getComputedStyle(refIcon);
-  detailIcon.innerHTML = `<i class="${role.icon}"></i>`;
-  detailIcon.style.background = cs.backgroundImage !== 'none' ? cs.backgroundImage : cs.backgroundColor;
-  detailIcon.style.color = '#fff';
-  detailTitle.textContent = role.title;
-
-  subGrid.innerHTML = role.subs.map((s, i) => `
-    <a class="card role-${role.id}" style="animation-delay:${(i*0.06).toFixed(2)}s" href="${s.file}">
-      <div class="icon"><i class="${s.icon}"></i></div>
-      <span class="label">${s.title}</span>
-    </a>
+  homeGrid.innerHTML = Object.entries(GROUPS).map(([key, group], i) => `
+    <button class="role-card" data-role="${key}" style="animation-delay:${(i*0.05).toFixed(2)}s">
+      <div class="role-icon" style="--c:${group.c}; --c-bg:${group.bg}"><i class="${group.icon}"></i></div>
+      <span class="role-title">${group.title}</span>
+    </button>
   `).join('');
 
-  homeView.classList.add('hidden');
-  detailView.style.display = 'block';
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+  document.querySelectorAll('.role-card').forEach(btn => {
+    btn.addEventListener('click', () => openGroup(btn.dataset.role));
+  });
 
-backBtn.addEventListener('click', () => {
-  detailView.style.display = 'none';
-  homeView.classList.remove('hidden');
-});
+  function openGroup(key){
+    const group = GROUPS[key];
+    if (!group) return;
 
-/* time-based greeting */
-const hour = new Date().getHours();
-const greetEl = document.getElementById('greeting');
-greetEl.textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    detailIcon.style.setProperty('--c', group.c);
+    detailIcon.style.setProperty('--c-bg', group.bg);
+    detailIcon.innerHTML = `<i class="${group.icon}"></i>`;
+    detailTitle.textContent = group.title;
+
+    subGrid.innerHTML = group.pages.map((p, i) => `
+      <a class="sub-card" href="${p.file}" style="animation-delay:${(i*0.05).toFixed(2)}s">
+        <div class="icon" style="--c:${p.c}; --c-bg:${p.bg}"><i class="${p.icon}"></i></div>
+        <span class="label">${p.title}</span>
+      </a>
+    `).join('');
+
+    homeView.style.display = 'none';
+    detailView.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  backBtn.addEventListener('click', () => {
+    detailView.style.display = 'none';
+    homeView.style.display = 'block';
+  });
+
+  /* time-based greeting */
+  const hour = new Date().getHours();
+  document.getElementById('greeting').textContent =
+    hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 </script>
 
 </body>
