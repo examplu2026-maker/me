@@ -28,13 +28,7 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
 .input-group input:focus { outline:none; border-color:#1f8fc7; box-shadow:0 0 0 4px rgba(31,143,199,0.15); }
 .login-btn { width:100%; padding:14px 20px; background: linear-gradient(95deg,#1a6d8f,#0e5270);
   color:white; border:none; border-radius:60px; font-size:1rem; font-weight:700; cursor:pointer;
-  margin-top:8px;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
-  position: relative;
-  z-index: 10; }
+  margin-top:8px; }
 .login-btn:active { transform:scale(0.97); }
 .login-btn:disabled { opacity:0.6; cursor:not-allowed; }
 .error-msg { color:#dc3545; font-size:0.8rem; margin-top:16px; background:#fff0f0;
@@ -57,16 +51,14 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   border:1px solid #e2edf7; }
 .user-details { font-size:0.75rem; font-weight:500; color:#2c6f91; word-break:break-word; }
 .logout-btn { background:#dc3545; padding:8px 24px; font-size:0.8rem; border-radius:40px;
-  font-weight:600; cursor:pointer; border:none; color:white;
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
+  font-weight:600; cursor:pointer; border:none; color:white; }
 .card-control { background:white; border-radius:36px; padding:20px; margin-bottom:24px;
   display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; border:1px solid #e9f1f8; }
 .field-group { display:flex; flex-direction:column; gap:8px; min-width:150px; flex:1; }
 .field-group label { font-size:0.6rem; font-weight:800; text-transform:uppercase;
   letter-spacing:0.5px; color:#2c6f91; }
 select, button { padding:11px 16px; border-radius:32px; font-weight:600; background:white;
-  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit;
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit; }
 button { background:#1f6e93; color:white; border:none; }
 .btn-outline { background:white; color:#1f6e93; border:1px solid #1f6e93; }
 .action-group { display:flex; gap:10px; flex-wrap:wrap; }
@@ -101,8 +93,7 @@ button { background:#1f6e93; color:white; border:none; }
   background:#eef4fa; padding:8px 16px; border-radius:60px; }
 .save-footer { display:flex; justify-content:flex-end; gap:12px; margin-top:10px;
   margin-bottom:20px; flex-wrap:wrap; }
-.save-footer button { padding:10px 20px; font-size:0.8rem; border-radius:60px; font-weight:700;
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.save-footer button { padding:10px 20px; font-size:0.8rem; border-radius:60px; font-weight:700; }
 .save-footer .btn-primary { background:#28a745; }
 @media (max-width:640px) {
   .save-footer button { width:100%; }
@@ -125,8 +116,7 @@ button { background:#1f6e93; color:white; border:none; }
       <label>🔒 PASSWORD</label>
       <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
     </div>
-    <button class="login-btn" id="loginBtn" type="button"
-            onclick="if(window.handleLogin)window.handleLogin(event);">➡️ SIGN IN</button>
+    <button class="login-btn" id="loginBtn">➡️ SIGN IN</button>
     <div id="loginError" class="error-msg"></div>
   </div>
 </div>
@@ -140,8 +130,7 @@ button { background:#1f6e93; color:white; border:none; }
 
   <div class="user-info-bar">
     <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn" type="button"
-            onclick="if(window.handleLogout)window.handleLogout(event);">🚪 Logout</button>
+    <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
   </div>
 
   <div class="card-control">
@@ -162,8 +151,7 @@ button { background:#1f6e93; color:white; border:none; }
       </select>
     </div>
     <div class="action-group">
-      <button id="refreshBtn" class="btn-outline" type="button"
-              onclick="if(window.loadInitialData)window.loadInitialData(event);">🔄 Reload</button>
+      <button id="refreshBtn" class="btn-outline">🔄 Reload</button>
     </div>
   </div>
 
@@ -190,8 +178,7 @@ button { background:#1f6e93; color:white; border:none; }
   </div>
 
   <div class="save-footer">
-    <button id="saveBtnBottom" class="btn-primary" type="button"
-            onclick="if(window.saveMarks)window.saveMarks(event);">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
+    <button id="saveBtnBottom" class="btn-primary">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
   </div>
 
   <div class="footer-note">
@@ -276,8 +263,7 @@ function naturalSort(arr) {
 }
 
 /* ============ LOGIN ============ */
-function handleLogin(e) {
-  if (e && e.preventDefault) e.preventDefault();
+function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value.trim();
   const err = document.getElementById('loginError');
@@ -298,6 +284,7 @@ function handleLogin(e) {
       userResultsTabName = resp.resultsTabName;
       userYear = resp.year;
 
+      // Auto-select the term if the backend resolved one
       if (resp.term) {
         const tsel = document.getElementById('termSelect');
         tsel.value = resp.term;
@@ -318,8 +305,7 @@ function handleLogin(e) {
     }
   });
 }
-function handleLogout(e) {
-  if (e && e.preventDefault) e.preventDefault();
+function handleLogout() {
   sessionToken = null; userMasterTab = null;
   document.getElementById('loginFullscreen').style.display = 'flex';
   document.getElementById('appContainer').style.display = 'none';
@@ -332,8 +318,7 @@ function showApp() {
 }
 
 /* ============ LOAD DATA ============ */
-function loadInitialData(e) {
-  if (e && e.preventDefault) e.preventDefault();
+function loadInitialData() {
   if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
   setStatus(`🔄 Loading data from "${userMasterTab}"...`);
 
@@ -447,8 +432,7 @@ function validateAll() {
 }
 
 /* ============ SAVE ============ */
-function saveMarks(e) {
-  if (e && e.preventDefault) e.preventDefault();
+function saveMarks() {
   const cls = document.getElementById('classSelect').value;
   const subjId = document.getElementById('subjectSelect').value;
   const term = document.getElementById('termSelect').value;
@@ -503,38 +487,17 @@ function saveMarks(e) {
   });
 }
 
-/* ============ MAKE HANDLERS AVAILABLE TO inline onclick ============ */
-window.handleLogin = handleLogin;
-window.handleLogout = handleLogout;
-window.loadInitialData = loadInitialData;
-window.saveMarks = saveMarks;
-
-/* ============ BIND (also addEventListener as fallback) ============ */
-function bindTap(el, handler) {
-  if (!el) return;
-  var last = 0;
-  var fn = function(e) {
-    var now = Date.now();
-    if (now - last < 400) return;
-    last = now;
-    handler(e);
-  };
-  el.addEventListener('click', fn, { passive: false });
-  el.addEventListener('touchend', fn, { passive: false });
-  el.addEventListener('pointerup', fn, { passive: false });
-}
-
-bindTap(document.getElementById('loginBtn'), handleLogin);
-bindTap(document.getElementById('logoutBtn'), handleLogout);
-bindTap(document.getElementById('refreshBtn'), loadInitialData);
-bindTap(document.getElementById('saveBtnBottom'), saveMarks);
-
-document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') { e.preventDefault(); handleLogin(); }
+/* ============ BIND ============ */
+document.getElementById('loginBtn').addEventListener('click', handleLogin);
+document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+document.getElementById('loginPassword').addEventListener('keypress', e => {
+  if (e.key === 'Enter') handleLogin();
 });
+document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
 document.getElementById('classSelect').addEventListener('change', renderTable);
 document.getElementById('subjectSelect').addEventListener('change', renderTable);
 document.getElementById('termSelect').addEventListener('change', renderTable);
+document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
 </script>
 </body>
 </html>
