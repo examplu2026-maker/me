@@ -9,12 +9,12 @@
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
-/* LOGIN */
 .login-fullscreen { position:fixed; inset:0; background: radial-gradient(circle at 10% 30%,#0b2b3f,#071a24);
-  display:flex; justify-content:center; align-items:center; z-index:2000; padding:20px; }
+  display:flex; justify-content:center; align-items:center; z-index:2000; padding:20px;
+  -webkit-overflow-scrolling: touch; }
 .login-card { background:rgba(255,255,255,0.98); border-radius:48px; padding:40px 32px;
   width:100%; max-width:460px; text-align:center; box-shadow:0 30px 50px rgba(0,0,0,0.3);
-  animation:floatIn 0.5s ease; }
+  animation:floatIn 0.5s ease; position:relative; z-index:1; }
 @keyframes floatIn { 0%{opacity:0;transform:scale(0.96) translateY(20px);} 100%{opacity:1;transform:none;} }
 .login-card h1 { font-size:1.8rem; font-weight:800;
   background: linear-gradient(125deg,#0f5c7a,#1d8fbb); -webkit-background-clip:text; background-clip:text;
@@ -24,11 +24,13 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
 .input-group label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase;
   color:#1c6a8f; margin-bottom:6px; letter-spacing:0.5px; }
 .input-group input { width:100%; padding:14px 18px; border:2px solid #d4e3ef; border-radius:60px;
-  font-size:0.95rem; background:white; transition:all 0.2s ease; }
+  font-size:0.95rem; background:white; transition:all 0.2s ease;
+  -webkit-appearance: none; appearance: none; }
 .input-group input:focus { outline:none; border-color:#1f8fc7; box-shadow:0 0 0 4px rgba(31,143,199,0.15); }
-.login-btn { width:100%; padding:14px 20px; background: linear-gradient(95deg,#1a6d8f,#0e5270);
+.login-btn { width:100%; padding:16px 20px; background: linear-gradient(95deg,#1a6d8f,#0e5270);
   color:white; border:none; border-radius:60px; font-size:1rem; font-weight:700; cursor:pointer;
-  margin-top:8px; }
+  margin-top:8px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none; position:relative; z-index:5; }
 .login-btn:active { transform:scale(0.97); }
 .login-btn:disabled { opacity:0.6; cursor:not-allowed; }
 .error-msg { color:#dc3545; font-size:0.8rem; margin-top:16px; background:#fff0f0;
@@ -38,7 +40,6 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   margin-left:8px; vertical-align:middle; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* APP */
 .app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
 .header-area { margin-bottom:20px; }
 .header-area h1 { font-size:1.3rem; font-weight:800;
@@ -51,14 +52,16 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   border:1px solid #e2edf7; }
 .user-details { font-size:0.75rem; font-weight:500; color:#2c6f91; word-break:break-word; }
 .logout-btn { background:#dc3545; padding:8px 24px; font-size:0.8rem; border-radius:40px;
-  font-weight:600; cursor:pointer; border:none; color:white; }
+  font-weight:600; cursor:pointer; border:none; color:white;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .card-control { background:white; border-radius:36px; padding:20px; margin-bottom:24px;
   display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; border:1px solid #e9f1f8; }
 .field-group { display:flex; flex-direction:column; gap:8px; min-width:150px; flex:1; }
 .field-group label { font-size:0.6rem; font-weight:800; text-transform:uppercase;
   letter-spacing:0.5px; color:#2c6f91; }
 select, button { padding:11px 16px; border-radius:32px; font-weight:600; background:white;
-  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit; }
+  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 button { background:#1f6e93; color:white; border:none; }
 .btn-outline { background:white; color:#1f6e93; border:1px solid #1f6e93; }
 .action-group { display:flex; gap:10px; flex-wrap:wrap; }
@@ -84,7 +87,7 @@ button { background:#1f6e93; color:white; border:none; }
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .marks-input { width:100%; max-width:75px; padding:7px 4px; border-radius:20px;
   border:1px solid #cbdef0; text-align:center; font-weight:500; font-size:0.78rem;
-  background:#fafffe; }
+  background:#fafffe; -webkit-appearance: none; appearance: none; }
 .marks-input:focus { border-color:#1f8fc7; outline:none;
   box-shadow:0 0 0 3px rgba(31,143,199,0.12); background:white; }
 .marks-input.invalid { border-color:#dc3545; background:#fff0f0; }
@@ -93,7 +96,8 @@ button { background:#1f6e93; color:white; border:none; }
   background:#eef4fa; padding:8px 16px; border-radius:60px; }
 .save-footer { display:flex; justify-content:flex-end; gap:12px; margin-top:10px;
   margin-bottom:20px; flex-wrap:wrap; }
-.save-footer button { padding:10px 20px; font-size:0.8rem; border-radius:60px; font-weight:700; }
+.save-footer button { padding:12px 20px; font-size:0.8rem; border-radius:60px; font-weight:700;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .save-footer .btn-primary { background:#28a745; }
 @media (max-width:640px) {
   .save-footer button { width:100%; }
@@ -103,7 +107,6 @@ button { background:#1f6e93; color:white; border:none; }
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginFullscreen" class="login-fullscreen">
   <div class="login-card">
     <h1>🏫 School Marks Manager</h1>
@@ -116,12 +119,11 @@ button { background:#1f6e93; color:white; border:none; }
       <label>🔒 PASSWORD</label>
       <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
     </div>
-    <button class="login-btn" id="loginBtn">➡️ SIGN IN</button>
+    <button class="login-btn" id="loginBtn" type="button">➡️ SIGN IN</button>
     <div id="loginError" class="error-msg"></div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="appContainer" class="app-container">
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
@@ -130,7 +132,7 @@ button { background:#1f6e93; color:white; border:none; }
 
   <div class="user-info-bar">
     <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+    <button id="logoutBtn" class="logout-btn" type="button">🚪 Logout</button>
   </div>
 
   <div class="card-control">
@@ -151,7 +153,7 @@ button { background:#1f6e93; color:white; border:none; }
       </select>
     </div>
     <div class="action-group">
-      <button id="refreshBtn" class="btn-outline">🔄 Reload</button>
+      <button id="refreshBtn" class="btn-outline" type="button">🔄 Reload</button>
     </div>
   </div>
 
@@ -178,7 +180,7 @@ button { background:#1f6e93; color:white; border:none; }
   </div>
 
   <div class="save-footer">
-    <button id="saveBtnBottom" class="btn-primary">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
+    <button id="saveBtnBottom" class="btn-primary" type="button">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
   </div>
 
   <div class="footer-note">
@@ -284,7 +286,6 @@ function handleLogin() {
       userResultsTabName = resp.resultsTabName;
       userYear = resp.year;
 
-      // Auto-select the term if the backend resolved one
       if (resp.term) {
         const tsel = document.getElementById('termSelect');
         tsel.value = resp.term;
@@ -487,17 +488,34 @@ function saveMarks() {
   });
 }
 
-/* ============ BIND ============ */
-document.getElementById('loginBtn').addEventListener('click', handleLogin);
-document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-document.getElementById('loginPassword').addEventListener('keypress', e => {
-  if (e.key === 'Enter') handleLogin();
+/* ============ BIND BUTTONS (mobile-safe) ============ */
+function bindTapButton(id, handler) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var fired = false;
+  function trigger(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (fired) return;
+    fired = true;
+    setTimeout(function() { fired = false; }, 600);
+    try { handler(); } catch (err) { console.error('Handler error for ' + id + ':', err); }
+  }
+  el.addEventListener('click',       trigger, { passive: false });
+  el.addEventListener('touchend',    trigger, { passive: false });
+  el.addEventListener('pointerup',   trigger, { passive: false });
+}
+
+bindTapButton('loginBtn',       handleLogin);
+bindTapButton('logoutBtn',      handleLogout);
+bindTapButton('refreshBtn',     loadInitialData);
+bindTapButton('saveBtnBottom',  saveMarks);
+
+document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); handleLogin(); }
 });
-document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
 document.getElementById('classSelect').addEventListener('change', renderTable);
 document.getElementById('subjectSelect').addEventListener('change', renderTable);
 document.getElementById('termSelect').addEventListener('change', renderTable);
-document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
 </script>
 </body>
 </html>
