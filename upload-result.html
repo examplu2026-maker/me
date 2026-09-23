@@ -10,37 +10,136 @@
 html, body { height:100%; -webkit-text-size-adjust:100%; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
-/* LOGIN */
-.login-fullscreen { position:fixed; inset:0; background: radial-gradient(circle at 10% 30%,#0b2b3f,#071a24);
-  display:flex; justify-content:center; align-items:flex-start; z-index:2000;
-  padding:20px; padding-top:8vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-.login-card { background:rgba(255,255,255,0.98); border-radius:48px; padding:40px 32px;
-  width:100%; max-width:460px; text-align:center; box-shadow:0 30px 50px rgba(0,0,0,0.3);
-  animation:floatIn 0.5s ease; margin:auto 0; }
-@keyframes floatIn { 0%{opacity:0;transform:scale(0.96) translateY(20px);} 100%{opacity:1;transform:none;} }
-.login-card h1 { font-size:1.8rem; font-weight:800;
-  background: linear-gradient(125deg,#0f5c7a,#1d8fbb); -webkit-background-clip:text; background-clip:text;
-  color:transparent; margin-bottom:10px; }
-.login-card .sub { color:#5588a7; font-size:0.85rem; margin-bottom:28px; }
-.input-group { margin-bottom:20px; text-align:left; }
-.input-group label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase;
-  color:#1c6a8f; margin-bottom:6px; letter-spacing:0.5px; }
-.input-group input { width:100%; padding:14px 18px; border:2px solid #d4e3ef; border-radius:60px;
-  font-size:16px; background:white; transition:all 0.2s ease; }
-.input-group input:focus { outline:none; border-color:#1f8fc7; box-shadow:0 0 0 4px rgba(31,143,199,0.15); }
-.login-btn { width:100%; padding:14px 20px; background: linear-gradient(95deg,#1a6d8f,#0e5270);
-  color:white; border:none; border-radius:60px; font-size:1rem; font-weight:700; cursor:pointer;
-  margin-top:8px; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
-.login-btn:active { transform:scale(0.97); }
-.login-btn:disabled { opacity:0.6; cursor:not-allowed; }
-.error-msg { color:#dc3545; font-size:0.8rem; margin-top:16px; background:#fff0f0;
-  border-radius:40px; padding:10px 16px; display:none; }
-.spinner { display:inline-block; width:18px; height:18px; border:2px solid #fff;
-  border-top-color:transparent; border-radius:50%; animation:spin 0.6s linear infinite;
-  margin-left:8px; vertical-align:middle; }
-@keyframes spin { to { transform:rotate(360deg); } }
+/* ============================================================
+   LOGIN — rebuilt from scratch
+   ============================================================ */
+.login-fullscreen {
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at 15% 20%, #103a54 0%, #061520 70%);
+  display: flex; justify-content: center; align-items: flex-start;
+  z-index: 2000; padding: 20px; padding-top: 6vh;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.login-card {
+  background: #ffffff;
+  border-radius: 36px;
+  padding: 36px 28px 32px;
+  width: 100%; max-width: 440px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  margin: auto 0;
+  animation: cardIn 0.4s ease-out;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-/* APP */
+.login-logo {
+  width: 68px; height: 68px; margin: 0 auto 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg,#1a6d8f,#0e5270);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  box-shadow: 0 8px 20px rgba(26,109,143,0.4);
+}
+.login-title {
+  font-size: 1.4rem; font-weight: 800; text-align: center;
+  color: #0e3d54; letter-spacing: -0.3px; margin-bottom: 6px;
+}
+.login-subtitle {
+  font-size: 0.8rem; text-align: center; color: #6b8ba3;
+  margin-bottom: 26px; line-height: 1.5;
+}
+
+.lf-group { margin-bottom: 16px; }
+.lf-label {
+  display: block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: #2c6f91; margin-bottom: 7px; padding-left: 4px;
+}
+.lf-input {
+  width: 100%;
+  padding: 15px 18px;
+  border: 2px solid #e2edf7;
+  border-radius: 14px;
+  font-size: 16px;                /* 16px stops mobile zoom */
+  font-family: inherit;
+  background: #f7fbfe;
+  color: #0e3d54;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.lf-input:focus {
+  border-color: #1f8fc7;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(31,143,199,0.12);
+}
+.lf-input::placeholder { color: #a5bccb; }
+
+/* Password field — masked visually but is type=text so password managers
+   leave it alone on mobile (this is the key mobile fix) */
+.lf-input.lf-password {
+  -webkit-text-security: disc;
+  text-security: disc;
+  letter-spacing: 1px;
+}
+
+.lf-submit {
+  width: 100%;
+  padding: 16px 20px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#1a6d8f 0%,#0e5270 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 8px 20px rgba(26,109,143,0.35);
+  transition: transform 0.12s, box-shadow 0.2s, opacity 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.lf-submit:active { transform: scale(0.975); }
+.lf-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.lf-error {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #fdecec;
+  border-left: 4px solid #dc3545;
+  border-radius: 10px;
+  color: #b3261e;
+  font-size: 0.82rem;
+  font-weight: 500;
+  display: none;
+  line-height: 1.4;
+}
+.lf-error.show { display: block; }
+
+.lf-hint {
+  margin-top: 18px; text-align: center;
+  font-size: 0.7rem; color: #93aec2;
+}
+
+/* Spinner inside button */
+.lf-spinner {
+  display: inline-block; width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-left: 8px; vertical-align: -2px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   APP
+   ============================================================ */
 .app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
 .header-area { margin-bottom:20px; }
 .header-area h1 { font-size:1.3rem; font-weight:800;
@@ -118,45 +217,62 @@ button { background:#1f6e93; color:white; border:none; }
 
 @media (max-width:640px) {
   .save-footer button { width:100%; }
-  .login-card { border-radius:36px; padding:32px 24px; }
+  .login-card { border-radius:28px; padding:30px 22px 26px; }
+  .login-title { font-size:1.25rem; }
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ============================================================
+     LOGIN — rebuilt
+     ============================================================ -->
 <div id="loginFullscreen" class="login-fullscreen">
   <div class="login-card">
-    <h1>🏫 School Marks Manager</h1>
-    <div class="sub">Sign in to access your school's marks dashboard</div>
+    <div class="login-logo">🏫</div>
+    <div class="login-title">School Marks Manager</div>
+    <div class="login-subtitle">Sign in to access your school's marks dashboard</div>
 
-    <form id="loginForm" autocomplete="on" novalidate>
-      <div class="input-group">
-        <label for="loginEmail">📧 EMAIL ADDRESS</label>
-        <input type="email" id="loginEmail" name="email"
-               placeholder="teacher@school.edu"
-               autocomplete="username"
-               autocapitalize="none"
-               autocorrect="off"
-               spellcheck="false"
-               inputmode="email">
-      </div>
+    <div class="lf-group">
+      <label class="lf-label" for="fieldEmail">📧 Email address</label>
+      <input
+        type="text"
+        id="fieldEmail"
+        class="lf-input"
+        placeholder="teacher@school.edu"
+        autocomplete="off"
+        autocapitalize="none"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="email"
+        name="sm_email_field_no_autofill">
+    </div>
 
-      <div class="input-group">
-        <label for="loginPassword">🔒 PASSWORD</label>
-        <input type="password" id="loginPassword" name="password"
-               placeholder="Enter password"
-               autocomplete="current-password">
-      </div>
+    <div class="lf-group">
+      <label class="lf-label" for="fieldPassword">🔒 Password</label>
+      <input
+        type="text"
+        id="fieldPassword"
+        class="lf-input lf-password"
+        placeholder="Enter password"
+        autocomplete="off"
+        autocapitalize="none"
+        autocorrect="off"
+        spellcheck="false"
+        name="sm_password_field_no_autofill">
+    </div>
 
-      <button type="submit" class="login-btn" id="loginBtn">➡️ SIGN IN</button>
-    </form>
+    <button type="button" id="submitLogin" class="lf-submit">➡️ SIGN IN</button>
 
-    <div id="loginError" class="error-msg"></div>
+    <div id="loginErrorBox" class="lf-error"></div>
+
+    <div class="lf-hint">🔐 Your credentials are sent directly to your school's secure server</div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ============================================================
+     APP
+     ============================================================ -->
 <div id="appContainer" class="app-container">
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
@@ -227,9 +343,14 @@ button { background:#1f6e93; color:white; border:none; }
 </div>
 
 <script>
-// ⚠️ REPLACE with your deployment URL
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyCrNvfqf-G5v_IYKK34Uz6rI4Xr4HXHg6UAF4tHcgkizzU_C6kjnChcutd-VZTKbP-NA/exec';
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxw5ttKKQl6h0EYWVTdx-gyTmX84YiKQrtiVqSBgewIPCYGho_61EJPTpYfLq9MMvZKRQ/exec';
 
+/* ============================================================
+   STATE
+   ============================================================ */
 let sessionToken = null;
 let userMasterTab = null;
 let userSchoolName = null;
@@ -243,12 +364,169 @@ let currentClass = '';
 let currentSubject = '';
 let currentTerm = 'Term 1';
 
-// Global error catcher for mobile debugging
+// Trusted credential store — updated on EVERY keystroke
+const credStore = { email: '', password: '' };
+
+/* Global error catcher */
 window.addEventListener('error', function(e) {
   console.error('💥 JS Error:', e.message, 'at', e.filename, ':', e.lineno);
 });
 
-/* ============ JSONP ============ */
+/* ============================================================
+   LOGIN — rebuilt approach
+   ------------------------------------------------------------
+   The mobile autofill/wipe problem happens because mobile browsers
+   "own" the input value. Our defence:
+     1. Both fields are type="text" (no password manager trigger).
+     2. We hook 'input', 'keyup', 'change', 'blur', 'paste', 'compositionend'
+        and save the CURRENT value into credStore.
+     3. We also poll the values every 400ms into credStore as a backstop.
+     4. On submit we read from credStore FIRST, then live input as fallback.
+     5. We NEVER clear the input fields until AFTER a successful login.
+   ============================================================ */
+function setupLoginFieldCapture() {
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+
+  function captureEmail() {
+    const v = emailEl.value || '';
+    if (v.length > 0) credStore.email = v.trim();
+  }
+  function capturePassword() {
+    const v = passEl.value || '';
+    if (v.length > 0) credStore.password = v;
+  }
+
+  ['input','keyup','keydown','change','blur','paste','compositionend','focusout']
+    .forEach(evt => {
+      emailEl.addEventListener(evt, captureEmail, true);
+      passEl.addEventListener(evt, capturePassword, true);
+    });
+
+  // Polling backstop — every 400ms, remember whatever's in the field
+  setInterval(() => {
+    if (emailEl.value && emailEl.value.trim().length > 0) {
+      credStore.email = emailEl.value.trim();
+    }
+    if (passEl.value && passEl.value.length > 0) {
+      credStore.password = passEl.value;
+    }
+  }, 400);
+
+  // Capture on touch/mouse-down of submit button BEFORE any browser wipe
+  const btn = document.getElementById('submitLogin');
+  ['touchstart','touchend','mousedown','pointerdown','pointerup','click']
+    .forEach(evt => {
+      btn.addEventListener(evt, () => {
+        captureEmail();
+        capturePassword();
+      }, { passive: true, capture: true });
+    });
+
+  console.log('✅ Login field capture installed');
+}
+
+/* ============================================================
+   SUBMIT LOGIN
+   ============================================================ */
+function submitLogin(evt) {
+  if (evt && evt.preventDefault) evt.preventDefault();
+  if (evt && evt.stopPropagation) evt.stopPropagation();
+
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+  const errBox  = document.getElementById('loginErrorBox');
+  const btn     = document.getElementById('submitLogin');
+
+  // Capture one more time right now
+  if (emailEl.value && emailEl.value.trim()) credStore.email = emailEl.value.trim();
+  if (passEl.value  && passEl.value.length)  credStore.password = passEl.value;
+
+  // Trusted source first, live field as fallback
+  const email    = (credStore.email    || emailEl.value || '').trim();
+  const password = (credStore.password || passEl.value  || '');
+
+  console.log('🔐 Submit → email length:', email.length, '| password length:', password.length);
+
+  errBox.classList.remove('show');
+  errBox.textContent = '';
+
+  if (!email || !password) {
+    errBox.textContent = 'Please enter both email and password.';
+    errBox.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = 'Signing in... <span class="lf-spinner"></span>';
+
+  apiCall('authenticateUser', { email: email, password: password }, function(resp) {
+    console.log('🔐 Response:', resp);
+
+    if (resp && resp.success) {
+      // NOW it's safe to clear
+      credStore.email = '';
+      credStore.password = '';
+      emailEl.value = '';
+      passEl.value  = '';
+
+      sessionToken       = resp.token;
+      userMasterTab      = resp.tabName;
+      userSchoolName     = resp.schoolName;
+      userResultsTabName = resp.resultsTabName;
+      userYear           = resp.year;
+
+      if (resp.term) {
+        const tsel = document.getElementById('termSelect');
+        tsel.value = resp.term;
+        currentTerm = resp.term;
+        document.getElementById('saveTermLabel').textContent = resp.term;
+      }
+
+      document.getElementById('userInfoDisplay').innerHTML =
+        '👤 ' + escapeHtml(resp.email) +
+        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
+        ' | 📅 Year: ' + escapeHtml(userYear) +
+        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
+      document.getElementById('schoolBadge').innerHTML =
+        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
+
+      document.getElementById('loginFullscreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'block';
+      loadInitialData();
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '➡️ SIGN IN';
+      errBox.textContent = (resp && resp.error) || 'Login failed — no response from server.';
+      errBox.classList.add('show');
+    }
+  });
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function handleLogout() {
+  sessionToken = null;
+  userMasterTab = null;
+  credStore.email = '';
+  credStore.password = '';
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+  if (emailEl) emailEl.value = '';
+  if (passEl)  passEl.value  = '';
+  const errBox = document.getElementById('loginErrorBox');
+  if (errBox) { errBox.classList.remove('show'); errBox.textContent = ''; }
+  const btn = document.getElementById('submitLogin');
+  if (btn) { btn.disabled = false; btn.innerHTML = '➡️ SIGN IN'; }
+
+  document.getElementById('loginFullscreen').style.display = 'flex';
+  document.getElementById('appContainer').style.display = 'none';
+}
+
+/* ============================================================
+   JSONP TRANSPORT
+   ============================================================ */
 function apiCall(action, data, callback) {
   console.log('📡 apiCall:', action);
   const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
@@ -297,7 +575,9 @@ function apiCall(action, data, callback) {
   document.body.appendChild(s);
 }
 
-/* ============ UI helpers ============ */
+/* ============================================================
+   HELPERS
+   ============================================================ */
 function escapeHtml(s) {
   if (!s) return '';
   return s.toString().replace(/[&<>"']/g, m => ({
@@ -323,7 +603,9 @@ function naturalSort(arr) {
   });
 }
 
-/* ============ GRADING ============ */
+/* ============================================================
+   GRADING
+   ============================================================ */
 function getGrade(total) {
   if (total >= 75) return { code: 'A1', remark: 'Excellent' };
   if (total >= 70) return { code: 'B2', remark: 'Very Good' };
@@ -335,7 +617,6 @@ function getGrade(total) {
   if (total >= 40) return { code: 'E8', remark: 'Pass' };
   return { code: 'F9', remark: 'Fail' };
 }
-
 function computeRowGrade(tr) {
   const t1El = tr.querySelector('.t1-input');
   const t2El = tr.querySelector('.t2-input');
@@ -359,91 +640,9 @@ function computeRowGrade(tr) {
   if (remarkCell) remarkCell.textContent = g.remark;
 }
 
-function refreshAllGrades() {
-  document.querySelectorAll('#tableBody tr').forEach(tr => {
-    if (tr.querySelector('.t1-input')) computeRowGrade(tr);
-  });
-}
-
-/* ============ LOGIN ============ */
-function handleLogin(evt) {
-  if (evt && evt.preventDefault) evt.preventDefault();
-  console.log('🔐 Login clicked');
-
-  const emailEl = document.getElementById('loginEmail');
-  const passEl  = document.getElementById('loginPassword');
-  const err     = document.getElementById('loginError');
-  const btn     = document.getElementById('loginBtn');
-
-  // Blur first — mobile keyboards sometimes haven't committed the value yet
-  emailEl.blur();
-  passEl.blur();
-
-  const email    = (emailEl.value || '').trim();
-  const password = (passEl.value  || '').trim();
-
-  console.log('🔐 Email length:', email.length, 'Password length:', password.length);
-  err.style.display = 'none';
-
-  if (!email || !password) {
-    err.textContent = 'Please enter both email and password.';
-    err.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = 'Authenticating... <span class="spinner"></span>';
-
-  apiCall('authenticateUser', { email: email, password: password }, function(resp) {
-    console.log('🔐 Login response:', resp);
-    btn.disabled = false;
-    btn.innerHTML = '➡️ SIGN IN';
-
-    if (resp && resp.success) {
-      sessionToken       = resp.token;
-      userMasterTab      = resp.tabName;
-      userSchoolName     = resp.schoolName;
-      userResultsTabName = resp.resultsTabName;
-      userYear           = resp.year;
-
-      if (resp.term) {
-        const tsel = document.getElementById('termSelect');
-        tsel.value = resp.term;
-        currentTerm = resp.term;
-        document.getElementById('saveTermLabel').textContent = resp.term;
-      }
-
-      document.getElementById('userInfoDisplay').innerHTML =
-        '👤 ' + escapeHtml(resp.email) +
-        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
-        ' | 📅 Year: ' + escapeHtml(userYear) +
-        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
-      document.getElementById('schoolBadge').innerHTML =
-        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
-
-      showApp();
-      loadInitialData();
-    } else {
-      err.textContent = (resp && resp.error) || 'Login failed — no response from server.';
-      err.style.display = 'block';
-    }
-  });
-}
-
-function handleLogout() {
-  sessionToken = null; userMasterTab = null;
-  document.getElementById('loginFullscreen').style.display = 'flex';
-  document.getElementById('appContainer').style.display = 'none';
-  document.getElementById('loginEmail').value = '';
-  document.getElementById('loginPassword').value = '';
-}
-
-function showApp() {
-  document.getElementById('loginFullscreen').style.display = 'none';
-  document.getElementById('appContainer').style.display = 'block';
-}
-
-/* ============ LOAD DATA ============ */
+/* ============================================================
+   LOAD DATA
+   ============================================================ */
 function loadInitialData() {
   if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
   setStatus('🔄 Loading data from "' + userMasterTab + '"...');
@@ -495,7 +694,9 @@ function populateSubjectDropdown() {
   currentSubject = subjectsCatalog[0].id;
 }
 
-/* ============ RENDER TABLE ============ */
+/* ============================================================
+   RENDER TABLE
+   ============================================================ */
 function renderTable() {
   const tbody = document.getElementById('tableBody');
   const cls = document.getElementById('classSelect').value;
@@ -538,7 +739,6 @@ function renderTable() {
     tbody.appendChild(tr);
   });
 
-  // Attach live grade-update listeners
   document.querySelectorAll('#tableBody .marks-input').forEach(inp => {
     inp.addEventListener('input', e => {
       const tr = e.target.closest('tr');
@@ -547,7 +747,9 @@ function renderTable() {
   });
 }
 
-/* ============ VALIDATION ============ */
+/* ============================================================
+   VALIDATE + SAVE
+   ============================================================ */
 function validateAll() {
   const rows = document.querySelectorAll('#tableBody tr');
   let ok = true;
@@ -570,7 +772,6 @@ function validateAll() {
   return ok;
 }
 
-/* ============ SAVE ============ */
 function saveMarks() {
   const cls = document.getElementById('classSelect').value;
   const subjId = document.getElementById('subjectSelect').value;
@@ -590,7 +791,7 @@ function saveMarks() {
   });
 
   const btn = document.getElementById('saveBtnBottom');
-  btn.disabled = true; btn.innerHTML = 'Saving... <span class="spinner"></span>';
+  btn.disabled = true; btn.innerHTML = 'Saving... <span class="lf-spinner"></span>';
 
   apiCall('saveMarksData', {
     token: sessionToken,
@@ -626,16 +827,39 @@ function saveMarks() {
   });
 }
 
-/* ============ BIND ============ */
-document.getElementById('loginForm').addEventListener('submit', handleLogin);
-document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
-document.getElementById('classSelect').addEventListener('change', renderTable);
-document.getElementById('subjectSelect').addEventListener('change', renderTable);
-document.getElementById('termSelect').addEventListener('change', renderTable);
-document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
+/* ============================================================
+   BIND EVERYTHING
+   ============================================================ */
+function boot() {
+  setupLoginFieldCapture();
 
-console.log('✅ Script loaded — all listeners bound');
+  // Button click
+  document.getElementById('submitLogin').addEventListener('click', submitLogin);
+
+  // Enter key on either field
+  document.getElementById('fieldEmail').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
+  });
+  document.getElementById('fieldPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
+  });
+
+  // App bindings
+  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+  document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
+  document.getElementById('classSelect').addEventListener('change', renderTable);
+  document.getElementById('subjectSelect').addEventListener('change', renderTable);
+  document.getElementById('termSelect').addEventListener('change', renderTable);
+  document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
+
+  console.log('✅ Boot complete — all listeners bound');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
 </script>
 </body>
 </html>
