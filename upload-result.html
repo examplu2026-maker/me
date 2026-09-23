@@ -7,14 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+html, body { height:100%; -webkit-text-size-adjust:100%; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
 /* LOGIN */
 .login-fullscreen { position:fixed; inset:0; background: radial-gradient(circle at 10% 30%,#0b2b3f,#071a24);
-  display:flex; justify-content:center; align-items:center; z-index:2000; padding:20px; }
+  display:flex; justify-content:center; align-items:flex-start; z-index:2000;
+  padding:20px; padding-top:8vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .login-card { background:rgba(255,255,255,0.98); border-radius:48px; padding:40px 32px;
   width:100%; max-width:460px; text-align:center; box-shadow:0 30px 50px rgba(0,0,0,0.3);
-  animation:floatIn 0.5s ease; }
+  animation:floatIn 0.5s ease; margin:auto 0; }
 @keyframes floatIn { 0%{opacity:0;transform:scale(0.96) translateY(20px);} 100%{opacity:1;transform:none;} }
 .login-card h1 { font-size:1.8rem; font-weight:800;
   background: linear-gradient(125deg,#0f5c7a,#1d8fbb); -webkit-background-clip:text; background-clip:text;
@@ -24,11 +26,11 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
 .input-group label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase;
   color:#1c6a8f; margin-bottom:6px; letter-spacing:0.5px; }
 .input-group input { width:100%; padding:14px 18px; border:2px solid #d4e3ef; border-radius:60px;
-  font-size:0.95rem; background:white; transition:all 0.2s ease; }
+  font-size:16px; background:white; transition:all 0.2s ease; }
 .input-group input:focus { outline:none; border-color:#1f8fc7; box-shadow:0 0 0 4px rgba(31,143,199,0.15); }
 .login-btn { width:100%; padding:14px 20px; background: linear-gradient(95deg,#1a6d8f,#0e5270);
   color:white; border:none; border-radius:60px; font-size:1rem; font-weight:700; cursor:pointer;
-  margin-top:8px; }
+  margin-top:8px; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 .login-btn:active { transform:scale(0.97); }
 .login-btn:disabled { opacity:0.6; cursor:not-allowed; }
 .error-msg { color:#dc3545; font-size:0.8rem; margin-top:16px; background:#fff0f0;
@@ -86,7 +88,7 @@ button { background:#1f6e93; color:white; border:none; }
 .student-name { text-align:left; font-weight:500; font-size:0.78rem; padding-left:6px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .marks-input { width:100%; max-width:75px; padding:7px 4px; border-radius:20px;
-  border:1px solid #cbdef0; text-align:center; font-weight:500; font-size:0.78rem;
+  border:1px solid #cbdef0; text-align:center; font-weight:500; font-size:16px;
   background:#fafffe; }
 .marks-input:focus { border-color:#1f8fc7; outline:none;
   box-shadow:0 0 0 3px rgba(31,143,199,0.12); background:white; }
@@ -100,21 +102,9 @@ button { background:#1f6e93; color:white; border:none; }
 .save-footer .btn-primary { background:#28a745; }
 
 /* GRADE STYLES */
-.total-cell {
-  font-weight:700;
-  color:#1b5a7c;
-  font-size:0.82rem;
-}
-.grade-badge {
-  display:inline-block;
-  min-width:36px;
-  padding:4px 8px;
-  border-radius:20px;
-  font-weight:700;
-  font-size:0.7rem;
-  color:white;
-  letter-spacing:0.3px;
-}
+.total-cell { font-weight:700; color:#1b5a7c; font-size:0.82rem; }
+.grade-badge { display:inline-block; min-width:36px; padding:4px 8px; border-radius:20px;
+  font-weight:700; font-size:0.7rem; color:white; letter-spacing:0.3px; }
 .grade-A1 { background:#0f9d58; }
 .grade-B2 { background:#43a047; }
 .grade-B3 { background:#7cb342; }
@@ -124,11 +114,7 @@ button { background:#1f6e93; color:white; border:none; }
 .grade-D7 { background:#ef6c00; }
 .grade-E8 { background:#e64a19; }
 .grade-F9 { background:#c62828; }
-.remark-cell {
-  font-size:0.72rem;
-  color:#456;
-  font-weight:500;
-}
+.remark-cell { font-size:0.72rem; color:#456; font-weight:500; }
 
 @media (max-width:640px) {
   .save-footer button { width:100%; }
@@ -143,15 +129,29 @@ button { background:#1f6e93; color:white; border:none; }
   <div class="login-card">
     <h1>🏫 School Marks Manager</h1>
     <div class="sub">Sign in to access your school's marks dashboard</div>
-    <div class="input-group">
-      <label>📧 EMAIL ADDRESS</label>
-      <input type="email" id="loginEmail" placeholder="teacher@school.edu" autocomplete="off" inputmode="email">
-    </div>
-    <div class="input-group">
-      <label>🔒 PASSWORD</label>
-      <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
-    </div>
-    <button class="login-btn" id="loginBtn">➡️ SIGN IN</button>
+
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div class="input-group">
+        <label for="loginEmail">📧 EMAIL ADDRESS</label>
+        <input type="email" id="loginEmail" name="email"
+               placeholder="teacher@school.edu"
+               autocomplete="username"
+               autocapitalize="none"
+               autocorrect="off"
+               spellcheck="false"
+               inputmode="email">
+      </div>
+
+      <div class="input-group">
+        <label for="loginPassword">🔒 PASSWORD</label>
+        <input type="password" id="loginPassword" name="password"
+               placeholder="Enter password"
+               autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="login-btn" id="loginBtn">➡️ SIGN IN</button>
+    </form>
+
     <div id="loginError" class="error-msg"></div>
   </div>
 </div>
@@ -228,7 +228,7 @@ button { background:#1f6e93; color:white; border:none; }
 
 <script>
 // ⚠️ REPLACE with your deployment URL
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyJCae2RwoNJoHHGFNAmvBWmgoIEG-uFQcJYQyk63P_2rZn2k2-7quOg1dNloRDJvYzHQ/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyCrNvfqf-G5v_IYKK34Uz6rI4Xr4HXHg6UAF4tHcgkizzU_C6kjnChcutd-VZTKbP-NA/exec';
 
 let sessionToken = null;
 let userMasterTab = null;
@@ -243,8 +243,14 @@ let currentClass = '';
 let currentSubject = '';
 let currentTerm = 'Term 1';
 
+// Global error catcher for mobile debugging
+window.addEventListener('error', function(e) {
+  console.error('💥 JS Error:', e.message, 'at', e.filename, ':', e.lineno);
+});
+
 /* ============ JSONP ============ */
 function apiCall(action, data, callback) {
+  console.log('📡 apiCall:', action);
   const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
   let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
   for (let k in data) {
@@ -253,25 +259,41 @@ function apiCall(action, data, callback) {
     }
   }
   url += '&callback=' + cb;
+  console.log('🔗 URL:', url);
+
   const s = document.createElement('script');
   s.src = url;
+  let done = false;
+
   const timer = setTimeout(() => {
+    if (done) return;
+    done = true;
+    console.error('⏱️ Timeout for', action);
     delete window[cb];
     if (s.parentNode) s.remove();
-    callback({ error: 'Request timeout' });
-  }, 30000);
+    callback({ error: 'Request timeout — check your internet connection' });
+  }, 60000);
+
   window[cb] = function(resp) {
+    if (done) return;
+    done = true;
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
+    console.log('✅ Response for', action);
     callback(resp);
   };
-  s.onerror = function() {
+
+  s.onerror = function(ev) {
+    if (done) return;
+    done = true;
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
-    callback({ error: 'Network error' });
+    console.error('❌ Script load error for', action, ev);
+    callback({ error: 'Network error — check your internet connection' });
   };
+
   document.body.appendChild(s);
 }
 
@@ -279,11 +301,7 @@ function apiCall(action, data, callback) {
 function escapeHtml(s) {
   if (!s) return '';
   return s.toString().replace(/[&<>"']/g, m => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
+    '&':'&','<':'<','>':'>','"':'"',"'":'''
   }[m]));
 }
 function setStatus(msg, type) {
@@ -307,7 +325,6 @@ function naturalSort(arr) {
 
 /* ============ GRADING ============ */
 function getGrade(total) {
-  // total is out of 100 (Test1 + Test2 = 30, Exam = 70)
   if (total >= 75) return { code: 'A1', remark: 'Excellent' };
   if (total >= 70) return { code: 'B2', remark: 'Very Good' };
   if (total >= 65) return { code: 'B3', remark: 'Good' };
@@ -338,7 +355,7 @@ function computeRowGrade(tr) {
   const remarkCell = tr.querySelector('.remark-cell');
 
   if (totalCell)  totalCell.textContent  = total;
-  if (gradeCell)  gradeCell.innerHTML    = `<span class="grade-badge grade-${g.code}">${g.code}</span>`;
+  if (gradeCell)  gradeCell.innerHTML    = '<span class="grade-badge grade-' + g.code + '">' + g.code + '</span>';
   if (remarkCell) remarkCell.textContent = g.remark;
 }
 
@@ -349,26 +366,45 @@ function refreshAllGrades() {
 }
 
 /* ============ LOGIN ============ */
-function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const err = document.getElementById('loginError');
-  if (!email || !password) {
-    err.textContent = 'Please enter both email and password.';
-    err.style.display = 'block'; return;
-  }
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = true; btn.innerHTML = 'Authenticating... <span class="spinner"></span>';
+function handleLogin(evt) {
+  if (evt && evt.preventDefault) evt.preventDefault();
+  console.log('🔐 Login clicked');
+
+  const emailEl = document.getElementById('loginEmail');
+  const passEl  = document.getElementById('loginPassword');
+  const err     = document.getElementById('loginError');
+  const btn     = document.getElementById('loginBtn');
+
+  // Blur first — mobile keyboards sometimes haven't committed the value yet
+  emailEl.blur();
+  passEl.blur();
+
+  const email    = (emailEl.value || '').trim();
+  const password = (passEl.value  || '').trim();
+
+  console.log('🔐 Email length:', email.length, 'Password length:', password.length);
   err.style.display = 'none';
 
-  apiCall('authenticateUser', { email, password }, function(resp) {
-    btn.disabled = false; btn.innerHTML = '➡️ SIGN IN';
+  if (!email || !password) {
+    err.textContent = 'Please enter both email and password.';
+    err.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = 'Authenticating... <span class="spinner"></span>';
+
+  apiCall('authenticateUser', { email: email, password: password }, function(resp) {
+    console.log('🔐 Login response:', resp);
+    btn.disabled = false;
+    btn.innerHTML = '➡️ SIGN IN';
+
     if (resp && resp.success) {
-      sessionToken = resp.token;
-      userMasterTab = resp.tabName;
-      userSchoolName = resp.schoolName;
+      sessionToken       = resp.token;
+      userMasterTab      = resp.tabName;
+      userSchoolName     = resp.schoolName;
       userResultsTabName = resp.resultsTabName;
-      userYear = resp.year;
+      userYear           = resp.year;
 
       if (resp.term) {
         const tsel = document.getElementById('termSelect');
@@ -378,18 +414,22 @@ function handleLogin() {
       }
 
       document.getElementById('userInfoDisplay').innerHTML =
-        `👤 ${escapeHtml(resp.email)} | 🏷️ Slug: ${escapeHtml(userMasterTab)} | 📅 Year: ${escapeHtml(userYear)} | 📊 Tab: "${escapeHtml(userResultsTabName)}"`;
+        '👤 ' + escapeHtml(resp.email) +
+        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
+        ' | 📅 Year: ' + escapeHtml(userYear) +
+        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
       document.getElementById('schoolBadge').innerHTML =
-        `🏫 ${escapeHtml(userSchoolName)} — ${escapeHtml(resp.sessionRaw || userYear)}`;
+        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
 
       showApp();
       loadInitialData();
     } else {
-      err.textContent = (resp && resp.error) || 'Login failed.';
+      err.textContent = (resp && resp.error) || 'Login failed — no response from server.';
       err.style.display = 'block';
     }
   });
 }
+
 function handleLogout() {
   sessionToken = null; userMasterTab = null;
   document.getElementById('loginFullscreen').style.display = 'flex';
@@ -397,6 +437,7 @@ function handleLogout() {
   document.getElementById('loginEmail').value = '';
   document.getElementById('loginPassword').value = '';
 }
+
 function showApp() {
   document.getElementById('loginFullscreen').style.display = 'none';
   document.getElementById('appContainer').style.display = 'block';
@@ -405,7 +446,7 @@ function showApp() {
 /* ============ LOAD DATA ============ */
 function loadInitialData() {
   if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
-  setStatus(`🔄 Loading data from "${userMasterTab}"...`);
+  setStatus('🔄 Loading data from "' + userMasterTab + '"...');
 
   apiCall('getStudentData', { token: sessionToken }, function(students) {
     if (students && students.error) { setStatus(students.error, 'error'); return; }
@@ -421,7 +462,7 @@ function loadInitialData() {
         marksCache = marks || {};
         populateClassDropdown();
         renderTable();
-        setStatus(`✅ Loaded ${studentMaster.length} students, ${subjectsCatalog.length} subjects.`, 'success');
+        setStatus('✅ Loaded ' + studentMaster.length + ' students, ' + subjectsCatalog.length + ' subjects.', 'success');
       });
     });
   });
@@ -485,16 +526,15 @@ function renderTable() {
 
     const tr = document.createElement('tr');
     tr.setAttribute('data-roll', stu.roll);
-    tr.innerHTML = `
-      <td class="col-roll">${escapeHtml(stu.roll)}</td>
-      <td class="col-name student-name">${escapeHtml(stu.name)}</td>
-      <td class="col-test1"><input type="number" step="0.5" value="${marks.test1}" class="marks-input t1-input" placeholder="0-15"></td>
-      <td class="col-test2"><input type="number" step="0.5" value="${marks.test2}" class="marks-input t2-input" placeholder="0-15"></td>
-      <td class="col-exam"><input type="number" step="0.5" value="${marks.exam}" class="marks-input exam-input" placeholder="0-70"></td>
-      <td class="col-total total-cell">${total}</td>
-      <td class="col-grade grade-cell"><span class="grade-badge grade-${g.code}">${g.code}</span></td>
-      <td class="col-remark remark-cell">${g.remark}</td>
-    `;
+    tr.innerHTML =
+      '<td class="col-roll">' + escapeHtml(stu.roll) + '</td>' +
+      '<td class="col-name student-name">' + escapeHtml(stu.name) + '</td>' +
+      '<td class="col-test1"><input type="number" step="0.5" value="' + marks.test1 + '" class="marks-input t1-input" placeholder="0-15"></td>' +
+      '<td class="col-test2"><input type="number" step="0.5" value="' + marks.test2 + '" class="marks-input t2-input" placeholder="0-15"></td>' +
+      '<td class="col-exam"><input type="number" step="0.5" value="' + marks.exam + '" class="marks-input exam-input" placeholder="0-70"></td>' +
+      '<td class="col-total total-cell">' + total + '</td>' +
+      '<td class="col-grade grade-cell"><span class="grade-badge grade-' + g.code + '">' + g.code + '</span></td>' +
+      '<td class="col-remark remark-cell">' + g.remark + '</td>';
     tbody.appendChild(tr);
   });
 
@@ -521,7 +561,7 @@ function validateAll() {
       const v = parseFloat(el.value);
       const bad = isNaN(v) || v < 0 || v > max;
       el.classList.toggle('invalid', bad);
-      if (bad && !firstErr) firstErr = `Value must be 0–${max}`;
+      if (bad && !firstErr) firstErr = 'Value must be 0–' + max;
       return !bad;
     };
     if (!check(t1,15) || !check(t2,15) || !check(ex,70)) ok = false;
@@ -546,7 +586,7 @@ function saveMarks() {
     const t1 = Math.min(15, Math.max(0, parseFloat(tr.querySelector('.t1-input').value) || 0));
     const t2 = Math.min(15, Math.max(0, parseFloat(tr.querySelector('.t2-input').value) || 0));
     const ex = Math.min(70, Math.max(0, parseFloat(tr.querySelector('.exam-input').value) || 0));
-    updates.push({ roll, test1: t1, test2: t2, exam: ex });
+    updates.push({ roll: roll, test1: t1, test2: t2, exam: ex });
   });
 
   const btn = document.getElementById('saveBtnBottom');
@@ -576,9 +616,9 @@ function saveMarks() {
       const addedCount = resp.addedNew || 0;
       const skipped   = resp.skippedZero || 0;
 
-      let msg = `✅ Saved ${savedCount} student(s) for ${term}`;
-      if (addedCount > 0) msg += ` — ${addedCount} newly added to results tab`;
-      if (skipped > 0)    msg += ` • Skipped ${skipped} with no scores`;
+      let msg = '✅ Saved ' + savedCount + ' student(s) for ' + term;
+      if (addedCount > 0) msg += ' — ' + addedCount + ' newly added to results tab';
+      if (skipped > 0)    msg += ' • Skipped ' + skipped + ' with no scores';
       setStatus(msg + '.', 'success');
     } else {
       setStatus('⚠️ ' + ((resp && resp.error) || 'Save failed'), 'error');
@@ -587,16 +627,15 @@ function saveMarks() {
 }
 
 /* ============ BIND ============ */
-document.getElementById('loginBtn').addEventListener('click', handleLogin);
+document.getElementById('loginForm').addEventListener('submit', handleLogin);
 document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-document.getElementById('loginPassword').addEventListener('keypress', e => {
-  if (e.key === 'Enter') handleLogin();
-});
 document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
 document.getElementById('classSelect').addEventListener('change', renderTable);
 document.getElementById('subjectSelect').addEventListener('change', renderTable);
 document.getElementById('termSelect').addEventListener('change', renderTable);
 document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
+
+console.log('✅ Script loaded — all listeners bound');
 </script>
 </body>
 </html>
