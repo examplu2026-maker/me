@@ -72,14 +72,17 @@ button { background:#1f6e93; color:white; border:none; }
   border-radius:20px; white-space:nowrap; }
 .table-wrapper { background:white; border-radius:28px; overflow-x:auto;
   border:1px solid #e6eff8; margin-bottom:20px; padding:8px 6px; }
-.marks-table { width:100%; border-collapse:collapse; font-size:0.78rem; min-width:420px;
+.marks-table { width:100%; border-collapse:collapse; font-size:0.78rem; min-width:640px;
   table-layout:fixed; }
 .marks-table th { background:#fafeff; padding:10px 8px; font-weight:700; font-size:0.7rem;
   color:#1b5a7c; border-bottom:2px solid #d4e3ef; text-align:center; }
 .marks-table td { padding:8px 6px; border-bottom:1px solid #f0f6fc; text-align:center;
   vertical-align:middle; }
-.col-roll { width:12%; } .col-name { width:40%; }
-.col-test1,.col-test2 { width:15%; } .col-exam { width:18%; }
+.col-roll { width:8%; } .col-name { width:26%; }
+.col-test1,.col-test2 { width:10%; } .col-exam { width:12%; }
+.col-total  { width:9%; }
+.col-grade  { width:9%; }
+.col-remark { width:16%; }
 .student-name { text-align:left; font-weight:500; font-size:0.78rem; padding-left:6px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .marks-input { width:100%; max-width:75px; padding:7px 4px; border-radius:20px;
@@ -90,11 +93,43 @@ button { background:#1f6e93; color:white; border:none; }
 .marks-input.invalid { border-color:#dc3545; background:#fff0f0; }
 .empty-msg { text-align:center; padding:30px 10px !important; color:#6c8faa; font-size:0.85rem; }
 .footer-note { margin-top:20px; text-align:right; font-size:0.6rem; color:#3a789b;
-  background:#eef4fa; padding:8px 16px; border-radius:60px; }
+  background:#eef4fa; padding:8px 16px; border-radius:60px; line-height:1.8; }
 .save-footer { display:flex; justify-content:flex-end; gap:12px; margin-top:10px;
   margin-bottom:20px; flex-wrap:wrap; }
 .save-footer button { padding:10px 20px; font-size:0.8rem; border-radius:60px; font-weight:700; }
 .save-footer .btn-primary { background:#28a745; }
+
+/* GRADE STYLES */
+.total-cell {
+  font-weight:700;
+  color:#1b5a7c;
+  font-size:0.82rem;
+}
+.grade-badge {
+  display:inline-block;
+  min-width:36px;
+  padding:4px 8px;
+  border-radius:20px;
+  font-weight:700;
+  font-size:0.7rem;
+  color:white;
+  letter-spacing:0.3px;
+}
+.grade-A1 { background:#0f9d58; }
+.grade-B2 { background:#43a047; }
+.grade-B3 { background:#7cb342; }
+.grade-C4 { background:#fbc02d; color:#333; }
+.grade-C5 { background:#f9a825; color:#333; }
+.grade-C6 { background:#f57c00; }
+.grade-D7 { background:#ef6c00; }
+.grade-E8 { background:#e64a19; }
+.grade-F9 { background:#c62828; }
+.remark-cell {
+  font-size:0.72rem;
+  color:#456;
+  font-weight:500;
+}
+
 @media (max-width:640px) {
   .save-footer button { width:100%; }
   .login-card { border-radius:36px; padding:32px 24px; }
@@ -156,7 +191,7 @@ button { background:#1f6e93; color:white; border:none; }
   </div>
 
   <div id="statusMsg" class="status-bar">
-    <span>✅ Ready — Test 1 / Test 2 max 15, Exam max 70</span>
+    <span>✅ Ready — Test 1/Test 2 max 15, Exam max 70 • Total = 100 → auto-grade</span>
     <span id="syncStatus" class="sync-indicator">📡 Online</span>
   </div>
 
@@ -169,10 +204,13 @@ button { background:#1f6e93; color:white; border:none; }
           <th class="col-test1">Test 1</th>
           <th class="col-test2">Test 2</th>
           <th class="col-exam">Exam</th>
+          <th class="col-total">Total</th>
+          <th class="col-grade">Grade</th>
+          <th class="col-remark">Remark</th>
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="5" class="empty-msg">🔐 Please login to continue...</td></tr>
+        <tr><td colspan="8" class="empty-msg">🔐 Please login to continue...</td></tr>
       </tbody>
     </table>
   </div>
@@ -183,13 +221,14 @@ button { background:#1f6e93; color:white; border:none; }
 
   <div class="footer-note">
     ⭐ Each school's scores go to its own "<em><slug> student results <year></em>" tab<br>
-    📏 <strong>Validation:</strong> Test marks ≤ 15 | Exam marks ≤ 70
+    📏 <strong>Validation:</strong> Test marks ≤ 15 | Exam marks ≤ 70<br>
+    📊 <strong>Grading:</strong> A1 ≥75 | B2 ≥70 | B3 ≥65 | C4 ≥60 | C5 ≥55 | C6 ≥50 | D7 ≥45 | E8 ≥40 | F9 <40
   </div>
 </div>
 
 <script>
 // ⚠️ REPLACE with your deployment URL
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyuIWxD7aL8VcYAmzRP4e8frveTCh8dnag6fDgVTRqzz2W50AWWe4cLOSzACXunHuQpdA/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyJCae2RwoNJoHHGFNAmvBWmgoIEG-uFQcJYQyk63P_2rZn2k2-7quOg1dNloRDJvYzHQ/exec';
 
 let sessionToken = null;
 let userMasterTab = null;
@@ -262,6 +301,49 @@ function naturalSort(arr) {
   });
 }
 
+/* ============ GRADING ============ */
+function getGrade(total) {
+  // total is out of 100 (Test1 + Test2 = 30, Exam = 70)
+  if (total >= 75) return { code: 'A1', remark: 'Excellent' };
+  if (total >= 70) return { code: 'B2', remark: 'Very Good' };
+  if (total >= 65) return { code: 'B3', remark: 'Good' };
+  if (total >= 60) return { code: 'C4', remark: 'Credit' };
+  if (total >= 55) return { code: 'C5', remark: 'Credit' };
+  if (total >= 50) return { code: 'C6', remark: 'Credit' };
+  if (total >= 45) return { code: 'D7', remark: 'Pass' };
+  if (total >= 40) return { code: 'E8', remark: 'Pass' };
+  return { code: 'F9', remark: 'Fail' };
+}
+
+function computeRowGrade(tr) {
+  const t1El = tr.querySelector('.t1-input');
+  const t2El = tr.querySelector('.t2-input');
+  const exEl = tr.querySelector('.exam-input');
+  if (!t1El || !t2El || !exEl) return;
+
+  const t1 = parseFloat(t1El.value) || 0;
+  const t2 = parseFloat(t2El.value) || 0;
+  const ex = parseFloat(exEl.value) || 0;
+  const total = Math.min(15, Math.max(0, t1)) +
+                Math.min(15, Math.max(0, t2)) +
+                Math.min(70, Math.max(0, ex));
+  const g = getGrade(total);
+
+  const totalCell  = tr.querySelector('.total-cell');
+  const gradeCell  = tr.querySelector('.grade-cell');
+  const remarkCell = tr.querySelector('.remark-cell');
+
+  if (totalCell)  totalCell.textContent  = total;
+  if (gradeCell)  gradeCell.innerHTML    = `<span class="grade-badge grade-${g.code}">${g.code}</span>`;
+  if (remarkCell) remarkCell.textContent = g.remark;
+}
+
+function refreshAllGrades() {
+  document.querySelectorAll('#tableBody tr').forEach(tr => {
+    if (tr.querySelector('.t1-input')) computeRowGrade(tr);
+  });
+}
+
 /* ============ LOGIN ============ */
 function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
@@ -284,7 +366,6 @@ function handleLogin() {
       userResultsTabName = resp.resultsTabName;
       userYear = resp.year;
 
-      // Auto-select the term if the backend resolved one
       if (resp.term) {
         const tsel = document.getElementById('termSelect');
         tsel.value = resp.term;
@@ -379,12 +460,12 @@ function renderTable() {
   currentClass = cls; currentSubject = subjId; currentTerm = term;
   document.getElementById('saveTermLabel').textContent = term;
 
-  if (!cls) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a class</td></tr>'; return; }
-  if (!subjId) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a subject</td></tr>'; return; }
+  if (!cls) { tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">📌 Please select a class</td></tr>'; return; }
+  if (!subjId) { tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">📌 Please select a subject</td></tr>'; return; }
 
   const filtered = studentMaster.filter(s => s.className === cls);
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">🏫 No students in this class</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">🏫 No students in this class</td></tr>';
     return;
   }
 
@@ -395,6 +476,9 @@ function renderTable() {
         && marksCache[subjId][cls][stu.roll][term]) {
       marks = marksCache[subjId][cls][stu.roll][term];
     }
+    const total = (Number(marks.test1) || 0) + (Number(marks.test2) || 0) + (Number(marks.exam) || 0);
+    const g = getGrade(total);
+
     const tr = document.createElement('tr');
     tr.setAttribute('data-roll', stu.roll);
     tr.innerHTML = `
@@ -403,8 +487,19 @@ function renderTable() {
       <td class="col-test1"><input type="number" step="0.5" value="${marks.test1}" class="marks-input t1-input" placeholder="0-15"></td>
       <td class="col-test2"><input type="number" step="0.5" value="${marks.test2}" class="marks-input t2-input" placeholder="0-15"></td>
       <td class="col-exam"><input type="number" step="0.5" value="${marks.exam}" class="marks-input exam-input" placeholder="0-70"></td>
+      <td class="col-total total-cell">${total}</td>
+      <td class="col-grade grade-cell"><span class="grade-badge grade-${g.code}">${g.code}</span></td>
+      <td class="col-remark remark-cell">${g.remark}</td>
     `;
     tbody.appendChild(tr);
+  });
+
+  // Attach live grade-update listeners
+  document.querySelectorAll('#tableBody .marks-input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const tr = e.target.closest('tr');
+      if (tr) computeRowGrade(tr);
+    });
   });
 }
 
