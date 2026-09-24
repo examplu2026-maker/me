@@ -1,865 +1,518 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Student Marks Manager - School Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-html, body { height:100%; -webkit-text-size-adjust:100%; }
-body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Fees Drive Letter · POS print</title>
+  <!-- Google Fonts for clean, bold type -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* ============================================================
-   LOGIN — rebuilt from scratch
-   ============================================================ */
-.login-fullscreen {
-  position: fixed; inset: 0;
-  background: radial-gradient(circle at 15% 20%, #103a54 0%, #061520 70%);
-  display: flex; justify-content: center; align-items: flex-start;
-  z-index: 2000; padding: 20px; padding-top: 6vh;
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-}
-.login-card {
-  background: #ffffff;
-  border-radius: 36px;
-  padding: 36px 28px 32px;
-  width: 100%; max-width: 440px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
-  margin: auto 0;
-  animation: cardIn 0.4s ease-out;
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(24px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+    body {
+      background: #f2f5f9;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
 
-.login-logo {
-  width: 68px; height: 68px; margin: 0 auto 16px;
-  border-radius: 22px;
-  background: linear-gradient(135deg,#1a6d8f,#0e5270);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 32px;
-  box-shadow: 0 8px 20px rgba(26,109,143,0.4);
-}
-.login-title {
-  font-size: 1.4rem; font-weight: 800; text-align: center;
-  color: #0e3d54; letter-spacing: -0.3px; margin-bottom: 6px;
-}
-.login-subtitle {
-  font-size: 0.8rem; text-align: center; color: #6b8ba3;
-  margin-bottom: 26px; line-height: 1.5;
-}
+    .app-container {
+      max-width: 500px;
+      width: 100%;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
+      padding: 2rem 1.8rem;
+      border: 1px solid #dbe0e8;
+    }
 
-.lf-group { margin-bottom: 16px; }
-.lf-label {
-  display: block; font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.6px;
-  color: #2c6f91; margin-bottom: 7px; padding-left: 4px;
-}
-.lf-input {
-  width: 100%;
-  padding: 15px 18px;
-  border: 2px solid #e2edf7;
-  border-radius: 14px;
-  font-size: 16px;                /* 16px stops mobile zoom */
-  font-family: inherit;
-  background: #f7fbfe;
-  color: #0e3d54;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.lf-input:focus {
-  border-color: #1f8fc7;
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(31,143,199,0.12);
-}
-.lf-input::placeholder { color: #a5bccb; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0b1e33;
+      margin-bottom: 1.8rem;
+      text-align: center;
+      border-bottom: 3px solid #1e4a6b;
+      padding-bottom: 0.75rem;
+    }
 
-/* Password field — masked visually but is type=text so password managers
-   leave it alone on mobile (this is the key mobile fix) */
-.lf-input.lf-password {
-  -webkit-text-security: disc;
-  text-security: disc;
-  letter-spacing: 1px;
-}
+    .field-group {
+      margin-bottom: 1.5rem;
+    }
 
-.lf-submit {
-  width: 100%;
-  padding: 16px 20px;
-  margin-top: 8px;
-  border: none;
-  border-radius: 14px;
-  background: linear-gradient(135deg,#1a6d8f 0%,#0e5270 100%);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  font-family: inherit;
-  box-shadow: 0 8px 20px rgba(26,109,143,0.35);
-  transition: transform 0.12s, box-shadow 0.2s, opacity 0.2s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-.lf-submit:active { transform: scale(0.975); }
-.lf-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #1e3a5f;
+      margin-bottom: 0.4rem;
+    }
 
-.lf-error {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: #fdecec;
-  border-left: 4px solid #dc3545;
-  border-radius: 10px;
-  color: #b3261e;
-  font-size: 0.82rem;
-  font-weight: 500;
-  display: none;
-  line-height: 1.4;
-}
-.lf-error.show { display: block; }
+    input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: 2px solid #cfddee;
+      border-radius: 16px;
+      background: #f9fcff;
+      transition: 0.15s;
+      color: #0a1c2f;
+      font-family: 'Inter', sans-serif;
+    }
 
-.lf-hint {
-  margin-top: 18px; text-align: center;
-  font-size: 0.7rem; color: #93aec2;
-}
+    input:focus {
+      outline: none;
+      border-color: #1e4a6b;
+      box-shadow: 0 0 0 4px rgba(30, 74, 107, 0.15);
+      background: white;
+    }
 
-/* Spinner inside button */
-.lf-spinner {
-  display: inline-block; width: 15px; height: 15px;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-left: 8px; vertical-align: -2px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+    .button-row {
+      display: flex;
+      gap: 0.9rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
 
-/* ============================================================
-   APP
-   ============================================================ */
-.app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
-.header-area { margin-bottom:20px; }
-.header-area h1 { font-size:1.3rem; font-weight:800;
-  background: linear-gradient(135deg,#1a5d7a,#2c9bcf); -webkit-background-clip:text; background-clip:text;
-  color:transparent; }
-.school-badge { background: linear-gradient(135deg,#1a5d7a,#2c9bcf); color:white; padding:6px 16px;
-  border-radius:30px; font-size:0.7rem; display:inline-block; margin-top:8px; }
-.user-info-bar { background:white; border-radius:48px; padding:12px 20px; margin-bottom:20px;
-  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
-  border:1px solid #e2edf7; }
-.user-details { font-size:0.75rem; font-weight:500; color:#2c6f91; word-break:break-word; }
-.logout-btn { background:#dc3545; padding:8px 24px; font-size:0.8rem; border-radius:40px;
-  font-weight:600; cursor:pointer; border:none; color:white; }
-.card-control { background:white; border-radius:36px; padding:20px; margin-bottom:24px;
-  display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; border:1px solid #e9f1f8; }
-.field-group { display:flex; flex-direction:column; gap:8px; min-width:150px; flex:1; }
-.field-group label { font-size:0.6rem; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.5px; color:#2c6f91; }
-select, button { padding:11px 16px; border-radius:32px; font-weight:600; background:white;
-  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit; }
-button { background:#1f6e93; color:white; border:none; }
-.btn-outline { background:white; color:#1f6e93; border:1px solid #1f6e93; }
-.action-group { display:flex; gap:10px; flex-wrap:wrap; }
-.status-bar { background:#e8f1f8; border-radius:60px; padding:10px 18px; margin-bottom:20px;
-  font-size:0.75rem; font-weight:500; color:#1d6f94; display:flex; justify-content:space-between;
-  align-items:center; flex-wrap:wrap; gap:8px; }
-.status-bar.error { background:#ffe0e0; color:#c0392b; }
-.status-bar.success { background:#d4edda; color:#155724; }
-.status-bar.warning { background:#fff3cd; color:#856404; }
-.sync-indicator { font-size:0.65rem; background:rgba(0,0,0,0.05); padding:4px 12px;
-  border-radius:20px; white-space:nowrap; }
-.table-wrapper { background:white; border-radius:28px; overflow-x:auto;
-  border:1px solid #e6eff8; margin-bottom:20px; padding:8px 6px; }
-.marks-table { width:100%; border-collapse:collapse; font-size:0.78rem; min-width:640px;
-  table-layout:fixed; }
-.marks-table th { background:#fafeff; padding:10px 8px; font-weight:700; font-size:0.7rem;
-  color:#1b5a7c; border-bottom:2px solid #d4e3ef; text-align:center; }
-.marks-table td { padding:8px 6px; border-bottom:1px solid #f0f6fc; text-align:center;
-  vertical-align:middle; }
-.col-roll { width:8%; } .col-name { width:26%; }
-.col-test1,.col-test2 { width:10%; } .col-exam { width:12%; }
-.col-total  { width:9%; }
-.col-grade  { width:9%; }
-.col-remark { width:16%; }
-.student-name { text-align:left; font-weight:500; font-size:0.78rem; padding-left:6px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.marks-input { width:100%; max-width:75px; padding:7px 4px; border-radius:20px;
-  border:1px solid #cbdef0; text-align:center; font-weight:500; font-size:16px;
-  background:#fafffe; }
-.marks-input:focus { border-color:#1f8fc7; outline:none;
-  box-shadow:0 0 0 3px rgba(31,143,199,0.12); background:white; }
-.marks-input.invalid { border-color:#dc3545; background:#fff0f0; }
-.empty-msg { text-align:center; padding:30px 10px !important; color:#6c8faa; font-size:0.85rem; }
-.footer-note { margin-top:20px; text-align:right; font-size:0.6rem; color:#3a789b;
-  background:#eef4fa; padding:8px 16px; border-radius:60px; line-height:1.8; }
-.save-footer { display:flex; justify-content:flex-end; gap:12px; margin-top:10px;
-  margin-bottom:20px; flex-wrap:wrap; }
-.save-footer button { padding:10px 20px; font-size:0.8rem; border-radius:60px; font-weight:700; }
-.save-footer .btn-primary { background:#28a745; }
+    button {
+      flex: 1;
+      min-width: 130px;
+      padding: 1rem 1.2rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border: none;
+      border-radius: 40px;
+      background: #0b1e33;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 6px 0 #05111f;
+      transform: translateY(0);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
 
-/* GRADE STYLES */
-.total-cell { font-weight:700; color:#1b5a7c; font-size:0.82rem; }
-.grade-badge { display:inline-block; min-width:36px; padding:4px 8px; border-radius:20px;
-  font-weight:700; font-size:0.7rem; color:white; letter-spacing:0.3px; }
-.grade-A1 { background:#0f9d58; }
-.grade-B2 { background:#43a047; }
-.grade-B3 { background:#7cb342; }
-.grade-C4 { background:#fbc02d; color:#333; }
-.grade-C5 { background:#f9a825; color:#333; }
-.grade-C6 { background:#f57c00; }
-.grade-D7 { background:#ef6c00; }
-.grade-E8 { background:#e64a19; }
-.grade-F9 { background:#c62828; }
-.remark-cell { font-size:0.72rem; color:#456; font-weight:500; }
+    button:hover {
+      background: #1e3f5e;
+      box-shadow: 0 6px 0 #0b1e33;
+    }
 
-@media (max-width:640px) {
-  .save-footer button { width:100%; }
-  .login-card { border-radius:28px; padding:30px 22px 26px; }
-  .login-title { font-size:1.25rem; }
-}
-</style>
+    button:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #0b1e33;
+    }
+
+    button.secondary {
+      background: #e8edf5;
+      color: #0b1e33;
+      box-shadow: 0 6px 0 #b7c5d6;
+    }
+
+    button.secondary:hover {
+      background: #d5dfec;
+      box-shadow: 0 6px 0 #9bacc2;
+    }
+
+    /* ----- POS PREVIEW / PRINT AREA ----- */
+    .pos-preview {
+      margin-top: 2.5rem;
+      padding: 0.5rem 0;
+      border-top: 2px dashed #b7c8dd;
+    }
+
+    .pos-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #4b6589;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pos-label span {
+      background: #dfe8f3;
+      padding: 0.25rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+    }
+
+    /* the actual letter card – POS size (typically 3 inch / 72mm wide) */
+    .letter-card {
+      width: 100%;
+      max-width: 320px;          /* ~ 80mm, close to POS paper width */
+      margin: 0 auto;
+      background: white;
+      padding: 1.6rem 1.2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border: 1px solid #d2dceb;
+      font-family: 'Inter', sans-serif;
+      color: #0a1c2f;
+      transition: 0.2s;
+    }
+
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .school-logo {
+      max-width: 90px;
+      max-height: 90px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #f2f7ff;
+      padding: 6px;
+    }
+
+    .school-name {
+      font-size: 1.7rem;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: #0b1e33;
+      text-transform: uppercase;
+      margin-top: 0.6rem;
+      word-break: break-word;
+    }
+
+    .letter-body {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.6;
+      text-align: left;
+      margin: 1.4rem 0 1.2rem;
+      color: #10273f;
+    }
+
+    .letter-body .salutation {
+      font-size: 1.5rem;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .letter-body .highlight {
+      font-weight: 800;
+      background: #eef4fc;
+      padding: 0.1rem 0.3rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      color: #003366;
+    }
+
+    .letter-footer {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 1.6rem;
+      border-top: 2px solid #b7c8dd;
+      padding-top: 1rem;
+      text-align: left;
+      color: #1f3b5c;
+      line-height: 1.5;
+    }
+
+    /* Print styles – only the letter is printed, POS size */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+        display: block;
+      }
+
+      .app-container {
+        display: none;   /* hide form and buttons */
+      }
+
+      .pos-preview {
+        margin: 0;
+        padding: 0;
+        border: none;
+        display: block;
+      }
+
+      .pos-label {
+        display: none;
+      }
+
+      .letter-card {
+        max-width: 100%;
+        width: 72mm;        /* standard POS paper width */
+        margin: 0 auto;
+        padding: 8mm 5mm;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+        background: white;
+      }
+
+      .school-logo {
+        max-width: 70px;
+        max-height: 70px;
+        padding: 2px;
+      }
+
+      .school-name {
+        font-size: 1.8rem;
+        font-weight: 800;
+      }
+
+      .letter-body {
+        font-size: 1.45rem;
+        font-weight: 800;
+      }
+
+      .letter-footer {
+        font-size: 1.3rem;
+        font-weight: 800;
+      }
+
+      .letter-body .salutation {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* small screens */
+    @media (max-width: 420px) {
+      .app-container {
+        padding: 1.5rem 1.2rem;
+      }
+      .letter-card {
+        padding: 1.2rem 0.8rem;
+      }
+      .school-name {
+        font-size: 1.4rem;
+      }
+      .letter-body {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ============================================================
-     LOGIN — rebuilt
-     ============================================================ -->
-<div id="loginFullscreen" class="login-fullscreen">
-  <div class="login-card">
-    <div class="login-logo">🏫</div>
-    <div class="login-title">School Marks Manager</div>
-    <div class="login-subtitle">Sign in to access your school's marks dashboard</div>
+  <!-- MAIN APP – form + preview -->
+  <div class="app-container">
+    <h1>📄 FEES DRIVE LETTER</h1>
 
-    <div class="lf-group">
-      <label class="lf-label" for="fieldEmail">📧 Email address</label>
-      <input
-        type="text"
-        id="fieldEmail"
-        class="lf-input"
-        placeholder="teacher@school.edu"
-        autocomplete="off"
-        autocapitalize="none"
-        autocorrect="off"
-        spellcheck="false"
-        inputmode="email"
-        name="sm_email_field_no_autofill">
-    </div>
-
-    <div class="lf-group">
-      <label class="lf-label" for="fieldPassword">🔒 Password</label>
-      <input
-        type="text"
-        id="fieldPassword"
-        class="lf-input lf-password"
-        placeholder="Enter password"
-        autocomplete="off"
-        autocapitalize="none"
-        autocorrect="off"
-        spellcheck="false"
-        name="sm_password_field_no_autofill">
-    </div>
-
-    <button type="button" id="submitLogin" class="lf-submit">➡️ SIGN IN</button>
-
-    <div id="loginErrorBox" class="lf-error"></div>
-
-    <div class="lf-hint">🔐 Your credentials are sent directly to your school's secure server</div>
-  </div>
-</div>
-
-<!-- ============================================================
-     APP
-     ============================================================ -->
-<div id="appContainer" class="app-container">
-  <div class="header-area">
-    <h1>📋 School Marks Manager</h1>
-    <div class="school-badge" id="schoolBadge">🏫 Loading school data...</div>
-  </div>
-
-  <div class="user-info-bar">
-    <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
-  </div>
-
-  <div class="card-control">
     <div class="field-group">
-      <label>🏫 SELECT CLASS</label>
-      <select id="classSelect"><option value="">-- Loading classes... --</option></select>
+      <label for="dayInput">DAY</label>
+      <input type="text" id="dayInput" placeholder="e.g. Friday" value="Friday" autocomplete="off">
     </div>
+
     <div class="field-group">
-      <label>📖 SELECT SUBJECT</label>
-      <select id="subjectSelect"><option value="">-- Loading subjects... --</option></select>
+      <label for="dateInput">DATE (day + month + year)</label>
+      <input type="text" id="dateInput" placeholder="e.g. 12th June 2026" value="12th June 2026" autocomplete="off">
     </div>
-    <div class="field-group">
-      <label>📅 SELECT TERM</label>
-      <select id="termSelect">
-        <option value="Term 1">Term 1</option>
-        <option value="Term 2">Term 2</option>
-        <option value="Term 3">Term 3</option>
-      </select>
+
+    <div class="button-row">
+      <button id="saveBtn" title="Save to local memory">💾 SAVE</button>
+      <button id="printBtn" class="secondary" title="Print POS size">🖨️ PRINT</button>
     </div>
-    <div class="action-group">
-      <button id="refreshBtn" class="btn-outline">🔄 Reload</button>
+
+    <!-- POS PREVIEW SECTION -->
+    <div class="pos-preview">
+      <div class="pos-label">
+        ⚡ POS PREVIEW <span>80mm</span>
+      </div>
+
+      <!-- The actual letter that will be printed -->
+      <div class="letter-card" id="letterCard">
+        <div class="logo-area">
+          <!-- Logo will be injected from Google Sheet column E -->
+          <img id="schoolLogo" class="school-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%231e4a6b'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E" alt="school logo">
+          <!-- School name from column F -->
+          <div class="school-name" id="schoolName">GRACE ACADEMY</div>
+        </div>
+
+        <div class="letter-body" id="letterBody">
+          <span class="salutation">Dear Parents,</span>
+          Please be informed that there will be a school fees drive on
+          <span class="highlight" id="dynamicDay">Friday</span>,
+          <span class="highlight" id="dynamicDate">12th June 2026</span>.
+          Your cooperation is highly appreciated. Thank you.
+        </div>
+
+        <div class="letter-footer">
+          — MANAGEMENT
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="statusMsg" class="status-bar">
-    <span>✅ Ready — Test 1/Test 2 max 15, Exam max 70 • Total = 100 → auto-grade</span>
-    <span id="syncStatus" class="sync-indicator">📡 Online</span>
-  </div>
+  <!-- GOOGLE APP SCRIPT – fetch logo & school name from sheet tab "Users" -->
+  <script>
+    // ------------------------------------------------------------
+    // Configuration: replace with your published Google Apps Script URL
+    // (or use it as a web app URL that returns JSON with logo & name)
+    // ------------------------------------------------------------
+    const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbz_T9Wjav58FtFpoga5NU5VHtDjDoXcTi5DoQyAA9kmhX5lPHHqKtXjNTSwANVxfhkC5w/exec'; // <-- REPLACE
 
-  <div class="table-wrapper">
-    <table class="marks-table">
-      <thead>
-        <tr>
-          <th class="col-roll">Roll</th>
-          <th class="col-name">Student Name</th>
-          <th class="col-test1">Test 1</th>
-          <th class="col-test2">Test 2</th>
-          <th class="col-exam">Exam</th>
-          <th class="col-total">Total</th>
-          <th class="col-grade">Grade</th>
-          <th class="col-remark">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr><td colspan="8" class="empty-msg">🔐 Please login to continue...</td></tr>
-      </tbody>
-    </table>
-  </div>
+    // Since we might not have a live backend, we also include a fallback.
+    // In production, deploy the Apps Script code provided below and paste the URL above.
+    // For demonstration, we'll simulate a fetch but also keep default values.
 
-  <div class="save-footer">
-    <button id="saveBtnBottom" class="btn-primary">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
-  </div>
+    // DOM elements
+    const dayInput = document.getElementById('dayInput');
+    const dateInput = document.getElementById('dateInput');
+    const dynamicDay = document.getElementById('dynamicDay');
+    const dynamicDate = document.getElementById('dynamicDate');
+    const schoolLogo = document.getElementById('schoolLogo');
+    const schoolName = document.getElementById('schoolName');
+    const saveBtn = document.getElementById('saveBtn');
+    const printBtn = document.getElementById('printBtn');
 
-  <div class="footer-note">
-    ⭐ Each school's scores go to its own "<em><slug> student results <year></em>" tab<br>
-    📏 <strong>Validation:</strong> Test marks ≤ 15 | Exam marks ≤ 70<br>
-    📊 <strong>Grading:</strong> A1 ≥75 | B2 ≥70 | B3 ≥65 | C4 ≥60 | C5 ≥55 | C6 ≥50 | D7 ≥45 | E8 ≥40 | F9 <40
-  </div>
-</div>
+    // ---------- UPDATE PREVIEW (LIVE) ----------
+    function updatePreview() {
+      // Day field – if empty, keep placeholder
+      const dayValue = dayInput.value.trim() || 'Friday';
+      const dateValue = dateInput.value.trim() || '12th June 2026';
 
-<script>
-/* ============================================================
-   CONFIG
-   ============================================================ */
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxw5ttKKQl6h0EYWVTdx-gyTmX84YiKQrtiVqSBgewIPCYGho_61EJPTpYfLq9MMvZKRQ/exec';
+      dynamicDay.textContent = dayValue;
+      dynamicDate.textContent = dateValue;
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let sessionToken = null;
-let userMasterTab = null;
-let userSchoolName = null;
-let userResultsTabName = null;
-let userYear = null;
-
-let studentMaster = [];
-let subjectsCatalog = [];
-let marksCache = {};
-let currentClass = '';
-let currentSubject = '';
-let currentTerm = 'Term 1';
-
-// Trusted credential store — updated on EVERY keystroke
-const credStore = { email: '', password: '' };
-
-/* Global error catcher */
-window.addEventListener('error', function(e) {
-  console.error('💥 JS Error:', e.message, 'at', e.filename, ':', e.lineno);
-});
-
-/* ============================================================
-   LOGIN — rebuilt approach
-   ------------------------------------------------------------
-   The mobile autofill/wipe problem happens because mobile browsers
-   "own" the input value. Our defence:
-     1. Both fields are type="text" (no password manager trigger).
-     2. We hook 'input', 'keyup', 'change', 'blur', 'paste', 'compositionend'
-        and save the CURRENT value into credStore.
-     3. We also poll the values every 400ms into credStore as a backstop.
-     4. On submit we read from credStore FIRST, then live input as fallback.
-     5. We NEVER clear the input fields until AFTER a successful login.
-   ============================================================ */
-function setupLoginFieldCapture() {
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-
-  function captureEmail() {
-    const v = emailEl.value || '';
-    if (v.length > 0) credStore.email = v.trim();
-  }
-  function capturePassword() {
-    const v = passEl.value || '';
-    if (v.length > 0) credStore.password = v;
-  }
-
-  ['input','keyup','keydown','change','blur','paste','compositionend','focusout']
-    .forEach(evt => {
-      emailEl.addEventListener(evt, captureEmail, true);
-      passEl.addEventListener(evt, capturePassword, true);
-    });
-
-  // Polling backstop — every 400ms, remember whatever's in the field
-  setInterval(() => {
-    if (emailEl.value && emailEl.value.trim().length > 0) {
-      credStore.email = emailEl.value.trim();
+      // also store to localStorage for later
+      localStorage.setItem('feesDriveDay', dayValue);
+      localStorage.setItem('feesDriveDate', dateValue);
     }
-    if (passEl.value && passEl.value.length > 0) {
-      credStore.password = passEl.value;
+
+    // Load saved values from localStorage (if any)
+    function loadSavedInputs() {
+      const savedDay = localStorage.getItem('feesDriveDay');
+      const savedDate = localStorage.getItem('feesDriveDate');
+      if (savedDay) dayInput.value = savedDay;
+      if (savedDate) dateInput.value = savedDate;
+      updatePreview();
     }
-  }, 400);
 
-  // Capture on touch/mouse-down of submit button BEFORE any browser wipe
-  const btn = document.getElementById('submitLogin');
-  ['touchstart','touchend','mousedown','pointerdown','pointerup','click']
-    .forEach(evt => {
-      btn.addEventListener(evt, () => {
-        captureEmail();
-        capturePassword();
-      }, { passive: true, capture: true });
-    });
-
-  console.log('✅ Login field capture installed');
-}
-
-/* ============================================================
-   SUBMIT LOGIN
-   ============================================================ */
-function submitLogin(evt) {
-  if (evt && evt.preventDefault) evt.preventDefault();
-  if (evt && evt.stopPropagation) evt.stopPropagation();
-
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-  const errBox  = document.getElementById('loginErrorBox');
-  const btn     = document.getElementById('submitLogin');
-
-  // Capture one more time right now
-  if (emailEl.value && emailEl.value.trim()) credStore.email = emailEl.value.trim();
-  if (passEl.value  && passEl.value.length)  credStore.password = passEl.value;
-
-  // Trusted source first, live field as fallback
-  const email    = (credStore.email    || emailEl.value || '').trim();
-  const password = (credStore.password || passEl.value  || '');
-
-  console.log('🔐 Submit → email length:', email.length, '| password length:', password.length);
-
-  errBox.classList.remove('show');
-  errBox.textContent = '';
-
-  if (!email || !password) {
-    errBox.textContent = 'Please enter both email and password.';
-    errBox.classList.add('show');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = 'Signing in... <span class="lf-spinner"></span>';
-
-  apiCall('authenticateUser', { email: email, password: password }, function(resp) {
-    console.log('🔐 Response:', resp);
-
-    if (resp && resp.success) {
-      // NOW it's safe to clear
-      credStore.email = '';
-      credStore.password = '';
-      emailEl.value = '';
-      passEl.value  = '';
-
-      sessionToken       = resp.token;
-      userMasterTab      = resp.tabName;
-      userSchoolName     = resp.schoolName;
-      userResultsTabName = resp.resultsTabName;
-      userYear           = resp.year;
-
-      if (resp.term) {
-        const tsel = document.getElementById('termSelect');
-        tsel.value = resp.term;
-        currentTerm = resp.term;
-        document.getElementById('saveTermLabel').textContent = resp.term;
+    // ---------- FETCH DATA FROM GOOGLE SHEET (Users tab) ----------
+    async function fetchSchoolInfoFromSheet() {
+      if (!SHEET_API_URL || SHEET_API_URL.includes('YOUR_DEPLOYMENT_ID')) {
+        console.warn('⚠️ No valid Google Apps Script URL set. Using fallback logo/name.');
+        // fallback already in HTML
+        return;
       }
 
-      document.getElementById('userInfoDisplay').innerHTML =
-        '👤 ' + escapeHtml(resp.email) +
-        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
-        ' | 📅 Year: ' + escapeHtml(userYear) +
-        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
-      document.getElementById('schoolBadge').innerHTML =
-        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
+      try {
+        // We expect the Apps Script to return JSON like:
+        // { logoUrl: "https://...", schoolName: "Grace Academy" }
+        const response = await fetch(SHEET_API_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
 
-      document.getElementById('loginFullscreen').style.display = 'none';
-      document.getElementById('appContainer').style.display = 'block';
-      loadInitialData();
-    } else {
-      btn.disabled = false;
-      btn.innerHTML = '➡️ SIGN IN';
-      errBox.textContent = (resp && resp.error) || 'Login failed — no response from server.';
-      errBox.classList.add('show');
+        const data = await response.json();
+
+        // Column E = logoUrl, Column F = schoolName
+        if (data.logoUrl) {
+          schoolLogo.src = data.logoUrl;
+          // If logo fails to load, fallback icon stays
+          schoolLogo.onerror = () => {
+            schoolLogo.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%231e4a6b'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E";
+          };
+        }
+
+        if (data.schoolName) {
+          schoolName.textContent = data.schoolName.toUpperCase();
+        }
+      } catch (error) {
+        console.error('Error fetching school info:', error);
+        // Keep existing fallback values (logo + name)
+      }
     }
-  });
-}
 
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-function handleLogout() {
-  sessionToken = null;
-  userMasterTab = null;
-  credStore.email = '';
-  credStore.password = '';
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-  if (emailEl) emailEl.value = '';
-  if (passEl)  passEl.value  = '';
-  const errBox = document.getElementById('loginErrorBox');
-  if (errBox) { errBox.classList.remove('show'); errBox.textContent = ''; }
-  const btn = document.getElementById('submitLogin');
-  if (btn) { btn.disabled = false; btn.innerHTML = '➡️ SIGN IN'; }
-
-  document.getElementById('loginFullscreen').style.display = 'flex';
-  document.getElementById('appContainer').style.display = 'none';
-}
-
-/* ============================================================
-   JSONP TRANSPORT
-   ============================================================ */
-function apiCall(action, data, callback) {
-  console.log('📡 apiCall:', action);
-  const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
-  let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
-  for (let k in data) {
-    if (data.hasOwnProperty(k) && data[k] !== null && data[k] !== undefined) {
-      url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(JSON.stringify(data[k]));
-    }
-  }
-  url += '&callback=' + cb;
-  console.log('🔗 URL:', url);
-
-  const s = document.createElement('script');
-  s.src = url;
-  let done = false;
-
-  const timer = setTimeout(() => {
-    if (done) return;
-    done = true;
-    console.error('⏱️ Timeout for', action);
-    delete window[cb];
-    if (s.parentNode) s.remove();
-    callback({ error: 'Request timeout — check your internet connection' });
-  }, 60000);
-
-  window[cb] = function(resp) {
-    if (done) return;
-    done = true;
-    clearTimeout(timer);
-    delete window[cb];
-    if (s.parentNode) s.remove();
-    console.log('✅ Response for', action);
-    callback(resp);
-  };
-
-  s.onerror = function(ev) {
-    if (done) return;
-    done = true;
-    clearTimeout(timer);
-    delete window[cb];
-    if (s.parentNode) s.remove();
-    console.error('❌ Script load error for', action, ev);
-    callback({ error: 'Network error — check your internet connection' });
-  };
-
-  document.body.appendChild(s);
-}
-
-/* ============================================================
-   HELPERS
-   ============================================================ */
-function escapeHtml(s) {
-  if (!s) return '';
-  return s.toString().replace(/[&<>"']/g, m => ({
-    '&':'&','<':'<','>':'>','"':'"',"'":'''
-  }[m]));
-}
-function setStatus(msg, type) {
-  const el = document.getElementById('statusMsg');
-  el.className = 'status-bar ' + (type || '');
-  const span = el.querySelector('span:not(#syncStatus)');
-  if (span) span.textContent = msg;
-}
-function naturalSort(arr) {
-  return arr.sort((a,b) => {
-    const mA = a.match(/^([A-Za-z\s-]+?)(\d*)$/);
-    const mB = b.match(/^([A-Za-z\s-]+?)(\d*)$/);
-    const tA = mA ? mA[1].trim() : a;
-    const tB = mB ? mB[1].trim() : b;
-    const nA = mA && mA[2] ? parseInt(mA[2],10) : -1;
-    const nB = mB && mB[2] ? parseInt(mB[2],10) : -1;
-    if (tA === tB) return nA - nB;
-    return tA.localeCompare(tB);
-  });
-}
-
-/* ============================================================
-   GRADING
-   ============================================================ */
-function getGrade(total) {
-  if (total >= 75) return { code: 'A1', remark: 'Excellent' };
-  if (total >= 70) return { code: 'B2', remark: 'Very Good' };
-  if (total >= 65) return { code: 'B3', remark: 'Good' };
-  if (total >= 60) return { code: 'C4', remark: 'Credit' };
-  if (total >= 55) return { code: 'C5', remark: 'Credit' };
-  if (total >= 50) return { code: 'C6', remark: 'Credit' };
-  if (total >= 45) return { code: 'D7', remark: 'Pass' };
-  if (total >= 40) return { code: 'E8', remark: 'Pass' };
-  return { code: 'F9', remark: 'Fail' };
-}
-function computeRowGrade(tr) {
-  const t1El = tr.querySelector('.t1-input');
-  const t2El = tr.querySelector('.t2-input');
-  const exEl = tr.querySelector('.exam-input');
-  if (!t1El || !t2El || !exEl) return;
-
-  const t1 = parseFloat(t1El.value) || 0;
-  const t2 = parseFloat(t2El.value) || 0;
-  const ex = parseFloat(exEl.value) || 0;
-  const total = Math.min(15, Math.max(0, t1)) +
-                Math.min(15, Math.max(0, t2)) +
-                Math.min(70, Math.max(0, ex));
-  const g = getGrade(total);
-
-  const totalCell  = tr.querySelector('.total-cell');
-  const gradeCell  = tr.querySelector('.grade-cell');
-  const remarkCell = tr.querySelector('.remark-cell');
-
-  if (totalCell)  totalCell.textContent  = total;
-  if (gradeCell)  gradeCell.innerHTML    = '<span class="grade-badge grade-' + g.code + '">' + g.code + '</span>';
-  if (remarkCell) remarkCell.textContent = g.remark;
-}
-
-/* ============================================================
-   LOAD DATA
-   ============================================================ */
-function loadInitialData() {
-  if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
-  setStatus('🔄 Loading data from "' + userMasterTab + '"...');
-
-  apiCall('getStudentData', { token: sessionToken }, function(students) {
-    if (students && students.error) { setStatus(students.error, 'error'); return; }
-    studentMaster = students || [];
-
-    apiCall('getSubjects', { token: sessionToken }, function(subjects) {
-      if (subjects && subjects.error) { setStatus(subjects.error, 'error'); return; }
-      subjectsCatalog = subjects || [];
-      populateSubjectDropdown();
-
-      apiCall('getMarksData', { token: sessionToken }, function(marks) {
-        if (marks && marks.error) { setStatus(marks.error, 'error'); return; }
-        marksCache = marks || {};
-        populateClassDropdown();
-        renderTable();
-        setStatus('✅ Loaded ' + studentMaster.length + ' students, ' + subjectsCatalog.length + ' subjects.', 'success');
-      });
+    // ---------- SAVE BUTTON ----------
+    saveBtn.addEventListener('click', () => {
+      updatePreview();
+      // flash a small feedback
+      saveBtn.textContent = '✓ SAVED';
+      setTimeout(() => {
+        saveBtn.textContent = '💾 SAVE';
+      }, 1200);
     });
-  });
-}
 
-function populateClassDropdown() {
-  const el = document.getElementById('classSelect');
-  const classes = naturalSort([...new Set(studentMaster.map(s => s.className).filter(Boolean))]);
-  el.innerHTML = '<option value="">-- Select Class --</option>';
-  classes.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
-    el.appendChild(opt);
-  });
-}
-
-function populateSubjectDropdown() {
-  const el = document.getElementById('subjectSelect');
-  if (!subjectsCatalog.length) {
-    el.innerHTML = '<option value="">-- No subjects found --</option>';
-    return;
-  }
-  el.innerHTML = '<option value="">-- Select Subject --</option>';
-  subjectsCatalog.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.id; opt.textContent = s.display;
-    el.appendChild(opt);
-  });
-  el.value = subjectsCatalog[0].id;
-  currentSubject = subjectsCatalog[0].id;
-}
-
-/* ============================================================
-   RENDER TABLE
-   ============================================================ */
-function renderTable() {
-  const tbody = document.getElementById('tableBody');
-  const cls = document.getElementById('classSelect').value;
-  const subjId = document.getElementById('subjectSelect').value;
-  const term = document.getElementById('termSelect').value;
-
-  currentClass = cls; currentSubject = subjId; currentTerm = term;
-  document.getElementById('saveTermLabel').textContent = term;
-
-  if (!cls) { tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">📌 Please select a class</td></tr>'; return; }
-  if (!subjId) { tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">📌 Please select a subject</td></tr>'; return; }
-
-  const filtered = studentMaster.filter(s => s.className === cls);
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">🏫 No students in this class</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = '';
-  filtered.forEach(stu => {
-    let marks = { test1: 0, test2: 0, exam: 0 };
-    if (marksCache[subjId] && marksCache[subjId][cls] && marksCache[subjId][cls][stu.roll]
-        && marksCache[subjId][cls][stu.roll][term]) {
-      marks = marksCache[subjId][cls][stu.roll][term];
-    }
-    const total = (Number(marks.test1) || 0) + (Number(marks.test2) || 0) + (Number(marks.exam) || 0);
-    const g = getGrade(total);
-
-    const tr = document.createElement('tr');
-    tr.setAttribute('data-roll', stu.roll);
-    tr.innerHTML =
-      '<td class="col-roll">' + escapeHtml(stu.roll) + '</td>' +
-      '<td class="col-name student-name">' + escapeHtml(stu.name) + '</td>' +
-      '<td class="col-test1"><input type="number" step="0.5" value="' + marks.test1 + '" class="marks-input t1-input" placeholder="0-15"></td>' +
-      '<td class="col-test2"><input type="number" step="0.5" value="' + marks.test2 + '" class="marks-input t2-input" placeholder="0-15"></td>' +
-      '<td class="col-exam"><input type="number" step="0.5" value="' + marks.exam + '" class="marks-input exam-input" placeholder="0-70"></td>' +
-      '<td class="col-total total-cell">' + total + '</td>' +
-      '<td class="col-grade grade-cell"><span class="grade-badge grade-' + g.code + '">' + g.code + '</span></td>' +
-      '<td class="col-remark remark-cell">' + g.remark + '</td>';
-    tbody.appendChild(tr);
-  });
-
-  document.querySelectorAll('#tableBody .marks-input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const tr = e.target.closest('tr');
-      if (tr) computeRowGrade(tr);
+    // ---------- PRINT BUTTON (POS size) ----------
+    printBtn.addEventListener('click', () => {
+      // Ensure preview is up to date before printing
+      updatePreview();
+      // trigger browser print (POS width set via @media print)
+      window.print();
     });
-  });
-}
 
-/* ============================================================
-   VALIDATE + SAVE
-   ============================================================ */
-function validateAll() {
-  const rows = document.querySelectorAll('#tableBody tr');
-  let ok = true;
-  let firstErr = '';
-  rows.forEach(tr => {
-    const t1 = tr.querySelector('.t1-input');
-    const t2 = tr.querySelector('.t2-input');
-    const ex = tr.querySelector('.exam-input');
-    if (!t1 || !t2 || !ex) return;
-    const check = (el, max) => {
-      const v = parseFloat(el.value);
-      const bad = isNaN(v) || v < 0 || v > max;
-      el.classList.toggle('invalid', bad);
-      if (bad && !firstErr) firstErr = 'Value must be 0–' + max;
-      return !bad;
-    };
-    if (!check(t1,15) || !check(t2,15) || !check(ex,70)) ok = false;
-  });
-  if (!ok) setStatus('❌ ' + firstErr, 'error');
-  return ok;
-}
+    // ---------- LIVE UPDATE ON INPUT ----------
+    dayInput.addEventListener('input', updatePreview);
+    dateInput.addEventListener('input', updatePreview);
 
-function saveMarks() {
-  const cls = document.getElementById('classSelect').value;
-  const subjId = document.getElementById('subjectSelect').value;
-  const term = document.getElementById('termSelect').value;
-  if (!cls) return setStatus('⚠️ Select a class.', 'warning');
-  if (!subjId) return setStatus('⚠️ Select a subject.', 'warning');
-  if (!validateAll()) return;
+    // ---------- INIT ----------
+    window.addEventListener('load', () => {
+      loadSavedInputs();
+      fetchSchoolInfoFromSheet();
+    });
 
-  const updates = [];
-  document.querySelectorAll('#tableBody tr').forEach(tr => {
-    const roll = tr.getAttribute('data-roll');
-    if (!roll) return;
-    const t1 = Math.min(15, Math.max(0, parseFloat(tr.querySelector('.t1-input').value) || 0));
-    const t2 = Math.min(15, Math.max(0, parseFloat(tr.querySelector('.t2-input').value) || 0));
-    const ex = Math.min(70, Math.max(0, parseFloat(tr.querySelector('.exam-input').value) || 0));
-    updates.push({ roll: roll, test1: t1, test2: t2, exam: ex });
-  });
+    // ---------- ALSO UPDATE PREVIEW IF INPUTS CHANGE PROGRAMMATICALLY ----------
+    // (already covered)
 
-  const btn = document.getElementById('saveBtnBottom');
-  btn.disabled = true; btn.innerHTML = 'Saving... <span class="lf-spinner"></span>';
+    // ------------------------------------------------------------
+    // GOOGLE APPS SCRIPT CODE (to be pasted in Extensions > Apps Script)
+    // and deployed as Web App (Execute as: Me, Who has access: Anyone)
+    // ------------------------------------------------------------
+    /*
+      function doGet() {
+        const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Users');
+        // Assuming row 2 contains the data (row 1 = headers)
+        const logoUrl = sheet.getRange('E2').getValue();   // column E
+        const schoolName = sheet.getRange('F2').getValue(); // column F
 
-  apiCall('saveMarksData', {
-    token: sessionToken,
-    subjectId: subjId,
-    className: cls,
-    term: term,
-    updates: updates
-  }, function(resp) {
-    btn.disabled = false;
-    btn.innerHTML = '💾 Save Marks for ' + term;
+        const output = {
+          logoUrl: logoUrl || '',
+          schoolName: schoolName || 'GRACE ACADEMY'
+        };
 
-    if (resp && resp.success) {
-      if (!marksCache[subjId]) marksCache[subjId] = {};
-      if (!marksCache[subjId][cls]) marksCache[subjId][cls] = {};
-      updates.forEach(u => {
-        const hasScore = (u.test1 || 0) !== 0 || (u.test2 || 0) !== 0 || (u.exam || 0) !== 0;
-        if (!hasScore) return;
-        if (!marksCache[subjId][cls][u.roll]) marksCache[subjId][cls][u.roll] = {};
-        marksCache[subjId][cls][u.roll][term] = { test1: u.test1, test2: u.test2, exam: u.exam };
-      });
+        return ContentService
+          .createTextOutput(JSON.stringify(output))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    */
+  </script>
 
-      const savedCount = resp.saved || 0;
-      const addedCount = resp.addedNew || 0;
-      const skipped   = resp.skippedZero || 0;
-
-      let msg = '✅ Saved ' + savedCount + ' student(s) for ' + term;
-      if (addedCount > 0) msg += ' — ' + addedCount + ' newly added to results tab';
-      if (skipped > 0)    msg += ' • Skipped ' + skipped + ' with no scores';
-      setStatus(msg + '.', 'success');
-    } else {
-      setStatus('⚠️ ' + ((resp && resp.error) || 'Save failed'), 'error');
-    }
-  });
-}
-
-/* ============================================================
-   BIND EVERYTHING
-   ============================================================ */
-function boot() {
-  setupLoginFieldCapture();
-
-  // Button click
-  document.getElementById('submitLogin').addEventListener('click', submitLogin);
-
-  // Enter key on either field
-  document.getElementById('fieldEmail').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
-  });
-  document.getElementById('fieldPassword').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
-  });
-
-  // App bindings
-  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-  document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
-  document.getElementById('classSelect').addEventListener('change', renderTable);
-  document.getElementById('subjectSelect').addEventListener('change', renderTable);
-  document.getElementById('termSelect').addEventListener('change', renderTable);
-  document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
-
-  console.log('✅ Boot complete — all listeners bound');
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot);
-} else {
-  boot();
-}
-</script>
+  <!-- 
+    INSTRUCTIONS:
+    1. Create a Google Sheet with a tab named "Users".
+    2. In column E (row 2) put a public logo image URL.
+    3. In column F (row 2) put the school name.
+    4. Extensions > Apps Script → paste the doGet function above.
+    5. Deploy as Web App → Execute as "Me", access "Anyone".
+    6. Copy the web app URL and replace SHEET_API_URL in the script above.
+    7. The form lets you set Day & Date; preview updates live.
+    8. Click SAVE to store locally, PRINT for POS-sized output.
+  -->
 </body>
 </html>
