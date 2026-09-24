@@ -1,518 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>School Fees Drive Letter · POS print</title>
-  <!-- Google Fonts for clean, bold type -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Fees Drive · Letter Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e6e9ef;
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; padding: 20px;
+  }
+  .app-container {
+    max-width: 860px; width: 100%;
+    background: white; border-radius: 28px;
+    box-shadow: 0 20px 40px rgba(0,20,40,0.2);
+    padding: 30px 35px;
+  }
+  h1 {
+    font-size: 1.8rem; font-weight: 600; color: #1e2b4f;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  h1 small {
+    font-size: 0.9rem; font-weight: 400; color: #5f6c8c;
+    margin-left: auto; background: #eff2f9;
+    padding: 4px 12px; border-radius: 30px;
+  }
+  .form-grid {
+    display: flex; flex-wrap: wrap; gap: 18px 20px;
+    margin: 25px 0 20px; align-items: flex-end;
+  }
+  .input-group { flex: 1 1 180px; display: flex; flex-direction: column; gap: 6px; }
+  .input-group label {
+    font-size: 0.85rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.3px; color: #3d4b6b;
+  }
+  .input-group input {
+    padding: 12px 16px; border: 2px solid #cfd9e8;
+    border-radius: 16px; font-size: 1rem; font-weight: 500;
+    background: #fbfdff; transition: 0.2s; outline: none; color: #0b1a33;
+  }
+  .input-group input:focus {
+    border-color: #2f5b9c; box-shadow: 0 0 0 4px rgba(47,91,156,0.15);
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 30px; }
+  .btn {
+    padding: 14px 32px; border-radius: 40px; border: none;
+    font-size: 1rem; font-weight: 700; letter-spacing: 0.3px;
+    cursor: pointer; transition: 0.15s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: white; color: #1e2b4f;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.04);
+    border: 2px solid #d9e2f0;
+  }
+  .btn-primary {
+    background: #1e3f70; color: white; border: 2px solid #1e3f70;
+    box-shadow: 0 12px 18px -6px #1e3f7040;
+  }
+  .btn-primary:hover { background: #0f2a4f; }
+  .btn-print { background: #f0f4fc; border-color: #b7c6e0; color: #1e3f70; }
+  .btn-print:hover { background: #e2eaf8; }
+  .btn:active { transform: scale(0.96); }
+
+  .letter-preview {
+    margin-top: 18px; display: flex; justify-content: center;
+    background: #f4f7fd; padding: 20px 10px; border-radius: 24px;
+  }
+  .pos-letter {
+    width: 80mm; background: white;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    padding: 8mm 5mm 10mm 5mm;
+    font-family: 'Courier New', 'Segoe UI', monospace;
+    border-radius: 4px; border: 1px solid #cdd7e6; color: #0f1a2b;
+  }
+  .pos-letter .school-header {
+    text-align: center; margin-bottom: 6mm;
+    border-bottom: 2px dashed #2c3e5c; padding-bottom: 3mm;
+  }
+  .pos-letter .school-logo {
+    max-width: 22mm; max-height: 22mm; margin: 0 auto 2mm;
+    display: block; object-fit: contain;
+  }
+  .pos-letter .school-name {
+    font-size: 18pt; font-weight: 900; line-height: 1.2;
+    letter-spacing: 0.5px; word-break: break-word;
+    text-transform: uppercase; color: #0b1a2e;
+  }
+  .pos-letter .letter-body {
+    font-size: 15pt; font-weight: 800; line-height: 1.6;
+    letter-spacing: 0.3px; word-break: break-word;
+    white-space: pre-wrap; margin: 4mm 0 6mm;
+  }
+  .pos-letter .letter-body p { margin-bottom: 4mm; }
+  .pos-letter .date-line {
+    font-size: 14pt; font-weight: 800; margin-bottom: 5mm;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .pos-letter .salutation { font-size: 15pt; font-weight: 800; margin-bottom: 3mm; }
+  .pos-letter .closing { margin-top: 6mm; font-size: 15pt; font-weight: 800; }
+  .pos-letter .signature {
+    margin-top: 10mm; border-top: 2px solid #1e2b4f;
+    width: 60%; padding-top: 2mm; font-size: 13pt; font-weight: 800;
+  }
+  .status-msg { font-size: 0.9rem; margin-top: 8px; color: #1e6b3b; font-weight: 500; min-height: 24px; }
+  .status-msg.error { color: #b12a2a; }
+  .logo-placeholder {
+    width: 22mm; height: 22mm; background: #d9e2f0; border-radius: 50%;
+    margin: 0 auto 2mm; display: flex; align-items: center;
+    justify-content: center; font-size: 8pt; font-weight: bold; color: #4a5a7a;
+  }
+
+  @media print {
+    body { background: white; padding: 0; margin: 0; display: block; }
+    .app-container { box-shadow: none; padding: 0; max-width: 100%; border-radius: 0; background: white; }
+    .no-print { display: none !important; }
+    .letter-preview { background: white; padding: 0; margin: 0; border-radius: 0; display: block; }
+    .pos-letter {
+      box-shadow: none; border: none; width: 80mm;
+      margin: 0 auto; padding: 6mm 5mm;
+      page-break-after: avoid; page-break-inside: avoid;
     }
-
-    body {
-      background: #f2f5f9;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 1.5rem;
-    }
-
-    .app-container {
-      max-width: 500px;
-      width: 100%;
-      background: white;
-      border-radius: 2rem;
-      box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
-      padding: 2rem 1.8rem;
-      border: 1px solid #dbe0e8;
-    }
-
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #0b1e33;
-      margin-bottom: 1.8rem;
-      text-align: center;
-      border-bottom: 3px solid #1e4a6b;
-      padding-bottom: 0.75rem;
-    }
-
-    .field-group {
-      margin-bottom: 1.5rem;
-    }
-
-    label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      color: #1e3a5f;
-      margin-bottom: 0.4rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.9rem 1rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border: 2px solid #cfddee;
-      border-radius: 16px;
-      background: #f9fcff;
-      transition: 0.15s;
-      color: #0a1c2f;
-      font-family: 'Inter', sans-serif;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #1e4a6b;
-      box-shadow: 0 0 0 4px rgba(30, 74, 107, 0.15);
-      background: white;
-    }
-
-    .button-row {
-      display: flex;
-      gap: 0.9rem;
-      margin-top: 1.8rem;
-      flex-wrap: wrap;
-    }
-
-    button {
-      flex: 1;
-      min-width: 130px;
-      padding: 1rem 1.2rem;
-      font-size: 1.2rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      border: none;
-      border-radius: 40px;
-      background: #0b1e33;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 6px 0 #05111f;
-      transform: translateY(0);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    button:hover {
-      background: #1e3f5e;
-      box-shadow: 0 6px 0 #0b1e33;
-    }
-
-    button:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #0b1e33;
-    }
-
-    button.secondary {
-      background: #e8edf5;
-      color: #0b1e33;
-      box-shadow: 0 6px 0 #b7c5d6;
-    }
-
-    button.secondary:hover {
-      background: #d5dfec;
-      box-shadow: 0 6px 0 #9bacc2;
-    }
-
-    /* ----- POS PREVIEW / PRINT AREA ----- */
-    .pos-preview {
-      margin-top: 2.5rem;
-      padding: 0.5rem 0;
-      border-top: 2px dashed #b7c8dd;
-    }
-
-    .pos-label {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #4b6589;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .pos-label span {
-      background: #dfe8f3;
-      padding: 0.25rem 0.8rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
-    }
-
-    /* the actual letter card – POS size (typically 3 inch / 72mm wide) */
-    .letter-card {
-      width: 100%;
-      max-width: 320px;          /* ~ 80mm, close to POS paper width */
-      margin: 0 auto;
-      background: white;
-      padding: 1.6rem 1.2rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      border: 1px solid #d2dceb;
-      font-family: 'Inter', sans-serif;
-      color: #0a1c2f;
-      transition: 0.2s;
-    }
-
-    .logo-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 1.2rem;
-    }
-
-    .school-logo {
-      max-width: 90px;
-      max-height: 90px;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      border-radius: 12px;
-      background: #f2f7ff;
-      padding: 6px;
-    }
-
-    .school-name {
-      font-size: 1.7rem;
-      font-weight: 800;
-      text-align: center;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      color: #0b1e33;
-      text-transform: uppercase;
-      margin-top: 0.6rem;
-      word-break: break-word;
-    }
-
-    .letter-body {
-      font-size: 1.35rem;
-      font-weight: 700;
-      line-height: 1.6;
-      text-align: left;
-      margin: 1.4rem 0 1.2rem;
-      color: #10273f;
-    }
-
-    .letter-body .salutation {
-      font-size: 1.5rem;
-      font-weight: 800;
-      display: block;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.01em;
-    }
-
-    .letter-body .highlight {
-      font-weight: 800;
-      background: #eef4fc;
-      padding: 0.1rem 0.3rem;
-      border-radius: 6px;
-      white-space: nowrap;
-      color: #003366;
-    }
-
-    .letter-footer {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-top: 1.6rem;
-      border-top: 2px solid #b7c8dd;
-      padding-top: 1rem;
-      text-align: left;
-      color: #1f3b5c;
-      line-height: 1.5;
-    }
-
-    /* Print styles – only the letter is printed, POS size */
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-        margin: 0;
-        display: block;
-      }
-
-      .app-container {
-        display: none;   /* hide form and buttons */
-      }
-
-      .pos-preview {
-        margin: 0;
-        padding: 0;
-        border: none;
-        display: block;
-      }
-
-      .pos-label {
-        display: none;
-      }
-
-      .letter-card {
-        max-width: 100%;
-        width: 72mm;        /* standard POS paper width */
-        margin: 0 auto;
-        padding: 8mm 5mm;
-        border-radius: 0;
-        box-shadow: none;
-        border: none;
-        background: white;
-      }
-
-      .school-logo {
-        max-width: 70px;
-        max-height: 70px;
-        padding: 2px;
-      }
-
-      .school-name {
-        font-size: 1.8rem;
-        font-weight: 800;
-      }
-
-      .letter-body {
-        font-size: 1.45rem;
-        font-weight: 800;
-      }
-
-      .letter-footer {
-        font-size: 1.3rem;
-        font-weight: 800;
-      }
-
-      .letter-body .salutation {
-        font-size: 1.6rem;
-      }
-    }
-
-    /* small screens */
-    @media (max-width: 420px) {
-      .app-container {
-        padding: 1.5rem 1.2rem;
-      }
-      .letter-card {
-        padding: 1.2rem 0.8rem;
-      }
-      .school-name {
-        font-size: 1.4rem;
-      }
-      .letter-body {
-        font-size: 1.15rem;
-      }
-    }
-  </style>
+    .pos-letter .school-name { font-size: 18pt; }
+    .pos-letter .letter-body { font-size: 15pt; }
+  }
+</style>
 </head>
 <body>
+<div class="app-container">
+  <h1>✦ Fees Drive Letter <small>POS · 80mm</small></h1>
 
-  <!-- MAIN APP – form + preview -->
-  <div class="app-container">
-    <h1>📄 FEES DRIVE LETTER</h1>
-
-    <div class="field-group">
-      <label for="dayInput">DAY</label>
-      <input type="text" id="dayInput" placeholder="e.g. Friday" value="Friday" autocomplete="off">
-    </div>
-
-    <div class="field-group">
-      <label for="dateInput">DATE (day + month + year)</label>
-      <input type="text" id="dateInput" placeholder="e.g. 12th June 2026" value="12th June 2026" autocomplete="off">
-    </div>
-
-    <div class="button-row">
-      <button id="saveBtn" title="Save to local memory">💾 SAVE</button>
-      <button id="printBtn" class="secondary" title="Print POS size">🖨️ PRINT</button>
-    </div>
-
-    <!-- POS PREVIEW SECTION -->
-    <div class="pos-preview">
-      <div class="pos-label">
-        ⚡ POS PREVIEW <span>80mm</span>
+  <div class="no-print">
+    <div class="form-grid">
+      <div class="input-group">
+        <label for="letterDate">Date</label>
+        <input type="date" id="letterDate" value="2026-06-12">
       </div>
-
-      <!-- The actual letter that will be printed -->
-      <div class="letter-card" id="letterCard">
-        <div class="logo-area">
-          <!-- Logo will be injected from Google Sheet column E -->
-          <img id="schoolLogo" class="school-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%231e4a6b'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E" alt="school logo">
-          <!-- School name from column F -->
-          <div class="school-name" id="schoolName">GRACE ACADEMY</div>
-        </div>
-
-        <div class="letter-body" id="letterBody">
-          <span class="salutation">Dear Parents,</span>
-          Please be informed that there will be a school fees drive on
-          <span class="highlight" id="dynamicDay">Friday</span>,
-          <span class="highlight" id="dynamicDate">12th June 2026</span>.
-          Your cooperation is highly appreciated. Thank you.
-        </div>
-
-        <div class="letter-footer">
-          — MANAGEMENT
-        </div>
+      <div class="input-group">
+        <label for="letterDay">Day</label>
+        <input type="text" id="letterDay" placeholder="e.g. Friday" value="Friday">
       </div>
     </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="saveBtn">💾 Save letter</button>
+      <button class="btn btn-print" id="printBtn">🖨️ Print (POS)</button>
+    </div>
+    <div id="statusMsg" class="status-msg"></div>
   </div>
 
-  <!-- GOOGLE APP SCRIPT – fetch logo & school name from sheet tab "Users" -->
-  <script>
-    // ------------------------------------------------------------
-    // Configuration: replace with your published Google Apps Script URL
-    // (or use it as a web app URL that returns JSON with logo & name)
-    // ------------------------------------------------------------
-    const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbz_T9Wjav58FtFpoga5NU5VHtDjDoXcTi5DoQyAA9kmhX5lPHHqKtXjNTSwANVxfhkC5w/exec'; // <-- REPLACE
+  <div class="letter-preview">
+    <div class="pos-letter">
+      <div class="school-header" id="schoolHeader">
+        <div class="logo-placeholder" id="logoFallback">LOGO</div>
+        <div class="school-name" id="schoolNameDisplay">SCHOOL NAME</div>
+      </div>
+      <div class="date-line" id="dateLine">Friday, 12th June 2026</div>
+      <div class="salutation">Dear Parents,</div>
+      <div class="letter-body" id="letterBody">
+        <p>please be informed that there will be a school fees drive on <strong>Friday, 12th June 2026</strong>.</p>
+        <p>Your cooperation is highly appreciated.</p>
+        <p>Thank you.</p>
+      </div>
+      <div class="closing">
+        Yours faithfully,<br>
+        <span style="font-weight:900;">School Management</span>
+      </div>
+      <div class="signature">(Signature)</div>
+    </div>
+  </div>
+</div>
 
-    // Since we might not have a live backend, we also include a fallback.
-    // In production, deploy the Apps Script code provided below and paste the URL above.
-    // For demonstration, we'll simulate a fetch but also keep default values.
+<script>
+/* =========================================================================
+   ⬇️  STEP 3: PASTE YOUR DEPLOYED WEB APP URL BETWEEN THE QUOTES BELOW
+   Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
+   ========================================================================= */
+const API_URL = 'https://script.google.com/macros/s/AKfycbwpNLGcdjg6Zy3DZkExldH9EpgnPxxq3uYYI0gW3fn_BcpkfPfXEM72BtYEt_Oi-tHFmw/exec';
 
-    // DOM elements
-    const dayInput = document.getElementById('dayInput');
-    const dateInput = document.getElementById('dateInput');
-    const dynamicDay = document.getElementById('dynamicDay');
-    const dynamicDate = document.getElementById('dynamicDate');
-    const schoolLogo = document.getElementById('schoolLogo');
-    const schoolName = document.getElementById('schoolName');
-    const saveBtn = document.getElementById('saveBtn');
-    const printBtn = document.getElementById('printBtn');
+/* ---------- DOM references ---------- */
+const dateInput         = document.getElementById('letterDate');
+const dayInput          = document.getElementById('letterDay');
+const dateLine          = document.getElementById('dateLine');
+const letterBody        = document.getElementById('letterBody');
+const schoolNameDisplay = document.getElementById('schoolNameDisplay');
+const schoolHeader      = document.getElementById('schoolHeader');
+const saveBtn           = document.getElementById('saveBtn');
+const printBtn          = document.getElementById('printBtn');
+const statusMsg         = document.getElementById('statusMsg');
 
-    // ---------- UPDATE PREVIEW (LIVE) ----------
-    function updatePreview() {
-      // Day field – if empty, keep placeholder
-      const dayValue = dayInput.value.trim() || 'Friday';
-      const dateValue = dateInput.value.trim() || '12th June 2026';
+/* ---------- Date helpers ---------- */
+function formatDateOrdinal(dateStr) {
+  if (!dateStr) return '12th June 2026';
+  const d = new Date(dateStr + 'T12:00:00');
+  if (isNaN(d)) return '12th June 2026';
+  const day = d.getDate();
+  const months = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+  const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
+                 (day % 10 === 2 && day !== 12) ? 'nd' :
+                 (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+  return `${day}${suffix} ${month} ${year}`;
+}
 
-      dynamicDay.textContent = dayValue;
-      dynamicDate.textContent = dateValue;
+function getWeekdayFromDate(dateStr) {
+  if (!dateStr) return 'Friday';
+  const d = new Date(dateStr + 'T12:00:00');
+  if (isNaN(d)) return 'Friday';
+  return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
+}
 
-      // also store to localStorage for later
-      localStorage.setItem('feesDriveDay', dayValue);
-      localStorage.setItem('feesDriveDate', dateValue);
-    }
+/* ---------- Live preview ---------- */
+function updateLetterContent() {
+  const selectedDate = dateInput.value || '2026-06-12';
+  const dateFormatted = formatDateOrdinal(selectedDate);
+  let day = dayInput.value.trim();
+  if (!day) {
+    day = getWeekdayFromDate(selectedDate);
+    dayInput.value = day;
+  }
+  dateLine.textContent = `${day}, ${dateFormatted}`;
+  letterBody.innerHTML =
+    `<p>please be informed that there will be a school fees drive on <strong>${day}, ${dateFormatted}</strong>.</p>` +
+    `<p>Your cooperation is highly appreciated.</p>` +
+    `<p>Thank you.</p>`;
+}
 
-    // Load saved values from localStorage (if any)
-    function loadSavedInputs() {
-      const savedDay = localStorage.getItem('feesDriveDay');
-      const savedDate = localStorage.getItem('feesDriveDate');
-      if (savedDay) dayInput.value = savedDay;
-      if (savedDate) dateInput.value = savedDate;
-      updatePreview();
-    }
+/* ---------- Status ---------- */
+function setStatus(text, isError) {
+  statusMsg.textContent = text;
+  statusMsg.className = 'status-msg' + (isError ? ' error' : '');
+}
 
-    // ---------- FETCH DATA FROM GOOGLE SHEET (Users tab) ----------
-    async function fetchSchoolInfoFromSheet() {
-      if (!SHEET_API_URL || SHEET_API_URL.includes('YOUR_DEPLOYMENT_ID')) {
-        console.warn('⚠️ No valid Google Apps Script URL set. Using fallback logo/name.');
-        // fallback already in HTML
-        return;
+/* ---------- Logo fallback ---------- */
+function addLogoFallback() {
+  if (document.getElementById('logoFallback')) return;
+  const fb = document.createElement('div');
+  fb.id = 'logoFallback';
+  fb.className = 'logo-placeholder';
+  fb.textContent = 'LOGO';
+  schoolHeader.prepend(fb);
+}
+
+function setFallbackSchoolData() {
+  const oldLogo = document.querySelector('.school-logo');
+  if (oldLogo) oldLogo.remove();
+  addLogoFallback();
+  schoolNameDisplay.textContent = 'SCHOOL NAME';
+}
+
+/* ---------- Fetch via JSONP (works despite CORS) ---------- */
+function fetchSchoolData() {
+  if (!API_URL || API_URL === 'PASTE_YOUR_WEB_APP_URL_HERE') {
+    setFallbackSchoolData();
+    setStatus('⚠️ Set API_URL inside the HTML file (Step 3).', true);
+    return;
+  }
+
+  const callbackName = 'gsCallback_' + Date.now();
+
+  window[callbackName] = function(data) {
+    try {
+      const logoUrl    = (data.logoUrl || '').trim();
+      const schoolName = (data.schoolName || 'SCHOOL NAME').trim();
+
+      schoolNameDisplay.textContent = schoolName;
+
+      const oldLogo = document.querySelector('.school-logo');
+      if (oldLogo) oldLogo.remove();
+      const oldFallback = document.getElementById('logoFallback');
+      if (oldFallback) oldFallback.remove();
+
+      if (logoUrl) {
+        const img = document.createElement('img');
+        img.className = 'school-logo';
+        img.alt = 'School Logo';
+        img.src = logoUrl;
+        img.onerror = function() { img.remove(); addLogoFallback(); };
+        schoolHeader.prepend(img);
+      } else {
+        addLogoFallback();
       }
 
-      try {
-        // We expect the Apps Script to return JSON like:
-        // { logoUrl: "https://...", schoolName: "Grace Academy" }
-        const response = await fetch(SHEET_API_URL, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        });
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        const data = await response.json();
-
-        // Column E = logoUrl, Column F = schoolName
-        if (data.logoUrl) {
-          schoolLogo.src = data.logoUrl;
-          // If logo fails to load, fallback icon stays
-          schoolLogo.onerror = () => {
-            schoolLogo.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='%231e4a6b'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E";
-          };
-        }
-
-        if (data.schoolName) {
-          schoolName.textContent = data.schoolName.toUpperCase();
-        }
-      } catch (error) {
-        console.error('Error fetching school info:', error);
-        // Keep existing fallback values (logo + name)
-      }
+      setStatus('✅ School data loaded.', false);
+    } catch (err) {
+      console.error(err);
+      setFallbackSchoolData();
+      setStatus('⚠️ Error reading data.', true);
+    } finally {
+      delete window[callbackName];
+      const s = document.getElementById(callbackName);
+      if (s) s.remove();
     }
+  };
 
-    // ---------- SAVE BUTTON ----------
-    saveBtn.addEventListener('click', () => {
-      updatePreview();
-      // flash a small feedback
-      saveBtn.textContent = '✓ SAVED';
-      setTimeout(() => {
-        saveBtn.textContent = '💾 SAVE';
-      }, 1200);
-    });
+  const script = document.createElement('script');
+  script.id  = callbackName;
+  script.src = API_URL + (API_URL.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+  script.onerror = function() {
+    setFallbackSchoolData();
+    setStatus('❌ Could not reach Apps Script. Check API_URL.', true);
+    delete window[callbackName];
+  };
+  document.body.appendChild(script);
+}
 
-    // ---------- PRINT BUTTON (POS size) ----------
-    printBtn.addEventListener('click', () => {
-      // Ensure preview is up to date before printing
-      updatePreview();
-      // trigger browser print (POS width set via @media print)
-      window.print();
-    });
+/* ---------- Save ---------- */
+function saveLetter() {
+  const dateVal = dateInput.value || '2026-06-12';
+  const dayVal  = dayInput.value.trim() || getWeekdayFromDate(dateVal);
+  const dateFormatted = formatDateOrdinal(dateVal);
+  const schoolName = schoolNameDisplay.textContent;
 
-    // ---------- LIVE UPDATE ON INPUT ----------
-    dayInput.addEventListener('input', updatePreview);
-    dateInput.addEventListener('input', updatePreview);
+  const letterData = {
+    action: 'save',
+    date: dateVal, day: dayVal, dateFormatted: dateFormatted,
+    schoolName: schoolName,
+    message: 'Fees drive on ' + dayVal + ', ' + dateFormatted,
+    timestamp: new Date().toISOString()
+  };
 
-    // ---------- INIT ----------
-    window.addEventListener('load', () => {
-      loadSavedInputs();
-      fetchSchoolInfoFromSheet();
-    });
+  console.log('💾 Letter saved (local):', letterData);
 
-    // ---------- ALSO UPDATE PREVIEW IF INPUTS CHANGE PROGRAMMATICALLY ----------
-    // (already covered)
+  if (API_URL && API_URL !== 'PASTE_YOUR_WEB_APP_URL_HERE') {
+    fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(letterData)
+    }).catch(function(err) { console.warn('Save to sheet failed:', err); });
+  }
 
-    // ------------------------------------------------------------
-    // GOOGLE APPS SCRIPT CODE (to be pasted in Extensions > Apps Script)
-    // and deployed as Web App (Execute as: Me, Who has access: Anyone)
-    // ------------------------------------------------------------
-    /*
-      function doGet() {
-        const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Users');
-        // Assuming row 2 contains the data (row 1 = headers)
-        const logoUrl = sheet.getRange('E2').getValue();   // column E
-        const schoolName = sheet.getRange('F2').getValue(); // column F
+  setStatus('✅ Letter saved — ' + dayVal + ', ' + dateFormatted, false);
+}
 
-        const output = {
-          logoUrl: logoUrl || '',
-          schoolName: schoolName || 'GRACE ACADEMY'
-        };
+/* ---------- Print ---------- */
+function printLetter() { window.print(); }
 
-        return ContentService
-          .createTextOutput(JSON.stringify(output))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-    */
-  </script>
+/* ---------- Init ---------- */
+function init() {
+  if (!dateInput.value) dateInput.value = '2026-06-12';
+  dayInput.value = getWeekdayFromDate(dateInput.value);
+  updateLetterContent();
 
-  <!-- 
-    INSTRUCTIONS:
-    1. Create a Google Sheet with a tab named "Users".
-    2. In column E (row 2) put a public logo image URL.
-    3. In column F (row 2) put the school name.
-    4. Extensions > Apps Script → paste the doGet function above.
-    5. Deploy as Web App → Execute as "Me", access "Anyone".
-    6. Copy the web app URL and replace SHEET_API_URL in the script above.
-    7. The form lets you set Day & Date; preview updates live.
-    8. Click SAVE to store locally, PRINT for POS-sized output.
-  -->
+  dateInput.addEventListener('change', function() {
+    dayInput.value = getWeekdayFromDate(dateInput.value);
+    updateLetterContent();
+  });
+  dayInput.addEventListener('input', updateLetterContent);
+
+  saveBtn.addEventListener('click', saveLetter);
+  printBtn.addEventListener('click', printLetter);
+
+  fetchSchoolData();
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
