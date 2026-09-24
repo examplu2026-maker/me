@@ -9,17 +9,17 @@
   body {
     background: #e6e9ef;
     font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-    display: flex; justify-content: center; align-items: center;
+    display: flex; justify-content: center; align-items: flex-start;
     min-height: 100vh; padding: 20px;
   }
   .app-container {
-    max-width: 860px; width: 100%;
+    max-width: 1100px; width: 100%;
     background: white; border-radius: 28px;
     box-shadow: 0 20px 40px rgba(0,20,40,0.2);
     padding: 30px 35px;
   }
   h1 {
-    font-size: 1.8rem; font-weight: 600; color: #1e2b4f;
+    font-size: 1.8rem; font-weight: 700; color: #000;
     margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
   }
   h1 small {
@@ -33,102 +33,191 @@
   }
   .input-group { flex: 1 1 180px; display: flex; flex-direction: column; gap: 6px; }
   .input-group label {
-    font-size: 0.85rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.3px; color: #3d4b6b;
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px; color: #000;
   }
   .input-group input {
     padding: 12px 16px; border: 2px solid #cfd9e8;
-    border-radius: 16px; font-size: 1rem; font-weight: 500;
-    background: #fbfdff; transition: 0.2s; outline: none; color: #0b1a33;
+    border-radius: 16px; font-size: 1rem; font-weight: 600;
+    background: #fbfdff; transition: 0.2s; outline: none; color: #000;
   }
   .input-group input:focus {
     border-color: #2f5b9c; box-shadow: 0 0 0 4px rgba(47,91,156,0.15);
   }
-  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 30px; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
   .btn {
-    padding: 14px 32px; border-radius: 40px; border: none;
+    padding: 14px 32px; border-radius: 40px;
     font-size: 1rem; font-weight: 700; letter-spacing: 0.3px;
     cursor: pointer; transition: 0.15s;
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    background: white; color: #1e2b4f;
+    background: white; color: #000;
     box-shadow: 0 6px 12px rgba(0,0,0,0.04);
     border: 2px solid #d9e2f0;
   }
-  .btn-primary {
-    background: #1e3f70; color: white; border: 2px solid #1e3f70;
-    box-shadow: 0 12px 18px -6px #1e3f7040;
-  }
+  .btn-primary { background: #1e3f70; color: white; border: 2px solid #1e3f70; }
   .btn-primary:hover { background: #0f2a4f; }
   .btn-print { background: #f0f4fc; border-color: #b7c6e0; color: #1e3f70; }
   .btn-print:hover { background: #e2eaf8; }
   .btn:active { transform: scale(0.96); }
-
-  .letter-preview {
-    margin-top: 18px; display: flex; justify-content: center;
-    background: #f4f7fd; padding: 20px 10px; border-radius: 24px;
-  }
-  .pos-letter {
-    width: 80mm; background: white;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    padding: 8mm 5mm 10mm 5mm;
-    font-family: 'Courier New', 'Segoe UI', monospace;
-    border-radius: 4px; border: 1px solid #cdd7e6; color: #0f1a2b;
-  }
-  .pos-letter .school-header {
-    text-align: center; margin-bottom: 6mm;
-    border-bottom: 2px dashed #2c3e5c; padding-bottom: 3mm;
-  }
-  .pos-letter .school-logo {
-    max-width: 22mm; max-height: 22mm; margin: 0 auto 2mm;
-    display: block; object-fit: contain;
-  }
-  .pos-letter .school-name {
-    font-size: 18pt; font-weight: 900; line-height: 1.2;
-    letter-spacing: 0.5px; word-break: break-word;
-    text-transform: uppercase; color: #0b1a2e;
-  }
-  .pos-letter .letter-body {
-    font-size: 15pt; font-weight: 800; line-height: 1.6;
-    letter-spacing: 0.3px; word-break: break-word;
-    white-space: pre-wrap; margin: 4mm 0 6mm;
-  }
-  .pos-letter .letter-body p { margin-bottom: 4mm; }
-  .pos-letter .date-line {
-    font-size: 14pt; font-weight: 800; margin-bottom: 5mm;
-    text-decoration: underline; text-underline-offset: 3px;
-  }
-  .pos-letter .salutation { font-size: 15pt; font-weight: 800; margin-bottom: 3mm; }
-  .pos-letter .closing { margin-top: 6mm; font-size: 15pt; font-weight: 800; }
-  .pos-letter .signature {
-    margin-top: 10mm; border-top: 2px solid #1e2b4f;
-    width: 60%; padding-top: 2mm; font-size: 13pt; font-weight: 800;
-  }
-  .status-msg { font-size: 0.9rem; margin-top: 8px; color: #1e6b3b; font-weight: 500; min-height: 24px; }
+  .status-msg { font-size: 0.9rem; margin-top: 8px; color: #1e6b3b; font-weight: 600; min-height: 24px; }
   .status-msg.error { color: #b12a2a; }
-  .logo-placeholder {
-    width: 22mm; height: 22mm; background: #d9e2f0; border-radius: 50%;
-    margin: 0 auto 2mm; display: flex; align-items: center;
-    justify-content: center; font-size: 8pt; font-weight: bold; color: #4a5a7a;
+
+  /* ---------- PREVIEW AREA ---------- */
+  .letter-preview {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    background: #f4f7fd;
+    padding: 20px;
+    border-radius: 24px;
+    overflow: auto;
   }
 
+  /* The letter — vertical text, wraps into columns right-to-left */
+  .pos-letter {
+    width: 80mm;
+    height: 200mm;
+    background: white;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    border: 1px solid #cdd7e6;
+    padding: 4mm 3mm;
+    overflow: hidden;
+
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+
+    font-family: 'Arial Black', 'Helvetica', 'Segoe UI', sans-serif;
+    color: #000;
+    font-weight: 900;
+    letter-spacing: 0.2px;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .school-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-left: 2px dashed #000;
+    padding-left: 3mm;
+    margin-left: 3mm;
+    text-align: center;
+  }
+
+  .school-logo {
+    max-width: 16mm;
+    max-height: 16mm;
+    margin: 0 auto 2mm;
+    object-fit: contain;
+    display: block;
+  }
+  .logo-placeholder {
+    width: 14mm; height: 14mm; background: #d9e2f0; border-radius: 50%;
+    margin: 0 auto 2mm; display: flex; align-items: center;
+    justify-content: center; font-size: 7pt; font-weight: 900; color: #000;
+  }
+
+  .school-name {
+    font-size: 20pt;
+    font-weight: 900;
+    color: #000;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    max-height: 90mm;
+    overflow: hidden;
+  }
+
+  .salutation {
+    font-size: 16pt;
+    font-weight: 900;
+    color: #000;
+    margin: 0 3mm;
+  }
+
+  .letter-body {
+    font-size: 18pt;
+    font-weight: 900;
+    line-height: 1.15;
+    color: #000;
+    margin: 0 4mm;
+  }
+  .letter-body p { margin: 0 1mm; display: block; }
+  .letter-body strong { font-weight: 900; }
+
+  .closing {
+    font-size: 16pt;
+    font-weight: 900;
+    color: #000;
+    margin: 0 3mm;
+  }
+  .signature {
+    font-size: 13pt;
+    font-weight: 900;
+    color: #000;
+    border-left: 2px solid #000;
+    padding-left: 2mm;
+    margin-left: 2mm;
+  }
+
+  /* ---------- PRINT: exactly one 80mm x 200mm page ---------- */
   @media print {
-    body { background: white; padding: 0; margin: 0; display: block; }
-    .app-container { box-shadow: none; padding: 0; max-width: 100%; border-radius: 0; background: white; }
-    .no-print { display: none !important; }
-    .letter-preview { background: white; padding: 0; margin: 0; border-radius: 0; display: block; }
-    .pos-letter {
-      box-shadow: none; border: none; width: 80mm;
-      margin: 0 auto; padding: 6mm 5mm;
-      page-break-after: avoid; page-break-inside: avoid;
+    @page {
+      size: 80mm 200mm;
+      margin: 0;
     }
-    .pos-letter .school-name { font-size: 18pt; }
-    .pos-letter .letter-body { font-size: 15pt; }
+    html, body {
+      background: #fff !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 80mm !important;
+      height: 200mm !important;
+      overflow: hidden !important;
+    }
+    .app-container {
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: none !important;
+      width: auto !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+    }
+    .no-print { display: none !important; }
+    .letter-preview {
+      background: #fff !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      display: block !important;
+      overflow: hidden !important;
+    }
+    .pos-letter {
+      box-shadow: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      width: 80mm !important;
+      height: 200mm !important;
+      padding: 4mm 3mm !important;
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
+      color: #000 !important;
+      font-weight: 900 !important;
+      overflow: hidden !important;
+    }
+    .school-name  { font-size: 20pt !important; color: #000 !important; font-weight: 900 !important; }
+    .salutation   { font-size: 16pt !important; color: #000 !important; font-weight: 900 !important; }
+    .letter-body  { font-size: 18pt !important; color: #000 !important; font-weight: 900 !important; }
+    .closing      { font-size: 16pt !important; color: #000 !important; font-weight: 900 !important; }
+    .signature    { font-size: 13pt !important; color: #000 !important; font-weight: 900 !important; }
   }
 </style>
 </head>
 <body>
 <div class="app-container">
-  <h1>✦ Fees Drive Letter <small>POS · 80mm</small></h1>
+  <h1>✦ Fees Drive Letter <small>POS · 80mm · Vertical</small></h1>
 
   <div class="no-print">
     <div class="form-grid">
@@ -138,7 +227,7 @@
       </div>
       <div class="input-group">
         <label for="letterDay">Day</label>
-        <input type="text" id="letterDay" placeholder="e.g. Friday" value="Friday">
+        <input type="text" id="letterDay" placeholder="e.g. Friday" value="FRIDAY">
       </div>
     </div>
 
@@ -149,39 +238,38 @@
     <div id="statusMsg" class="status-msg"></div>
   </div>
 
+  <!-- Vertical letter (no date at top; date appears only inside the body) -->
   <div class="letter-preview">
     <div class="pos-letter">
       <div class="school-header" id="schoolHeader">
         <div class="logo-placeholder" id="logoFallback">LOGO</div>
         <div class="school-name" id="schoolNameDisplay">SCHOOL NAME</div>
       </div>
-      <div class="date-line" id="dateLine">Friday, 12th June 2026</div>
-      <div class="salutation">Dear Parents,</div>
+
+      <div class="salutation">DEAR PARENTS,</div>
+
       <div class="letter-body" id="letterBody">
-        <p>please be informed that there will be a school fees drive on <strong>Friday, 12th June 2026</strong>.</p>
-        <p>Your cooperation is highly appreciated.</p>
-        <p>Thank you.</p>
+        <p>PLEASE BE INFORMED THAT THERE WILL BE A SCHOOL FEES DRIVE ON <strong>FRIDAY, 12TH JUNE 2026</strong>.</p>
+        <p>YOUR COOPERATION IS HIGHLY APPRECIATED.</p>
+        <p>THANK YOU.</p>
       </div>
+
       <div class="closing">
-        Yours faithfully,<br>
-        <span style="font-weight:900;">School Management</span>
+        YOURS FAITHFULLY,
       </div>
-      <div class="signature">(Signature)</div>
+      <div class="signature">SCHOOL MANAGEMENT</div>
     </div>
   </div>
 </div>
 
 <script>
 /* =========================================================================
-   ⬇️  STEP 3: PASTE YOUR DEPLOYED WEB APP URL BETWEEN THE QUOTES BELOW
-   Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
+   ⬇️  PASTE YOUR DEPLOYED WEB APP URL BETWEEN THE QUOTES BELOW
    ========================================================================= */
 const API_URL = 'https://script.google.com/macros/s/AKfycbwpNLGcdjg6Zy3DZkExldH9EpgnPxxq3uYYI0gW3fn_BcpkfPfXEM72BtYEt_Oi-tHFmw/exec';
 
-/* ---------- DOM references ---------- */
 const dateInput         = document.getElementById('letterDate');
 const dayInput          = document.getElementById('letterDay');
-const dateLine          = document.getElementById('dateLine');
 const letterBody        = document.getElementById('letterBody');
 const schoolNameDisplay = document.getElementById('schoolNameDisplay');
 const schoolHeader      = document.getElementById('schoolHeader');
@@ -189,52 +277,49 @@ const saveBtn           = document.getElementById('saveBtn');
 const printBtn          = document.getElementById('printBtn');
 const statusMsg         = document.getElementById('statusMsg');
 
-/* ---------- Date helpers ---------- */
 function formatDateOrdinal(dateStr) {
-  if (!dateStr) return '12th June 2026';
+  if (!dateStr) return '12TH JUNE 2026';
   const d = new Date(dateStr + 'T12:00:00');
-  if (isNaN(d)) return '12th June 2026';
+  if (isNaN(d)) return '12TH JUNE 2026';
   const day = d.getDate();
-  const months = ['January','February','March','April','May','June',
-                  'July','August','September','October','November','December'];
+  const months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
+                  'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
   const month = months[d.getMonth()];
   const year = d.getFullYear();
-  const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
-                 (day % 10 === 2 && day !== 12) ? 'nd' :
-                 (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+  const suffix = (day % 10 === 1 && day !== 11) ? 'ST' :
+                 (day % 10 === 2 && day !== 12) ? 'ND' :
+                 (day % 10 === 3 && day !== 13) ? 'RD' : 'TH';
   return `${day}${suffix} ${month} ${year}`;
 }
 
 function getWeekdayFromDate(dateStr) {
-  if (!dateStr) return 'Friday';
+  if (!dateStr) return 'FRIDAY';
   const d = new Date(dateStr + 'T12:00:00');
-  if (isNaN(d)) return 'Friday';
-  return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
+  if (isNaN(d)) return 'FRIDAY';
+  return ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'][d.getDay()];
 }
 
-/* ---------- Live preview ---------- */
 function updateLetterContent() {
   const selectedDate = dateInput.value || '2026-06-12';
   const dateFormatted = formatDateOrdinal(selectedDate);
-  let day = dayInput.value.trim();
+  let day = (dayInput.value || '').trim().toUpperCase();
   if (!day) {
     day = getWeekdayFromDate(selectedDate);
-    dayInput.value = day;
   }
-  dateLine.textContent = `${day}, ${dateFormatted}`;
+  dayInput.value = day;
+
+  /* Only the body contains the date now */
   letterBody.innerHTML =
-    `<p>please be informed that there will be a school fees drive on <strong>${day}, ${dateFormatted}</strong>.</p>` +
-    `<p>Your cooperation is highly appreciated.</p>` +
-    `<p>Thank you.</p>`;
+    `<p>PLEASE BE INFORMED THAT THERE WILL BE A SCHOOL FEES DRIVE ON <strong>${day}, ${dateFormatted}</strong>.</p>` +
+    `<p>YOUR COOPERATION IS HIGHLY APPRECIATED.</p>` +
+    `<p>THANK YOU.</p>`;
 }
 
-/* ---------- Status ---------- */
 function setStatus(text, isError) {
   statusMsg.textContent = text;
   statusMsg.className = 'status-msg' + (isError ? ' error' : '');
 }
 
-/* ---------- Logo fallback ---------- */
 function addLogoFallback() {
   if (document.getElementById('logoFallback')) return;
   const fb = document.createElement('div');
@@ -251,11 +336,10 @@ function setFallbackSchoolData() {
   schoolNameDisplay.textContent = 'SCHOOL NAME';
 }
 
-/* ---------- Fetch via JSONP (works despite CORS) ---------- */
 function fetchSchoolData() {
   if (!API_URL || API_URL === 'PASTE_YOUR_WEB_APP_URL_HERE') {
     setFallbackSchoolData();
-    setStatus('⚠️ Set API_URL inside the HTML file (Step 3).', true);
+    setStatus('⚠️ Set API_URL inside the HTML file.', true);
     return;
   }
 
@@ -264,7 +348,7 @@ function fetchSchoolData() {
   window[callbackName] = function(data) {
     try {
       const logoUrl    = (data.logoUrl || '').trim();
-      const schoolName = (data.schoolName || 'SCHOOL NAME').trim();
+      const schoolName = (data.schoolName || 'SCHOOL NAME').trim().toUpperCase();
 
       schoolNameDisplay.textContent = schoolName;
 
@@ -307,10 +391,9 @@ function fetchSchoolData() {
   document.body.appendChild(script);
 }
 
-/* ---------- Save ---------- */
 function saveLetter() {
   const dateVal = dateInput.value || '2026-06-12';
-  const dayVal  = dayInput.value.trim() || getWeekdayFromDate(dateVal);
+  const dayVal  = (dayInput.value || getWeekdayFromDate(dateVal)).toUpperCase();
   const dateFormatted = formatDateOrdinal(dateVal);
   const schoolName = schoolNameDisplay.textContent;
 
@@ -318,7 +401,7 @@ function saveLetter() {
     action: 'save',
     date: dateVal, day: dayVal, dateFormatted: dateFormatted,
     schoolName: schoolName,
-    message: 'Fees drive on ' + dayVal + ', ' + dateFormatted,
+    message: 'FEES DRIVE ON ' + dayVal + ', ' + dateFormatted,
     timestamp: new Date().toISOString()
   };
 
@@ -336,10 +419,8 @@ function saveLetter() {
   setStatus('✅ Letter saved — ' + dayVal + ', ' + dateFormatted, false);
 }
 
-/* ---------- Print ---------- */
 function printLetter() { window.print(); }
 
-/* ---------- Init ---------- */
 function init() {
   if (!dateInput.value) dateInput.value = '2026-06-12';
   dayInput.value = getWeekdayFromDate(dateInput.value);
