@@ -1,175 +1,501 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXAMPLUS — School Management</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#1B2A4A;
-    --ink-soft:#4B5670;
-    --paper:#F6F4EF;
-    --card:#FFFFFF;
-    --line:#E4E0D6;
-    --gold:#B8863B;
-    --gold-soft:#F1E4C9;
-    --radius:16px;
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;}
-  html,body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Public Sans',system-ui,sans-serif;
-    -webkit-tap-highlight-color:transparent;
-  }
-  h1,h2,h3,.brand{font-family:'Fraunces',serif;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXAMPLUS — School Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* header */
-  header{
-    padding:28px 20px 20px;
-    border-bottom:1px solid var(--line);
-    background:var(--card);
-    text-align:center;
-  }
-  .brand-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;}
-  .brand-mark{
-    width:34px;height:34px;border-radius:9px;
-    background:var(--ink);color:var(--gold-soft);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Fraunces',serif;font-weight:700;font-size:16px;
-  }
-  .brand{font-size:18px;font-weight:600;letter-spacing:0.2px;}
-  .brand span{color:var(--gold);}
-  #greeting{
-    margin:0 0 2px;
-    font-size:26px;
-    font-weight:600;
-    line-height:1.25;
-  }
-  .subline{margin:0;color:var(--ink-soft);font-size:14.5px;}
+    :root {
+      --ink: #1B2A4A;
+      --ink-soft: #5C6A85;
+      --paper: #F9F7F4;
+      --card: #FFFFFF;
+      --line: #EAE6DE;
+      --gold: #B8863B;
+      --gold-light: #F5EDDE;
+      --gold-soft: #F1E4C9;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 12px 28px -8px rgba(27, 42, 74, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+      --shadow-lg: 0 24px 48px -12px rgba(27, 42, 74, 0.15);
+      --transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+    }
 
-  main{padding:22px 20px 60px;max-width:720px;margin:0 auto;}
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Public Sans', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* home view */
-  .section-label{
-    font-size:12.5px;
-    color:var(--ink-soft);
-    margin:26px 0 10px;
-    font-weight:600;
-  }
-  .section-label:first-child{margin-top:0;}
+    h1, h2, h3, .brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
 
-  .role-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-  }
-  .role-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:16px 14px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    text-align:left;
-    cursor:pointer;
-    font-family:inherit;
-    color:inherit;
-    opacity:0;
-    animation:rise .5s ease forwards;
-  }
-  .role-card:active{transform:scale(0.98);}
-  .role-icon{
-    width:36px;height:36px;
-    border-radius:10px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:15px;
-    background:var(--c-bg, var(--paper));
-    color:var(--c, var(--ink));
-  }
-  .role-title{font-weight:500;font-size:13.5px;line-height:1.3;}
+    /* ---------- HEADER ---------- */
+    header {
+      padding: 36px 24px 28px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
 
-  .account-row{
-    display:flex;gap:12px;
-  }
-  .account-link{
-    flex:1;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:14px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:var(--ink);
-    text-decoration:none;
-    font-size:14px;
-    font-weight:500;
-  }
-  .account-link i{color:var(--gold);font-size:16px;}
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
 
-  /* detail view */
-  #detailView{display:none;}
-  .back-btn{
-    display:inline-flex;align-items:center;gap:6px;
-    background:none;border:none;
-    color:var(--ink-soft);
-    font-family:inherit;font-size:14px;font-weight:500;
-    padding:0 0 18px;cursor:pointer;
-  }
-  .detail-head{
-    display:flex;flex-direction:column;align-items:center;
-    text-align:center;
-    gap:10px;
-    margin-bottom:22px;
-  }
-  #detailIcon{
-    width:52px;height:52px;border-radius:14px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px;background:var(--c-bg, var(--ink));color:var(--c, #fff);
-  }
-  #detailTitle{margin:0;font-size:22px;font-weight:600;}
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: var(--gold-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 6px 14px rgba(27, 42, 74, 0.15);
+      transition: var(--transition);
+    }
 
-  .sub-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-  }
-  .sub-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:16px 14px;
-    display:flex;flex-direction:column;gap:12px;
-    text-decoration:none;color:var(--ink);
-    opacity:0;animation:rise .45s ease forwards;
-  }
-  .sub-card .icon{
-    width:36px;height:36px;border-radius:10px;
-    display:flex;align-items:center;justify-content:center;
-    background:var(--c-bg, var(--paper));
-    color:var(--c, var(--ink));
-    font-size:15px;
-  }
-  .sub-card .label{font-size:13.5px;font-weight:500;line-height:1.3;}
+    .brand-mark:hover {
+      transform: scale(1.02);
+    }
 
-  @keyframes rise{
-    from{opacity:0;transform:translateY(8px);}
-    to{opacity:1;transform:translateY(0);}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .role-card,.sub-card{animation:none;opacity:1;}
-  }
+    .brand {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
 
-  @media (min-width:480px){
-    main{max-width:480px;}
-  }
-</style>
+    .brand span {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    #greeting {
+      margin: 0 0 6px;
+      font-size: clamp(28px, 6vw, 36px);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .subline {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- MAIN ---------- */
+    main {
+      flex: 1;
+      padding: 28px 24px 64px;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ---------- HOME VIEW ---------- */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 36px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .role-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      animation: rise 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .role-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--c, var(--gold));
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .role-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: transparent;
+    }
+
+    .role-card:hover::before {
+      opacity: 1;
+    }
+
+    .role-card:active {
+      transform: translateY(-2px) scale(0.99);
+    }
+
+    .role-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: var(--c-bg, var(--paper));
+      color: var(--c, var(--ink));
+      transition: var(--transition);
+    }
+
+    .role-card:hover .role-icon {
+      transform: scale(1.05);
+    }
+
+    .role-title {
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- ACCOUNT ROW ---------- */
+    .account-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .account-link {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .account-link i {
+      color: var(--gold);
+      font-size: 18px;
+      transition: var(--transition);
+    }
+
+    .account-link:hover {
+      background: var(--gold-light);
+      border-color: var(--gold-soft);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .account-link:hover i {
+      transform: scale(1.1);
+    }
+
+    /* ---------- DETAIL VIEW ---------- */
+    #detailView {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--ink-soft);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 0 0 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      opacity: 0.9;
+    }
+
+    .back-btn:hover {
+      color: var(--ink);
+      opacity: 1;
+      gap: 10px;
+    }
+
+    .back-btn i {
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .detail-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      margin-bottom: 32px;
+      padding: 28px 20px;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+    }
+
+    #detailIcon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: var(--c-bg, var(--ink));
+      color: var(--c, #fff);
+      box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.15);
+    }
+
+    #detailTitle {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .sub-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .sub-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sub-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--c, var(--gold));
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .sub-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: transparent;
+    }
+
+    .sub-card:hover::after {
+      opacity: 1;
+    }
+
+    .sub-card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--c-bg, var(--paper));
+      color: var(--c, var(--ink));
+      font-size: 18px;
+      transition: var(--transition);
+    }
+
+    .sub-card:hover .icon {
+      transform: scale(1.05);
+    }
+
+    .sub-card .label {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- ANIMATIONS ---------- */
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .role-card, .sub-card, #detailView {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+      .role-card:hover, .sub-card:hover, .account-link:hover {
+        transform: none;
+      }
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 480px) {
+      main {
+        padding: 20px 16px 48px;
+      }
+      header {
+        padding: 28px 16px 22px;
+      }
+      .role-grid, .sub-grid, .account-row {
+        gap: 12px;
+      }
+      .role-card, .sub-card {
+        padding: 18px 14px;
+      }
+      .role-icon, .sub-card .icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+      .role-title, .sub-card .label {
+        font-size: 14px;
+      }
+      #detailIcon {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+      }
+      #detailTitle {
+        font-size: 22px;
+      }
+    }
+
+    @media (min-width: 700px) {
+      .role-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .sub-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .account-row {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 480px;
+        margin: 0 auto;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--paper);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--ink-soft);
+    }
+  </style>
 </head>
 <body>
 
@@ -179,23 +505,32 @@
     <div class="brand">EXAM<span>PLUS</span></div>
   </div>
   <h1 id="greeting">Good day</h1>
-  <p class="subline">What would you like to do?</p>
+  <p class="subline">What would you like to do today?</p>
 </header>
 
 <main>
 
   <div id="homeView">
+    <div class="section-label">Choose your role</div>
     <div class="role-grid" id="grid-home"></div>
 
-    <div class="section-label">Get Started</div>
+    <div class="section-label">New to EXAMPLUS?</div>
     <div class="account-row">
-      <a class="account-link" href="signup.html"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
-      <a class="account-link" href="activate.html"><i class="fa-solid fa-circle-check"></i> Activate</a>
+      <a class="account-link" href="signup.html">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Sign Up</span>
+      </a>
+      <a class="account-link" href="activate.html">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Activate</span>
+      </a>
     </div>
   </div>
 
   <div id="detailView">
-    <button class="back-btn" id="backBtn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    <button class="back-btn" id="backBtn">
+      <i class="fa-solid fa-arrow-left"></i> Back to roles
+    </button>
     <div class="detail-head">
       <div id="detailIcon"></div>
       <h2 id="detailTitle"></h2>
@@ -210,45 +545,45 @@
     superadmin: {
       title: "Super Admin",
       icon: "fa-solid fa-user-shield",
-      c: "#4F46E5", bg: "#E6E4FC",
+      c: "#4F46E5", bg: "#EEF0FE",
       pages: [
-        { file: "create-school.html", title: "Create School", icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#E6E4FC" },
-        { file: "view-schools.html",  title: "View Schools",  icon: "fa-solid fa-building-columns", c: "#0891B2", bg: "#DBF3F8" },
-        { file: "settings.html",      title: "System Settings", icon: "fa-solid fa-gear", c: "#334155", bg: "#E4E7EC" }
+        { file: "create-school.html", title: "Create School", icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#EEF0FE" },
+        { file: "view-schools.html",  title: "View Schools",  icon: "fa-solid fa-building-columns", c: "#0891B2", bg: "#E3F5FA" },
+        { file: "settings.html",      title: "System Settings", icon: "fa-solid fa-gear", c: "#4B5563", bg: "#F0F2F5" }
       ]
     },
     schooladmin: {
       title: "School Admin",
       icon: "fa-solid fa-building-user",
-      c: "#0E9F6E", bg: "#DBF5EA",
+      c: "#0E9F6E", bg: "#E6F9F0",
       pages: [
-        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school", c: "#0E9F6E", bg: "#DBF5EA" },
-        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate", c: "#3B5BDB", bg: "#E3E8FF" },
-        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group", c: "#7C3AED", bg: "#EDE4FB" },
-        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book", c: "#D97706", bg: "#FCEACB" },
-        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users", c: "#0891B2", bg: "#DBF3F8" },
-        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines", c: "#DC2626", bg: "#FCE1E1" },
-        { file: "contacts.html",      title: "Contact Us",      icon: "fa-solid fa-address-book", c: "#65A30D", bg: "#EAF5D6" }
+        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school", c: "#0E9F6E", bg: "#E6F9F0" },
+        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate", c: "#3B5BDB", bg: "#EBEFFF" },
+        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group", c: "#7C3AED", bg: "#F1E9FE" },
+        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book", c: "#D97706", bg: "#FEF3E2" },
+        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users", c: "#0891B2", bg: "#E3F5FA" },
+        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines", c: "#DC2626", bg: "#FEE9E9" },
+        { file: "contacts.html",      title: "Contact Us",      icon: "fa-solid fa-address-book", c: "#65A30D", bg: "#F0F9E6" }
       ]
     },
     teacher: {
       title: "Teacher",
       icon: "fa-solid fa-chalkboard-user",
-      c: "#D97706", bg: "#FCEACB",
+      c: "#D97706", bg: "#FEF3E2",
       pages: [
-        { file: "teacher.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F1E4C9" },
-        { file: "upload-result.html",    title: "Upload Result",   icon: "fa-solid fa-upload", c: "#D97706", bg: "#FCEACB" },
-        { file: "view-results.html",     title: "View Results",    icon: "fa-solid fa-eye", c: "#0E9F6E", bg: "#DBF5EA" }
+        { file: "teacher.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
+        { file: "upload-result.html",    title: "Upload Result",   icon: "fa-solid fa-upload", c: "#D97706", bg: "#FEF3E2" },
+        { file: "view-results.html",     title: "View Results",    icon: "fa-solid fa-eye", c: "#0E9F6E", bg: "#E6F9F0" }
       ]
     },
     bursar: {
       title: "Bursar",
       icon: "fa-solid fa-money-check-dollar",
-      c: "#DB2777", bg: "#FBE0EC",
+      c: "#DB2777", bg: "#FDE8F1",
       pages: [
-        { file: "bursar.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F1E4C9" },
-        { file: "generate-receipt.html", title: "Generate Receipt",icon: "fa-solid fa-receipt", c: "#DB2777", bg: "#FBE0EC" },
-        { file: "receipt-history.html",  title: "Receipt History", icon: "fa-solid fa-clock-rotate-left", c: "#7C3AED", bg: "#EDE4FB" }
+        { file: "bursar.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
+        { file: "generate-receipt.html", title: "Generate Receipt",icon: "fa-solid fa-receipt", c: "#DB2777", bg: "#FDE8F1" },
+        { file: "receipt-history.html",  title: "Receipt History", icon: "fa-solid fa-clock-rotate-left", c: "#7C3AED", bg: "#F1E9FE" }
       ]
     }
   };
@@ -259,21 +594,24 @@
   const detailTitle = document.getElementById('detailTitle');
   const subGrid = document.getElementById('subGrid');
   const backBtn = document.getElementById('backBtn');
-
   const homeGrid = document.getElementById('grid-home');
 
+  // Populate home role cards
   homeGrid.innerHTML = Object.entries(GROUPS).map(([key, group], i) => `
-    <button class="role-card" data-role="${key}" style="animation-delay:${(i*0.05).toFixed(2)}s">
-      <div class="role-icon" style="--c:${group.c}; --c-bg:${group.bg}"><i class="${group.icon}"></i></div>
+    <button class="role-card" data-role="${key}" style="--c:${group.c}; --c-bg:${group.bg}; animation-delay:${(i * 0.07).toFixed(2)}s">
+      <div class="role-icon" style="--c:${group.c}; --c-bg:${group.bg}">
+        <i class="${group.icon}"></i>
+      </div>
       <span class="role-title">${group.title}</span>
     </button>
   `).join('');
 
+  // Attach role card listeners
   document.querySelectorAll('.role-card').forEach(btn => {
     btn.addEventListener('click', () => openGroup(btn.dataset.role));
   });
 
-  function openGroup(key){
+  function openGroup(key) {
     const group = GROUPS[key];
     if (!group) return;
 
@@ -283,26 +621,31 @@
     detailTitle.textContent = group.title;
 
     subGrid.innerHTML = group.pages.map((p, i) => `
-      <a class="sub-card" href="${p.file}" style="animation-delay:${(i*0.05).toFixed(2)}s">
-        <div class="icon" style="--c:${p.c}; --c-bg:${p.bg}"><i class="${p.icon}"></i></div>
+      <a class="sub-card" href="${p.file}" style="--c:${p.c}; --c-bg:${p.bg}; animation-delay:${(i * 0.06).toFixed(2)}s">
+        <div class="icon" style="--c:${p.c}; --c-bg:${p.bg}">
+          <i class="${p.icon}"></i>
+        </div>
         <span class="label">${p.title}</span>
       </a>
     `).join('');
 
     homeView.style.display = 'none';
     detailView.style.display = 'block';
-    window.scrollTo({top:0, behavior:'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   backBtn.addEventListener('click', () => {
     detailView.style.display = 'none';
     homeView.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  /* time-based greeting */
+  // Time-based greeting with a touch of warmth
   const hour = new Date().getHours();
-  document.getElementById('greeting').textContent =
-    hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const greetingEl = document.getElementById('greeting');
+  if (hour < 12) greetingEl.textContent = 'Good morning ☀️';
+  else if (hour < 17) greetingEl.textContent = 'Good afternoon 🌤️';
+  else greetingEl.textContent = 'Good evening 🌙';
 </script>
 
 </body>
