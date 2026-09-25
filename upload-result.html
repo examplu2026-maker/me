@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Fees Drive · Letter Generator</title>
+<title>School Fees Drive · POS Letter</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -73,99 +73,102 @@
     overflow: auto;
   }
 
-  /* The letter — vertical text, wraps into columns right-to-left */
+  /* ---------- POS LETTER (80mm wide continuous roll) ---------- */
   .pos-letter {
-    width: 80mm;
-    height: 200mm;
+    width: 72mm;                /* 80mm paper minus 4mm each side */
+    min-height: 180mm;          /* preview only — real print flows freely */
     background: white;
     box-shadow: 0 12px 30px rgba(0,0,0,0.15);
     border-radius: 4px;
-    border: 1px solid #cdd7e6;
-    padding: 4mm 3mm;
-    overflow: hidden;
-
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+    border: 1px dashed #b7c6e0;
+    padding: 4mm 2mm;
+    overflow: visible;
 
     font-family: 'Arial Black', 'Helvetica', 'Segoe UI', sans-serif;
     color: #000;
     font-weight: 900;
     letter-spacing: 0.2px;
+    line-height: 1.15;
     text-align: center;
-    line-height: 1.1;
   }
 
+  /* ---------- SCHOOL HEADER ---------- */
   .school-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-left: 2px dashed #000;
-    padding-left: 3mm;
-    margin-left: 3mm;
     text-align: center;
+    border-bottom: 2px dashed #000;
+    padding-bottom: 3mm;
+    margin-bottom: 4mm;
   }
 
   .school-logo {
-    max-width: 16mm;
-    max-height: 16mm;
+    max-width: 22mm;
+    max-height: 22mm;
     margin: 0 auto 2mm;
     object-fit: contain;
     display: block;
   }
   .logo-placeholder {
-    width: 14mm; height: 14mm; background: #d9e2f0; border-radius: 50%;
+    width: 18mm; height: 18mm; background: #d9e2f0; border-radius: 50%;
     margin: 0 auto 2mm; display: flex; align-items: center;
-    justify-content: center; font-size: 7pt; font-weight: 900; color: #000;
+    justify-content: center; font-size: 8pt; font-weight: 900; color: #000;
   }
 
   .school-name {
-    font-size: 20pt;
+    font-size: 18pt;
     font-weight: 900;
     color: #000;
     text-transform: uppercase;
-    line-height: 1;
-    letter-spacing: 0.5px;
-    max-height: 90mm;
-    overflow: hidden;
+    line-height: 1.1;
+    letter-spacing: 0.3px;
+    word-break: break-word;
   }
 
+  /* ---------- LETTER CONTENT ---------- */
   .salutation {
-    font-size: 16pt;
+    font-size: 14pt;
     font-weight: 900;
     color: #000;
-    margin: 0 3mm;
+    text-align: left;
+    margin: 3mm 0 2mm;
   }
 
   .letter-body {
-    font-size: 18pt;
+    font-size: 14pt;
     font-weight: 900;
-    line-height: 1.15;
+    line-height: 1.35;
     color: #000;
-    margin: 0 4mm;
+    text-align: left;
+    margin: 3mm 0;
   }
-  .letter-body p { margin: 0 1mm; display: block; }
+  .letter-body p {
+    margin: 0 0 3mm;
+    word-break: break-word;
+  }
   .letter-body strong { font-weight: 900; }
 
   .closing {
-    font-size: 16pt;
+    font-size: 14pt;
     font-weight: 900;
     color: #000;
-    margin: 0 3mm;
+    text-align: left;
+    margin: 4mm 0 2mm;
   }
   .signature {
-    font-size: 13pt;
+    font-size: 12pt;
     font-weight: 900;
     color: #000;
-    border-left: 2px solid #000;
-    padding-left: 2mm;
-    margin-left: 2mm;
+    text-align: left;
+    border-top: 2px solid #000;
+    width: 50%;
+    padding-top: 1mm;
+    margin-top: 2mm;
   }
 
-  /* ---------- PRINT: exactly one 80mm x 200mm page ---------- */
+  /* ---------- PRINT: true POS thermal roll ---------- */
   @media print {
+    /* POS roll = 80mm wide, height is continuous (auto) */
     @page {
-      size: 80mm 200mm;
+      size: 80mm auto;
       margin: 0;
     }
     html, body {
@@ -173,15 +176,15 @@
       padding: 0 !important;
       margin: 0 !important;
       width: 80mm !important;
-      height: 200mm !important;
-      overflow: hidden !important;
+      height: auto !important;
+      overflow: visible !important;
     }
     .app-container {
       box-shadow: none !important;
       padding: 0 !important;
       margin: 0 !important;
       max-width: none !important;
-      width: auto !important;
+      width: 80mm !important;
       border-radius: 0 !important;
       background: #fff !important;
     }
@@ -192,32 +195,43 @@
       margin: 0 !important;
       border-radius: 0 !important;
       display: block !important;
-      overflow: hidden !important;
+      overflow: visible !important;
     }
     .pos-letter {
       box-shadow: none !important;
       border: none !important;
       border-radius: 0 !important;
       width: 80mm !important;
-      height: 200mm !important;
-      padding: 4mm 3mm !important;
+      min-height: 0 !important;
+      padding: 3mm 3mm !important;
       page-break-after: avoid !important;
       page-break-inside: avoid !important;
       color: #000 !important;
       font-weight: 900 !important;
-      overflow: hidden !important;
+      overflow: visible !important;
     }
-    .school-name  { font-size: 20pt !important; color: #000 !important; font-weight: 900 !important; }
-    .salutation   { font-size: 16pt !important; color: #000 !important; font-weight: 900 !important; }
-    .letter-body  { font-size: 18pt !important; color: #000 !important; font-weight: 900 !important; }
-    .closing      { font-size: 16pt !important; color: #000 !important; font-weight: 900 !important; }
-    .signature    { font-size: 13pt !important; color: #000 !important; font-weight: 900 !important; }
+    .school-name  { font-size: 18pt !important; color: #000 !important; font-weight: 900 !important; }
+    .salutation   { font-size: 14pt !important; color: #000 !important; font-weight: 900 !important; }
+    .letter-body  { font-size: 14pt !important; color: #000 !important; font-weight: 900 !important; }
+    .closing      { font-size: 14pt !important; color: #000 !important; font-weight: 900 !important; }
+    .signature    { font-size: 12pt !important; color: #000 !important; font-weight: 900 !important; }
+  }
+
+  /* ---------- Smaller POS (58mm) — optional class ---------- */
+  .pos-58 .pos-letter { width: 52mm; }
+  @media print {
+    .pos-58 @page { size: 58mm auto; margin: 0; }
+    .pos-58 .pos-letter { width: 58mm !important; padding: 2mm !important; }
+    .pos-58 .school-name { font-size: 14pt !important; }
+    .pos-58 .salutation,
+    .pos-58 .letter-body,
+    .pos-58 .closing { font-size: 11pt !important; }
   }
 </style>
 </head>
 <body>
 <div class="app-container">
-  <h1>✦ Fees Drive Letter <small>POS · 80mm · Vertical</small></h1>
+  <h1>✦ Fees Drive Letter <small>POS · 80mm roll</small></h1>
 
   <div class="no-print">
     <div class="form-grid">
@@ -238,7 +252,7 @@
     <div id="statusMsg" class="status-msg"></div>
   </div>
 
-  <!-- Vertical letter (no date at top; date appears only inside the body) -->
+  <!-- POS letter preview -->
   <div class="letter-preview">
     <div class="pos-letter">
       <div class="school-header" id="schoolHeader">
@@ -266,7 +280,7 @@
 /* =========================================================================
    ⬇️  PASTE YOUR DEPLOYED WEB APP URL BETWEEN THE QUOTES BELOW
    ========================================================================= */
-const API_URL = 'https://script.google.com/macros/s/AKfycbwpNLGcdjg6Zy3DZkExldH9EpgnPxxq3uYYI0gW3fn_BcpkfPfXEM72BtYEt_Oi-tHFmw/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbz-mivjPHnonlwxnwmlLgab9YtHtGyEMPxkTbEH-g31x4wC30S-spqDhRPuM21H_WK0vg/exec';
 
 const dateInput         = document.getElementById('letterDate');
 const dayInput          = document.getElementById('letterDay');
@@ -308,7 +322,6 @@ function updateLetterContent() {
   }
   dayInput.value = day;
 
-  /* Only the body contains the date now */
   letterBody.innerHTML =
     `<p>PLEASE BE INFORMED THAT THERE WILL BE A SCHOOL FEES DRIVE ON <strong>${day}, ${dateFormatted}</strong>.</p>` +
     `<p>YOUR COOPERATION IS HIGHLY APPRECIATED.</p>` +
