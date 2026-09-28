@@ -10,6 +10,9 @@
 html, body { height:100%; -webkit-text-size-adjust:100%; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
+/* ============================================================
+   CONNECTION BADGE (green when reachable)
+   ============================================================ */
 #connBadge {
   position: fixed; top: 12px; right: 12px; z-index: 9999;
   padding: 8px 14px; border-radius: 30px;
@@ -17,13 +20,17 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   background: #e2e8f0; color: #475569;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   font-family: 'Inter', sans-serif;
-  max-width: 90vw; white-space: nowrap; overflow: hidden;
+  max-width: 90vw;
+  white-space: nowrap; overflow: hidden;
   text-overflow: ellipsis; cursor: pointer;
+  transition: opacity 0.3s;
 }
 #connBadge.ok      { background: #d4edda; color: #155724; }
 #connBadge.fail    { background: #f8d7da; color: #721c24; }
 #connBadge.testing { background: #fff3cd; color: #856404; }
+#connBadge.hide    { opacity: 0; pointer-events: none; }
 
+/* Debug panel */
 #debugPanel {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: #111; color: #0f0;
@@ -46,7 +53,9 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* LOGIN */
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
 .login-fullscreen {
   position: fixed; inset: 0;
   background: radial-gradient(circle at 15% 20%, #103a54 0%, #061520 70%);
@@ -115,7 +124,9 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   margin-left: 8px; vertical-align: -2px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* APP */
+/* ============================================================
+   APP
+   ============================================================ */
 .app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
 .header-area { margin-bottom:20px; }
 .header-area h1 { font-size:1.3rem; font-weight:800;
@@ -200,11 +211,16 @@ button { background:#1f6e93; color:white; border:none; }
 </head>
 <body>
 
+<!-- Connection badge (auto-hides when connected after 3s) -->
 <div id="connBadge" class="testing" title="Click to see details">⏳ Testing connection…</div>
+
+<!-- Debug panel -->
 <div id="debugPanel"></div>
 <button id="debugToggle" title="Toggle debug log">🐞</button>
 
-<!-- LOGIN -->
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
 <div id="loginFullscreen" class="login-fullscreen">
   <div class="login-card">
     <div class="login-logo">🏫</div>
@@ -234,7 +250,9 @@ button { background:#1f6e93; color:white; border:none; }
   </div>
 </div>
 
-<!-- APP -->
+<!-- ============================================================
+     APP
+     ============================================================ -->
 <div id="appContainer" class="app-container">
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
@@ -308,7 +326,10 @@ button { background:#1f6e93; color:white; border:none; }
 /* ============================================================
    CONFIG
    ============================================================ */
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzBzOX4yRwcsNvX2F1DA1zWlz70oFq01ubpgr6UBokC6-tAaOCUy9E6lApJuLVodJpQCg/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxw5ttKKQl6h0EYWVTdx-gyTmX84YiKQrtiVqSBgewIPCYGho_61EJPTpYfLq9MMvZKRQ/exec';
+
+const LS_TOKEN = 'sm_token_v1';
+const LS_USER  = 'sm_user_v1';
 
 /* ============================================================
    STATE
@@ -368,7 +389,6 @@ function testConnection() {
 
   const cb = 'connTest_' + Date.now();
   const url = API_BASE_URL + '?action=test&callback=' + cb;
-  dbg('Ping URL: ' + url);
 
   const s = document.createElement('script');
   s.src = url;
@@ -377,7 +397,7 @@ function testConnection() {
   const timer = setTimeout(() => {
     delete window[cb];
     if (s.parentNode) s.remove();
-    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s. Check deployment = "Anyone".');
+    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s.');
     dbg('❌ Connection test timeout', 'err');
   }, 10000);
 
@@ -387,11 +407,18 @@ function testConnection() {
     if (s.parentNode) s.remove();
     if (resp && resp.success) {
       setConnBadge('ok', '✅ Connected', 'Apps Script responded OK');
-      dbg('✅ Connection OK: ' + JSON.stringify(resp), 'ok');
+      dbg('✅ Connection OK', 'ok');
+    } else if (resp && resp.error) {
+      setConnBadge('ok', '✅ Connected', 'Server responded');
+      dbg('✅ Deployment reachable — ' + resp.error, 'ok');
     } else {
       setConnBadge('ok', '✅ Connected', 'Server responded');
-      dbg('✅ Deployment reachable — response: ' + JSON.stringify(resp).slice(0, 120), 'ok');
     }
+    // Auto-hide the badge 3 seconds after a successful connection
+    setTimeout(() => {
+      const b = document.getElementById('connBadge');
+      if (b && b.classList.contains('ok')) b.classList.add('hide');
+    }, 3000);
   };
 
   s.onerror = function() {
@@ -406,6 +433,7 @@ function testConnection() {
 }
 
 document.getElementById('connBadge').addEventListener('click', function() {
+  this.classList.remove('hide');
   document.getElementById('debugPanel').classList.toggle('show');
 });
 document.getElementById('debugToggle').addEventListener('click', function() {
@@ -413,7 +441,7 @@ document.getElementById('debugToggle').addEventListener('click', function() {
 });
 
 /* ============================================================
-   LOGIN FIELD CAPTURE
+   LOGIN FIELD CAPTURE (protects against mobile autofill wipe)
    ============================================================ */
 function setupLoginFieldCapture() {
   const emailEl = document.getElementById('fieldEmail');
@@ -438,8 +466,6 @@ function setupLoginFieldCapture() {
     if (emailEl.value && emailEl.value.trim().length > 0) credStore.email = emailEl.value.trim();
     if (passEl.value && passEl.value.length > 0) credStore.password = passEl.value;
   }, 400);
-
-  dbg('Login field capture installed');
 }
 
 function snapshotCredentialsNow() {
@@ -450,12 +476,12 @@ function snapshotCredentialsNow() {
 }
 
 /* ============================================================
-   SUBMIT LOGIN — calls the real authenticateUser endpoint
+   LOGIN SUBMIT
    ============================================================ */
 function submitLogin(evt) {
   if (evt && evt.preventDefault) evt.preventDefault();
   if (evt && evt.stopPropagation) evt.stopPropagation();
-  if (loginInFlight) { dbg('Submit ignored — already in flight'); return; }
+  if (loginInFlight) return;
 
   const emailEl = document.getElementById('fieldEmail');
   const passEl  = document.getElementById('fieldPassword');
@@ -463,11 +489,8 @@ function submitLogin(evt) {
   const btn     = document.getElementById('submitLogin');
 
   snapshotCredentialsNow();
-
   const email    = (credStore.email    || (emailEl && emailEl.value) || '').trim();
   const password = (credStore.password || (passEl  && passEl.value)  || '');
-
-  dbg('Submit → email: ' + email + ' (pwd len: ' + password.length + ')');
 
   errBox.classList.remove('show');
   errBox.textContent = '';
@@ -483,7 +506,6 @@ function submitLogin(evt) {
   btn.innerHTML = 'Signing in... <span class="lf-spinner"></span>';
 
   apiCall('authenticateUser', { email: email, password: password }, function(resp) {
-    dbg('Auth response: ' + JSON.stringify(resp).slice(0, 200));
     loginInFlight = false;
 
     if (resp && resp.success) {
@@ -492,53 +514,124 @@ function submitLogin(evt) {
       if (emailEl) emailEl.value = '';
       if (passEl)  passEl.value  = '';
 
-      sessionToken       = resp.token;
-      userMasterTab      = resp.tabName;
-      userSchoolName     = resp.schoolName;
-      userResultsTabName = resp.resultsTabName;
-      userYear           = resp.year;
+      // Save session for reload persistence
+      try {
+        localStorage.setItem(LS_TOKEN, resp.token);
+        localStorage.setItem(LS_USER, JSON.stringify({
+          email: resp.email,
+          tabName: resp.tabName,
+          schoolName: resp.schoolName,
+          resultsTabName: resp.resultsTabName,
+          year: resp.year,
+          term: resp.term,
+          sessionRaw: resp.sessionRaw
+        }));
+      } catch (e) { /* localStorage may be disabled */ }
 
-      if (resp.term) {
-        const tsel = document.getElementById('termSelect');
-        tsel.value = resp.term;
-        currentTerm = resp.term;
-        document.getElementById('saveTermLabel').textContent = resp.term;
-      }
-
-      document.getElementById('userInfoDisplay').innerHTML =
-        '👤 ' + escapeHtml(resp.email) +
-        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
-        ' | 📅 Year: ' + escapeHtml(userYear) +
-        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
-      document.getElementById('schoolBadge').innerHTML =
-        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
-
-      document.getElementById('loginFullscreen').style.display = 'none';
-      document.getElementById('appContainer').style.display = 'block';
-      btn.disabled = false;
-      btn.innerHTML = '➡️ SIGN IN';
-      dbg('Login success — loading data…', 'ok');
+      applySession(resp);
+      showApp();
       loadInitialData();
+      showToast('Welcome back, ' + resp.email, 'ok');
     } else {
       btn.disabled = false;
       btn.innerHTML = '➡️ SIGN IN';
-      const errMsg = (resp && resp.error) || 'Login failed — no response from server.';
-      errBox.textContent = '❌ ' + errMsg;
+      errBox.textContent = '❌ ' + ((resp && resp.error) || 'Login failed.');
       errBox.classList.add('show');
-      dbg('Login failed: ' + errMsg, 'err');
+      dbg('Login failed', 'err');
     }
   });
 }
 
 /* ============================================================
-   LOGOUT
+   APPLY SESSION (used after login or from stored session)
    ============================================================ */
-function handleLogout() {
-  if (sessionToken) {
-    // Fire-and-forget server-side logout
-    apiCall('logout', { token: sessionToken }, function() { /* ignore */ });
+function applySession(data) {
+  sessionToken       = data.token;
+  userMasterTab      = data.tabName;
+  userSchoolName     = data.schoolName;
+  userResultsTabName = data.resultsTabName;
+  userYear           = data.year;
+
+  if (data.term) {
+    currentTerm = data.term;
+    document.getElementById('termSelect').value = data.term;
+    document.getElementById('saveTermLabel').textContent = data.term;
   }
 
+  document.getElementById('userInfoDisplay').innerHTML =
+    '👤 ' + escapeHtml(data.email || '') +
+    ' | 🏷️ Slug: ' + escapeHtml(userMasterTab || '') +
+    ' | 📅 Year: ' + escapeHtml(userYear || '') +
+    ' | 📊 Tab: "' + escapeHtml(userResultsTabName || '') + '"';
+  document.getElementById('schoolBadge').innerHTML =
+    '🏫 ' + escapeHtml(userSchoolName || '') + ' — ' + escapeHtml(data.sessionRaw || userYear || '');
+
+  dbg('Session applied for ' + (data.email || 'user'), 'ok');
+}
+
+function showApp() {
+  document.getElementById('loginFullscreen').style.display = 'none';
+  document.getElementById('appContainer').style.display = 'block';
+  const btn = document.getElementById('submitLogin');
+  if (btn) { btn.disabled = false; btn.innerHTML = '➡️ SIGN IN'; }
+}
+
+function showLogin() {
+  document.getElementById('loginFullscreen').style.display = 'flex';
+  document.getElementById('appContainer').style.display = 'none';
+}
+
+/* ============================================================
+   AUTO-RESTORE SESSION ON PAGE LOAD
+   ------------------------------------------------------------
+   Reads the token from localStorage. If present, we skip the
+   login screen and call loadInitialData() directly. If the
+   server-side cache has expired (> 60 min), getStudentData
+   will return "Session expired" and we drop back to login.
+   ============================================================ */
+function tryRestoreSession() {
+  let token = null, user = null;
+  try {
+    token = localStorage.getItem(LS_TOKEN);
+    user  = localStorage.getItem(LS_USER);
+  } catch (e) { /* localStorage disabled */ }
+
+  if (!token || !user) { showLogin(); return; }
+
+  try { user = JSON.parse(user); } catch (e) { showLogin(); return; }
+
+  // Optimistically show the app with the stored user info
+  sessionToken = token;
+  applySession({
+    token: token,
+    email: user.email,
+    tabName: user.tabName,
+    schoolName: user.schoolName,
+    resultsTabName: user.resultsTabName,
+    year: user.year,
+    term: user.term,
+    sessionRaw: user.sessionRaw
+  });
+  showApp();
+  dbg('Attempting session restore…');
+
+  // Confirm the token is still alive by hitting getStudentData.
+  // If it fails with "Session expired", drop back to login.
+  apiCall('getStudentData', { token: sessionToken }, function(students) {
+    if (students && students.error) {
+      dbg('Restore failed: ' + students.error, 'err');
+      clearStoredSession();
+      showLogin();
+      return;
+    }
+    // Token is alive — continue as if we just logged in
+    studentMaster = students || [];
+    dbg('Session restored — loaded ' + studentMaster.length + ' students', 'ok');
+    continueLoadingAfterStudents();
+  });
+}
+
+function clearStoredSession() {
   sessionToken = null;
   userMasterTab = null;
   userSchoolName = null;
@@ -547,6 +640,20 @@ function handleLogout() {
   studentMaster = [];
   subjectsCatalog = [];
   marksCache = {};
+  try {
+    localStorage.removeItem(LS_TOKEN);
+    localStorage.removeItem(LS_USER);
+  } catch (e) { /* ignore */ }
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function handleLogout() {
+  if (sessionToken) {
+    apiCall('logout', { token: sessionToken }, function() { /* ignore */ });
+  }
+  clearStoredSession();
   credStore.email = '';
   credStore.password = '';
   loginInFlight = false;
@@ -567,16 +674,15 @@ function handleLogout() {
   document.getElementById('userInfoDisplay').textContent = '👤 Logged out';
   document.getElementById('schoolBadge').textContent = '🏫 Loading school data...';
 
-  document.getElementById('loginFullscreen').style.display = 'flex';
-  document.getElementById('appContainer').style.display = 'none';
-  dbg('Logged out');
+  showLogin();
+  showToast('Logged out', 'ok');
 }
 
 /* ============================================================
    JSONP TRANSPORT
    ============================================================ */
 function apiCall(action, data, callback) {
-  dbg('📡 apiCall: ' + action);
+  dbg('📡 ' + action);
 
   const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
   let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
@@ -599,7 +705,7 @@ function apiCall(action, data, callback) {
     delete window[cb];
     if (s.parentNode) s.remove();
     dbg('⏱️ Timeout for ' + action, 'err');
-    callback({ error: 'Request timeout — check your internet connection or Apps Script deployment' });
+    callback({ error: 'Request timeout' });
   }, 60000);
 
   window[cb] = function(resp) {
@@ -608,7 +714,7 @@ function apiCall(action, data, callback) {
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
-    dbg('✅ Response for ' + action, 'ok');
+    dbg('✅ ' + action + ' responded', 'ok');
     callback(resp);
   };
 
@@ -618,11 +724,33 @@ function apiCall(action, data, callback) {
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
-    dbg('❌ Script load error for ' + action, 'err');
-    callback({ error: 'Network error — Apps Script may not be deployed to "Anyone", or CORS blocked' });
+    dbg('❌ Script error for ' + action, 'err');
+    callback({ error: 'Network error' });
   };
 
   document.body.appendChild(s);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, type) {
+  let toast = document.getElementById('smToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'smToast';
+    toast.style.cssText =
+      'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);' +
+      'padding:12px 24px;border-radius:30px;font-weight:600;font-size:13px;' +
+      'color:white;background:#1a6d8f;box-shadow:0 8px 24px rgba(0,0,0,0.25);' +
+      'z-index:10000;opacity:0;transition:opacity 0.3s;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.background = type === 'err' ? '#c62828' : '#0f7b3a';
+  toast.style.opacity = '1';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
 }
 
 /* ============================================================
@@ -675,7 +803,9 @@ function computeRowGrade(tr) {
   const t1 = parseFloat(t1El.value) || 0;
   const t2 = parseFloat(t2El.value) || 0;
   const ex = parseFloat(exEl.value) || 0;
-  const total = Math.min(15, Math.max(0, t1)) + Math.min(15, Math.max(0, t2)) + Math.min(70, Math.max(0, ex));
+  const total = Math.min(15, Math.max(0, t1)) +
+                Math.min(15, Math.max(0, t2)) +
+                Math.min(70, Math.max(0, ex));
   const g = getGrade(total);
   const totalCell  = tr.querySelector('.total-cell');
   const gradeCell  = tr.querySelector('.grade-cell');
@@ -699,25 +829,40 @@ function loadInitialData() {
       dbg('studentData error: ' + students.error, 'err');
       document.getElementById('tableBody').innerHTML =
         '<tr><td colspan="8" class="empty-msg">❌ ' + escapeHtml(students.error) + '</td></tr>';
+      if (students.error.indexOf('Session') !== -1) {
+        clearStoredSession();
+        showLogin();
+      }
       return;
     }
     studentMaster = students || [];
     dbg('Loaded ' + studentMaster.length + ' students', 'ok');
+    continueLoadingAfterStudents();
+  });
+}
 
-    apiCall('getSubjects', { token: sessionToken }, function(subjects) {
-      if (subjects && subjects.error) { setStatus(subjects.error, 'error'); dbg('subjects error: ' + subjects.error, 'err'); return; }
-      subjectsCatalog = subjects || [];
-      populateSubjectDropdown();
-      dbg('Loaded ' + subjectsCatalog.length + ' subjects', 'ok');
+function continueLoadingAfterStudents() {
+  apiCall('getSubjects', { token: sessionToken }, function(subjects) {
+    if (subjects && subjects.error) {
+      setStatus(subjects.error, 'error');
+      dbg('subjects error: ' + subjects.error, 'err');
+      return;
+    }
+    subjectsCatalog = subjects || [];
+    populateSubjectDropdown();
+    dbg('Loaded ' + subjectsCatalog.length + ' subjects', 'ok');
 
-      apiCall('getMarksData', { token: sessionToken }, function(marks) {
-        if (marks && marks.error) { setStatus(marks.error, 'error'); dbg('marks error: ' + marks.error, 'err'); return; }
-        marksCache = marks || {};
-        populateClassDropdown();
-        renderTable();
-        setStatus('✅ Loaded ' + studentMaster.length + ' students, ' + subjectsCatalog.length + ' subjects.', 'success');
-        dbg('All data loaded', 'ok');
-      });
+    apiCall('getMarksData', { token: sessionToken }, function(marks) {
+      if (marks && marks.error) {
+        setStatus(marks.error, 'error');
+        dbg('marks error: ' + marks.error, 'err');
+        return;
+      }
+      marksCache = marks || {};
+      populateClassDropdown();
+      renderTable();
+      setStatus('✅ Loaded ' + studentMaster.length + ' students, ' + subjectsCatalog.length + ' subjects.', 'success');
+      dbg('All data loaded', 'ok');
     });
   });
 }
@@ -875,13 +1020,15 @@ function saveMarks() {
       const skipped   = resp.skippedZero || 0;
 
       let msg = '✅ Saved ' + savedCount + ' student(s) for ' + term;
-      if (addedCount > 0) msg += ' — ' + addedCount + ' newly added to results tab';
+      if (addedCount > 0) msg += ' — ' + addedCount + ' newly added';
       if (skipped > 0)    msg += ' • Skipped ' + skipped + ' with no scores';
       setStatus(msg + '.', 'success');
+      showToast('Saved ' + savedCount + ' marks', 'ok');
       dbg('Save success: ' + msg, 'ok');
     } else {
       setStatus('⚠️ ' + ((resp && resp.error) || 'Save failed'), 'error');
-      dbg('Save failed: ' + JSON.stringify(resp), 'err');
+      showToast('Save failed', 'err');
+      dbg('Save failed', 'err');
     }
   });
 }
@@ -927,7 +1074,11 @@ function boot() {
 
   dbg('Boot complete', 'ok');
 
-  setTimeout(testConnection, 300);
+  // Test connection first, then try to restore any saved session
+  setTimeout(function() {
+    testConnection();
+    setTimeout(tryRestoreSession, 500);
+  }, 200);
 }
 
 if (document.readyState === 'loading') {
