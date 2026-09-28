@@ -10,7 +10,6 @@
 html, body { height:100%; -webkit-text-size-adjust:100%; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
-/* Connection diagnostic badge */
 #connBadge {
   position: fixed; top: 12px; right: 12px; z-index: 9999;
   padding: 8px 14px; border-radius: 30px;
@@ -18,26 +17,20 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   background: #e2e8f0; color: #475569;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   font-family: 'Inter', sans-serif;
-  max-width: 90vw;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
+  max-width: 90vw; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; cursor: pointer;
 }
 #connBadge.ok      { background: #d4edda; color: #155724; }
 #connBadge.fail    { background: #f8d7da; color: #721c24; }
 #connBadge.testing { background: #fff3cd; color: #856404; }
 
-/* Debug panel */
 #debugPanel {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: #111; color: #0f0;
   font-family: 'Courier New', monospace;
   font-size: 10px; line-height: 1.4;
   max-height: 28vh; overflow-y: auto;
-  padding: 6px 10px;
-  z-index: 9998;
-  display: none;
+  padding: 6px 10px; z-index: 9998; display: none;
   border-top: 2px solid #0f0;
 }
 #debugPanel.show { display: block; }
@@ -53,102 +46,195 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
+/* LOGIN */
+.login-fullscreen {
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at 15% 20%, #103a54 0%, #061520 70%);
+  display: flex; justify-content: center; align-items: flex-start;
+  z-index: 2000; padding: 20px; padding-top: 6vh;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.login-card {
+  background: #ffffff; border-radius: 36px;
+  padding: 36px 28px 32px; width: 100%; max-width: 440px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35); margin: auto 0;
+  animation: cardIn 0.4s ease-out;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-logo {
+  width: 68px; height: 68px; margin: 0 auto 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg,#1a6d8f,#0e5270);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; box-shadow: 0 8px 20px rgba(26,109,143,0.4);
+}
+.login-title { font-size: 1.4rem; font-weight: 800; text-align: center;
+  color: #0e3d54; letter-spacing: -0.3px; margin-bottom: 6px; }
+.login-subtitle { font-size: 0.8rem; text-align: center; color: #6b8ba3;
+  margin-bottom: 26px; line-height: 1.5; }
+.lf-group { margin-bottom: 16px; }
+.lf-label { display: block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: #2c6f91; margin-bottom: 7px; padding-left: 4px; }
+.lf-input { width: 100%; padding: 15px 18px;
+  border: 2px solid #e2edf7; border-radius: 14px;
+  font-size: 16px; font-family: inherit; background: #f7fbfe;
+  color: #0e3d54; outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none; appearance: none; }
+.lf-input:focus { border-color: #1f8fc7; background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(31,143,199,0.12); }
+.lf-input::placeholder { color: #a5bccb; }
+.lf-input.lf-password { -webkit-text-security: disc; text-security: disc; letter-spacing: 1px; }
+.lf-submit { width: 100%; padding: 16px 20px; margin-top: 8px;
+  border: none; border-radius: 14px;
+  background: linear-gradient(135deg,#1a6d8f 0%,#0e5270 100%);
+  color: #ffffff; font-size: 0.95rem; font-weight: 700;
+  letter-spacing: 0.4px; cursor: pointer; font-family: inherit;
+  box-shadow: 0 8px 20px rgba(26,109,143,0.35);
+  transition: transform 0.12s, box-shadow 0.2s, opacity 0.2s;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  user-select: none; -webkit-user-select: none; }
+.lf-submit:active { transform: scale(0.975); }
+.lf-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+.lf-error { margin-top: 16px; padding: 12px 16px;
+  background: #fdecec; border-left: 4px solid #dc3545;
+  border-radius: 10px; color: #b3261e; font-size: 0.82rem;
+  font-weight: 500; display: none; line-height: 1.4; }
+.lf-error.show { display: block; }
+.lf-hint { margin-top: 18px; text-align: center;
+  font-size: 0.7rem; color: #93aec2; line-height: 1.6; }
+.lf-hint code { background: #eef4fa; padding: 2px 6px; border-radius: 5px;
+  font-family: 'Courier New', monospace; font-size: 0.72rem; color: #1a6d8f; }
+.lf-spinner { display: inline-block; width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.5); border-top-color: #ffffff;
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+  margin-left: 8px; vertical-align: -2px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* APP */
-.app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:block; }
+.app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
 .header-area { margin-bottom:20px; }
 .header-area h1 { font-size:1.3rem; font-weight:800;
-  background: linear-gradient(135deg,#1a5d7a,#2c9bcf); -webkit-background-clip:text; background-clip:text;
-  color:transparent; }
-.school-badge { background: linear-gradient(135deg,#1a5d7a,#2c9bcf); color:white; padding:6px 16px;
-  border-radius:30px; font-size:0.7rem; display:inline-block; margin-top:8px; }
-.user-info-bar { background:white; border-radius:48px; padding:12px 20px; margin-bottom:20px;
-  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
-  border:1px solid #e2edf7; }
+  background: linear-gradient(135deg,#1a5d7a,#2c9bcf);
+  -webkit-background-clip:text; background-clip:text; color:transparent; }
+.school-badge { background: linear-gradient(135deg,#1a5d7a,#2c9bcf);
+  color:white; padding:6px 16px; border-radius:30px; font-size:0.7rem;
+  display:inline-block; margin-top:8px; }
+.user-info-bar { background:white; border-radius:48px; padding:12px 20px;
+  margin-bottom:20px; display:flex; justify-content:space-between;
+  align-items:center; flex-wrap:wrap; gap:12px; border:1px solid #e2edf7; }
 .user-details { font-size:0.75rem; font-weight:500; color:#2c6f91; word-break:break-word; }
-.logout-btn { background:#dc3545; padding:8px 24px; font-size:0.8rem; border-radius:40px;
-  font-weight:600; cursor:pointer; border:none; color:white; }
-.card-control { background:white; border-radius:36px; padding:20px; margin-bottom:24px;
-  display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; border:1px solid #e9f1f8; }
-.field-group { display:flex; flex-direction:column; gap:8px; min-width:150px; flex:1; }
-.field-group label { font-size:0.6rem; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.5px; color:#2c6f91; }
-select, button { padding:11px 16px; border-radius:32px; font-weight:600; background:white;
-  border:1px solid #cde0ec; font-size:0.8rem; cursor:pointer; font-family:inherit; }
+.logout-btn { background:#dc3545; padding:8px 24px; font-size:0.8rem;
+  border-radius:40px; font-weight:600; cursor:pointer; border:none; color:white; }
+.card-control { background:white; border-radius:36px; padding:20px;
+  margin-bottom:24px; display:flex; flex-wrap:wrap; gap:16px;
+  align-items:flex-end; border:1px solid #e9f1f8; }
+.field-group { display:flex; flex-direction:column; gap:8px;
+  min-width:150px; flex:1; }
+.field-group label { font-size:0.6rem; font-weight:800;
+  text-transform:uppercase; letter-spacing:0.5px; color:#2c6f91; }
+select, button { padding:11px 16px; border-radius:32px; font-weight:600;
+  background:white; border:1px solid #cde0ec; font-size:0.8rem;
+  cursor:pointer; font-family:inherit; }
 button { background:#1f6e93; color:white; border:none; }
 .btn-outline { background:white; color:#1f6e93; border:1px solid #1f6e93; }
 .action-group { display:flex; gap:10px; flex-wrap:wrap; }
-.status-bar { background:#e8f1f8; border-radius:60px; padding:10px 18px; margin-bottom:20px;
-  font-size:0.75rem; font-weight:500; color:#1d6f94; display:flex; justify-content:space-between;
-  align-items:center; flex-wrap:wrap; gap:8px; }
+.status-bar { background:#e8f1f8; border-radius:60px; padding:10px 18px;
+  margin-bottom:20px; font-size:0.75rem; font-weight:500; color:#1d6f94;
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:8px; }
 .status-bar.error { background:#ffe0e0; color:#c0392b; }
 .status-bar.success { background:#d4edda; color:#155724; }
 .status-bar.warning { background:#fff3cd; color:#856404; }
-.sync-indicator { font-size:0.65rem; background:rgba(0,0,0,0.05); padding:4px 12px;
-  border-radius:20px; white-space:nowrap; }
+.sync-indicator { font-size:0.65rem; background:rgba(0,0,0,0.05);
+  padding:4px 12px; border-radius:20px; white-space:nowrap; }
 .table-wrapper { background:white; border-radius:28px; overflow-x:auto;
   border:1px solid #e6eff8; margin-bottom:20px; padding:8px 6px; }
-.marks-table { width:100%; border-collapse:collapse; font-size:0.78rem; min-width:640px;
-  table-layout:fixed; }
-.marks-table th { background:#fafeff; padding:10px 8px; font-weight:700; font-size:0.7rem;
-  color:#1b5a7c; border-bottom:2px solid #d4e3ef; text-align:center; }
-.marks-table td { padding:8px 6px; border-bottom:1px solid #f0f6fc; text-align:center;
-  vertical-align:middle; }
+.marks-table { width:100%; border-collapse:collapse; font-size:0.78rem;
+  min-width:640px; table-layout:fixed; }
+.marks-table th { background:#fafeff; padding:10px 8px; font-weight:700;
+  font-size:0.7rem; color:#1b5a7c; border-bottom:2px solid #d4e3ef; text-align:center; }
+.marks-table td { padding:8px 6px; border-bottom:1px solid #f0f6fc;
+  text-align:center; vertical-align:middle; }
 .col-roll { width:8%; } .col-name { width:26%; }
 .col-test1,.col-test2 { width:10%; } .col-exam { width:12%; }
-.col-total  { width:9%; }
-.col-grade  { width:9%; }
-.col-remark { width:16%; }
-.student-name { text-align:left; font-weight:500; font-size:0.78rem; padding-left:6px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.marks-input { width:100%; max-width:75px; padding:7px 4px; border-radius:20px;
-  border:1px solid #cbdef0; text-align:center; font-weight:500; font-size:16px;
-  background:#fafffe; }
+.col-total  { width:9%; } .col-grade  { width:9%; } .col-remark { width:16%; }
+.student-name { text-align:left; font-weight:500; font-size:0.78rem;
+  padding-left:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.marks-input { width:100%; max-width:75px; padding:7px 4px;
+  border-radius:20px; border:1px solid #cbdef0; text-align:center;
+  font-weight:500; font-size:16px; background:#fafffe; }
 .marks-input:focus { border-color:#1f8fc7; outline:none;
   box-shadow:0 0 0 3px rgba(31,143,199,0.12); background:white; }
 .marks-input.invalid { border-color:#dc3545; background:#fff0f0; }
-.empty-msg { text-align:center; padding:30px 10px !important; color:#6c8faa; font-size:0.85rem; }
-.footer-note { margin-top:20px; text-align:right; font-size:0.6rem; color:#3a789b;
-  background:#eef4fa; padding:8px 16px; border-radius:60px; line-height:1.8; }
-.save-footer { display:flex; justify-content:flex-end; gap:12px; margin-top:10px;
-  margin-bottom:20px; flex-wrap:wrap; }
-.save-footer button { padding:10px 20px; font-size:0.8rem; border-radius:60px; font-weight:700; }
+.empty-msg { text-align:center; padding:30px 10px !important;
+  color:#6c8faa; font-size:0.85rem; }
+.footer-note { margin-top:20px; text-align:right; font-size:0.6rem;
+  color:#3a789b; background:#eef4fa; padding:8px 16px;
+  border-radius:60px; line-height:1.8; }
+.save-footer { display:flex; justify-content:flex-end; gap:12px;
+  margin-top:10px; margin-bottom:20px; flex-wrap:wrap; }
+.save-footer button { padding:10px 20px; font-size:0.8rem;
+  border-radius:60px; font-weight:700; }
 .save-footer .btn-primary { background:#28a745; }
 .total-cell { font-weight:700; color:#1b5a7c; font-size:0.82rem; }
-.grade-badge { display:inline-block; min-width:36px; padding:4px 8px; border-radius:20px;
-  font-weight:700; font-size:0.7rem; color:white; letter-spacing:0.3px; }
-.grade-A1 { background:#0f9d58; }
-.grade-B2 { background:#43a047; }
-.grade-B3 { background:#7cb342; }
-.grade-C4 { background:#fbc02d; color:#333; }
-.grade-C5 { background:#f9a825; color:#333; }
-.grade-C6 { background:#f57c00; }
-.grade-D7 { background:#ef6c00; }
-.grade-E8 { background:#e64a19; }
+.grade-badge { display:inline-block; min-width:36px; padding:4px 8px;
+  border-radius:20px; font-weight:700; font-size:0.7rem;
+  color:white; letter-spacing:0.3px; }
+.grade-A1 { background:#0f9d58; } .grade-B2 { background:#43a047; }
+.grade-B3 { background:#7cb342; } .grade-C4 { background:#fbc02d; color:#333; }
+.grade-C5 { background:#f9a825; color:#333; } .grade-C6 { background:#f57c00; }
+.grade-D7 { background:#ef6c00; } .grade-E8 { background:#e64a19; }
 .grade-F9 { background:#c62828; }
 .remark-cell { font-size:0.72rem; color:#456; font-weight:500; }
-.lf-spinner {
-  display: inline-block; width: 15px; height: 15px;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-left: 8px; vertical-align: -2px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width:640px) {
   .save-footer button { width:100%; }
+  .login-card { border-radius:28px; padding:30px 22px 26px; }
+  .login-title { font-size:1.25rem; }
 }
 </style>
 </head>
 <body>
 
-<!-- Live connection badge -->
 <div id="connBadge" class="testing" title="Click to see details">⏳ Testing connection…</div>
-
-<!-- Debug panel -->
 <div id="debugPanel"></div>
 <button id="debugToggle" title="Toggle debug log">🐞</button>
 
+<!-- LOGIN -->
+<div id="loginFullscreen" class="login-fullscreen">
+  <div class="login-card">
+    <div class="login-logo">🏫</div>
+    <div class="login-title">School Marks Manager</div>
+    <div class="login-subtitle">Sign in with your school account</div>
+
+    <div class="lf-group">
+      <label class="lf-label" for="fieldEmail">📧 Email address</label>
+      <input type="text" id="fieldEmail" class="lf-input" placeholder="teacher@school.edu"
+        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
+        inputmode="email">
+    </div>
+
+    <div class="lf-group">
+      <label class="lf-label" for="fieldPassword">🔒 Password</label>
+      <input type="text" id="fieldPassword" class="lf-input lf-password" placeholder="Enter password"
+        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+    </div>
+
+    <button type="button" id="submitLogin" class="lf-submit">➡️ SIGN IN</button>
+
+    <div id="loginErrorBox" class="lf-error"></div>
+
+    <div class="lf-hint" id="loginHint">
+      🔐 Use the email & password from your Users sheet
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
 <div id="appContainer" class="app-container">
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
@@ -202,7 +288,7 @@ button { background:#1f6e93; color:white; border:none; }
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="8" class="empty-msg">⏳ Loading students…</td></tr>
+        <tr><td colspan="8" class="empty-msg">🔐 Please login to continue...</td></tr>
       </tbody>
     </table>
   </div>
@@ -222,37 +308,26 @@ button { background:#1f6e93; color:white; border:none; }
 /* ============================================================
    CONFIG
    ============================================================ */
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxw5ttKKQl6h0EYWVTdx-gyTmX84YiKQrtiVqSBgewIPCYGho_61EJPTpYfLq9MMvZKRQ/exec';
-
-/* ============================================================
-   HARDCODED SESSION — login removed for testing
-   Change these values to match your actual school/user.
-   ============================================================ */
-const HARDCODED_SESSION = {
-  token: 'TEST-SESSION-TOKEN',
-  email: 'test@school.edu',
-  tabName: 'Students',       // ← your school tab/slug (Users column D)
-  schoolName: 'Test School',
-  resultsTabName: 'Students student results 2025',
-  year: '2025',
-  term: 'Term 1'
-};
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzBzOX4yRwcsNvX2F1DA1zWlz70oFq01ubpgr6UBokC6-tAaOCUy9E6lApJuLVodJpQCg/exec';
 
 /* ============================================================
    STATE
    ============================================================ */
-let sessionToken = HARDCODED_SESSION.token;
-let userMasterTab = HARDCODED_SESSION.tabName;
-let userSchoolName = HARDCODED_SESSION.schoolName;
-let userResultsTabName = HARDCODED_SESSION.resultsTabName;
-let userYear = HARDCODED_SESSION.year;
+let sessionToken = null;
+let userMasterTab = null;
+let userSchoolName = null;
+let userResultsTabName = null;
+let userYear = null;
 
 let studentMaster = [];
 let subjectsCatalog = [];
 let marksCache = {};
 let currentClass = '';
 let currentSubject = '';
-let currentTerm = HARDCODED_SESSION.term;
+let currentTerm = 'Term 1';
+
+const credStore = { email: '', password: '' };
+let loginInFlight = false;
 
 /* ============================================================
    DEBUG LOGGER
@@ -302,7 +377,7 @@ function testConnection() {
   const timer = setTimeout(() => {
     delete window[cb];
     if (s.parentNode) s.remove();
-    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s.');
+    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s. Check deployment = "Anyone".');
     dbg('❌ Connection test timeout', 'err');
   }, 10000);
 
@@ -314,8 +389,8 @@ function testConnection() {
       setConnBadge('ok', '✅ Connected', 'Apps Script responded OK');
       dbg('✅ Connection OK: ' + JSON.stringify(resp), 'ok');
     } else {
-      setConnBadge('fail', '❌ Bad response', 'Got: ' + JSON.stringify(resp).slice(0, 80));
-      dbg('❌ Bad ping response: ' + JSON.stringify(resp), 'err');
+      setConnBadge('ok', '✅ Connected', 'Server responded');
+      dbg('✅ Deployment reachable — response: ' + JSON.stringify(resp).slice(0, 120), 'ok');
     }
   };
 
@@ -336,6 +411,166 @@ document.getElementById('connBadge').addEventListener('click', function() {
 document.getElementById('debugToggle').addEventListener('click', function() {
   document.getElementById('debugPanel').classList.toggle('show');
 });
+
+/* ============================================================
+   LOGIN FIELD CAPTURE
+   ============================================================ */
+function setupLoginFieldCapture() {
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+
+  function captureEmail() {
+    const v = emailEl.value || '';
+    if (v.length > 0) credStore.email = v.trim();
+  }
+  function capturePassword() {
+    const v = passEl.value || '';
+    if (v.length > 0) credStore.password = v;
+  }
+
+  ['input','keyup','keydown','change','blur','paste','compositionend','focusout']
+    .forEach(evt => {
+      emailEl.addEventListener(evt, captureEmail, true);
+      passEl.addEventListener(evt, capturePassword, true);
+    });
+
+  setInterval(() => {
+    if (emailEl.value && emailEl.value.trim().length > 0) credStore.email = emailEl.value.trim();
+    if (passEl.value && passEl.value.length > 0) credStore.password = passEl.value;
+  }, 400);
+
+  dbg('Login field capture installed');
+}
+
+function snapshotCredentialsNow() {
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+  if (emailEl && emailEl.value && emailEl.value.trim()) credStore.email = emailEl.value.trim();
+  if (passEl  && passEl.value  && passEl.value.length)  credStore.password = passEl.value;
+}
+
+/* ============================================================
+   SUBMIT LOGIN — calls the real authenticateUser endpoint
+   ============================================================ */
+function submitLogin(evt) {
+  if (evt && evt.preventDefault) evt.preventDefault();
+  if (evt && evt.stopPropagation) evt.stopPropagation();
+  if (loginInFlight) { dbg('Submit ignored — already in flight'); return; }
+
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+  const errBox  = document.getElementById('loginErrorBox');
+  const btn     = document.getElementById('submitLogin');
+
+  snapshotCredentialsNow();
+
+  const email    = (credStore.email    || (emailEl && emailEl.value) || '').trim();
+  const password = (credStore.password || (passEl  && passEl.value)  || '');
+
+  dbg('Submit → email: ' + email + ' (pwd len: ' + password.length + ')');
+
+  errBox.classList.remove('show');
+  errBox.textContent = '';
+
+  if (!email || !password) {
+    errBox.textContent = 'Please enter both email and password.';
+    errBox.classList.add('show');
+    return;
+  }
+
+  loginInFlight = true;
+  btn.disabled = true;
+  btn.innerHTML = 'Signing in... <span class="lf-spinner"></span>';
+
+  apiCall('authenticateUser', { email: email, password: password }, function(resp) {
+    dbg('Auth response: ' + JSON.stringify(resp).slice(0, 200));
+    loginInFlight = false;
+
+    if (resp && resp.success) {
+      credStore.email = '';
+      credStore.password = '';
+      if (emailEl) emailEl.value = '';
+      if (passEl)  passEl.value  = '';
+
+      sessionToken       = resp.token;
+      userMasterTab      = resp.tabName;
+      userSchoolName     = resp.schoolName;
+      userResultsTabName = resp.resultsTabName;
+      userYear           = resp.year;
+
+      if (resp.term) {
+        const tsel = document.getElementById('termSelect');
+        tsel.value = resp.term;
+        currentTerm = resp.term;
+        document.getElementById('saveTermLabel').textContent = resp.term;
+      }
+
+      document.getElementById('userInfoDisplay').innerHTML =
+        '👤 ' + escapeHtml(resp.email) +
+        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
+        ' | 📅 Year: ' + escapeHtml(userYear) +
+        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
+      document.getElementById('schoolBadge').innerHTML =
+        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
+
+      document.getElementById('loginFullscreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = '➡️ SIGN IN';
+      dbg('Login success — loading data…', 'ok');
+      loadInitialData();
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '➡️ SIGN IN';
+      const errMsg = (resp && resp.error) || 'Login failed — no response from server.';
+      errBox.textContent = '❌ ' + errMsg;
+      errBox.classList.add('show');
+      dbg('Login failed: ' + errMsg, 'err');
+    }
+  });
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function handleLogout() {
+  if (sessionToken) {
+    // Fire-and-forget server-side logout
+    apiCall('logout', { token: sessionToken }, function() { /* ignore */ });
+  }
+
+  sessionToken = null;
+  userMasterTab = null;
+  userSchoolName = null;
+  userResultsTabName = null;
+  userYear = null;
+  studentMaster = [];
+  subjectsCatalog = [];
+  marksCache = {};
+  credStore.email = '';
+  credStore.password = '';
+  loginInFlight = false;
+
+  const emailEl = document.getElementById('fieldEmail');
+  const passEl  = document.getElementById('fieldPassword');
+  if (emailEl) emailEl.value = '';
+  if (passEl)  passEl.value  = '';
+  const errBox = document.getElementById('loginErrorBox');
+  if (errBox) { errBox.classList.remove('show'); errBox.textContent = ''; }
+  const btn = document.getElementById('submitLogin');
+  if (btn) { btn.disabled = false; btn.innerHTML = '➡️ SIGN IN'; }
+
+  document.getElementById('classSelect').innerHTML = '<option value="">-- Loading classes... --</option>';
+  document.getElementById('subjectSelect').innerHTML = '<option value="">-- Loading subjects... --</option>';
+  document.getElementById('tableBody').innerHTML =
+    '<tr><td colspan="8" class="empty-msg">🔐 Please login to continue...</td></tr>';
+  document.getElementById('userInfoDisplay').textContent = '👤 Logged out';
+  document.getElementById('schoolBadge').textContent = '🏫 Loading school data...';
+
+  document.getElementById('loginFullscreen').style.display = 'flex';
+  document.getElementById('appContainer').style.display = 'none';
+  dbg('Logged out');
+}
 
 /* ============================================================
    JSONP TRANSPORT
@@ -459,7 +694,13 @@ function loadInitialData() {
   dbg('Loading student data…');
 
   apiCall('getStudentData', { token: sessionToken }, function(students) {
-    if (students && students.error) { setStatus(students.error, 'error'); dbg('studentData error: ' + students.error, 'err'); return; }
+    if (students && students.error) {
+      setStatus('❌ ' + students.error, 'error');
+      dbg('studentData error: ' + students.error, 'err');
+      document.getElementById('tableBody').innerHTML =
+        '<tr><td colspan="8" class="empty-msg">❌ ' + escapeHtml(students.error) + '</td></tr>';
+      return;
+    }
     studentMaster = students || [];
     dbg('Loaded ' + studentMaster.length + ' students', 'ok');
 
@@ -490,6 +731,7 @@ function populateClassDropdown() {
     opt.value = c; opt.textContent = c;
     el.appendChild(opt);
   });
+  dbg('Classes loaded: ' + classes.length, 'ok');
 }
 
 function populateSubjectDropdown() {
@@ -645,34 +887,37 @@ function saveMarks() {
 }
 
 /* ============================================================
-   LOGOUT (just resets state — no login screen to return to)
-   ============================================================ */
-function handleLogout() {
-  if (confirm('Logout? (You will be prompted to reload the page.)')) {
-    location.reload();
-  }
-}
-
-/* ============================================================
    BOOT
    ============================================================ */
 function boot() {
-  dbg('🚀 Boot starting (login disabled)…');
+  dbg('🚀 Boot starting…');
 
-  // Display the hardcoded user info
-  document.getElementById('userInfoDisplay').innerHTML =
-    '👤 ' + escapeHtml(HARDCODED_SESSION.email) +
-    ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
-    ' | 📅 Year: ' + escapeHtml(userYear) +
-    ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
-  document.getElementById('schoolBadge').innerHTML =
-    '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(userYear);
+  setupLoginFieldCapture();
 
-  // Set default term
-  document.getElementById('termSelect').value = currentTerm;
-  document.getElementById('saveTermLabel').textContent = currentTerm;
+  const btn = document.getElementById('submitLogin');
+  btn.addEventListener('click', submitLogin);
 
-  // App bindings
+  let lastTouch = 0;
+  btn.addEventListener('touchend', function(e) {
+    const now = Date.now();
+    if (now - lastTouch < 600) return;
+    lastTouch = now;
+    setTimeout(function() {
+      if (!loginInFlight && !btn.disabled) submitLogin(e);
+    }, 60);
+  }, { passive: false });
+
+  ['mousedown','pointerdown','touchstart'].forEach(evt => {
+    btn.addEventListener(evt, snapshotCredentialsNow, { passive: true, capture: true });
+  });
+
+  document.getElementById('fieldEmail').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
+  });
+  document.getElementById('fieldPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
+  });
+
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
   document.getElementById('classSelect').addEventListener('change', renderTable);
@@ -682,9 +927,7 @@ function boot() {
 
   dbg('Boot complete', 'ok');
 
-  // Kick off connection test then load data
   setTimeout(testConnection, 300);
-  setTimeout(loadInitialData, 800);
 }
 
 if (document.readyState === 'loading') {
