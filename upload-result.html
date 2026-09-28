@@ -27,129 +27,6 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
 #connBadge.ok      { background: #d4edda; color: #155724; }
 #connBadge.fail    { background: #f8d7da; color: #721c24; }
 #connBadge.testing { background: #fff3cd; color: #856404; }
-#connBadge small { font-weight: 500; opacity: 0.85; margin-left: 6px; }
-
-.login-fullscreen {
-  position: fixed; inset: 0;
-  background: radial-gradient(circle at 15% 20%, #103a54 0%, #061520 70%);
-  display: flex; justify-content: center; align-items: flex-start;
-  z-index: 2000; padding: 20px; padding-top: 6vh;
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-}
-.login-card {
-  background: #ffffff;
-  border-radius: 36px;
-  padding: 36px 28px 32px;
-  width: 100%; max-width: 440px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
-  margin: auto 0;
-  animation: cardIn 0.4s ease-out;
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(24px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.login-logo {
-  width: 68px; height: 68px; margin: 0 auto 16px;
-  border-radius: 22px;
-  background: linear-gradient(135deg,#1a6d8f,#0e5270);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 32px;
-  box-shadow: 0 8px 20px rgba(26,109,143,0.4);
-}
-.login-title {
-  font-size: 1.4rem; font-weight: 800; text-align: center;
-  color: #0e3d54; letter-spacing: -0.3px; margin-bottom: 6px;
-}
-.login-subtitle {
-  font-size: 0.8rem; text-align: center; color: #6b8ba3;
-  margin-bottom: 26px; line-height: 1.5;
-}
-.lf-group { margin-bottom: 16px; }
-.lf-label {
-  display: block; font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.6px;
-  color: #2c6f91; margin-bottom: 7px; padding-left: 4px;
-}
-.lf-input {
-  width: 100%;
-  padding: 15px 18px;
-  border: 2px solid #e2edf7;
-  border-radius: 14px;
-  font-size: 16px;
-  font-family: inherit;
-  background: #f7fbfe;
-  color: #0e3d54;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.lf-input:focus {
-  border-color: #1f8fc7;
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(31,143,199,0.12);
-}
-.lf-input::placeholder { color: #a5bccb; }
-.lf-input.lf-password {
-  -webkit-text-security: disc;
-  text-security: disc;
-  letter-spacing: 1px;
-}
-.lf-submit {
-  width: 100%;
-  padding: 16px 20px;
-  margin-top: 8px;
-  border: none;
-  border-radius: 14px;
-  background: linear-gradient(135deg,#1a6d8f 0%,#0e5270 100%);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  font-family: inherit;
-  box-shadow: 0 8px 20px rgba(26,109,143,0.35);
-  transition: transform 0.12s, box-shadow 0.2s, opacity 0.2s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.lf-submit:active { transform: scale(0.975); }
-.lf-submit:disabled { opacity: 0.65; cursor: not-allowed; }
-.lf-error {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: #fdecec;
-  border-left: 4px solid #dc3545;
-  border-radius: 10px;
-  color: #b3261e;
-  font-size: 0.78rem;
-  font-weight: 500;
-  display: none;
-  line-height: 1.5;
-  word-break: break-all;
-}
-.lf-error.show { display: block; }
-.lf-error code {
-  background: #fff; padding: 2px 5px; border-radius: 4px;
-  font-size: 0.7rem; word-break: break-all;
-  display: inline-block; margin-top: 6px;
-}
-.lf-hint {
-  margin-top: 18px; text-align: center;
-  font-size: 0.7rem; color: #93aec2;
-}
-.lf-spinner {
-  display: inline-block; width: 15px; height: 15px;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-left: 8px; vertical-align: -2px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Debug panel */
 #debugPanel {
@@ -177,7 +54,7 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
 }
 
 /* APP */
-.app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
+.app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:block; }
 .header-area { margin-bottom:20px; }
 .header-area h1 { font-size:1.3rem; font-weight:800;
   background: linear-gradient(135deg,#1a5d7a,#2c9bcf); -webkit-background-clip:text; background-clip:text;
@@ -249,10 +126,17 @@ button { background:#1f6e93; color:white; border:none; }
 .grade-E8 { background:#e64a19; }
 .grade-F9 { background:#c62828; }
 .remark-cell { font-size:0.72rem; color:#456; font-weight:500; }
+.lf-spinner {
+  display: inline-block; width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-left: 8px; vertical-align: -2px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width:640px) {
   .save-footer button { width:100%; }
-  .login-card { border-radius:28px; padding:30px 22px 26px; }
-  .login-title { font-size:1.25rem; }
 }
 </style>
 </head>
@@ -265,34 +149,6 @@ button { background:#1f6e93; color:white; border:none; }
 <div id="debugPanel"></div>
 <button id="debugToggle" title="Toggle debug log">🐞</button>
 
-<div id="loginFullscreen" class="login-fullscreen">
-  <div class="login-card">
-    <div class="login-logo">🏫</div>
-    <div class="login-title">School Marks Manager</div>
-    <div class="login-subtitle">Sign in to access your school's marks dashboard</div>
-
-    <div class="lf-group">
-      <label class="lf-label" for="fieldEmail">📧 Email address</label>
-      <input type="text" id="fieldEmail" class="lf-input" placeholder="teacher@school.edu"
-        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
-        inputmode="email" name="sm_email_field_no_autofill">
-    </div>
-
-    <div class="lf-group">
-      <label class="lf-label" for="fieldPassword">🔒 Password</label>
-      <input type="text" id="fieldPassword" class="lf-input lf-password" placeholder="Enter password"
-        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
-        name="sm_password_field_no_autofill">
-    </div>
-
-    <button type="button" id="submitLogin" class="lf-submit">➡️ SIGN IN</button>
-
-    <div id="loginErrorBox" class="lf-error"></div>
-
-    <div class="lf-hint">🔐 Your credentials are sent directly to your school's secure server</div>
-  </div>
-</div>
-
 <div id="appContainer" class="app-container">
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
@@ -300,7 +156,7 @@ button { background:#1f6e93; color:white; border:none; }
   </div>
 
   <div class="user-info-bar">
-    <div class="user-details" id="userInfoDisplay"></div>
+    <div class="user-details" id="userInfoDisplay">👤 Loading user info…</div>
     <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
   </div>
 
@@ -346,7 +202,7 @@ button { background:#1f6e93; color:white; border:none; }
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="8" class="empty-msg">🔐 Please login to continue...</td></tr>
+        <tr><td colspan="8" class="empty-msg">⏳ Loading students…</td></tr>
       </tbody>
     </table>
   </div>
@@ -369,23 +225,34 @@ button { background:#1f6e93; color:white; border:none; }
 const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxw5ttKKQl6h0EYWVTdx-gyTmX84YiKQrtiVqSBgewIPCYGho_61EJPTpYfLq9MMvZKRQ/exec';
 
 /* ============================================================
+   HARDCODED SESSION — login removed for testing
+   Change these values to match your actual school/user.
+   ============================================================ */
+const HARDCODED_SESSION = {
+  token: 'TEST-SESSION-TOKEN',
+  email: 'test@school.edu',
+  tabName: 'Students',       // ← your school tab/slug (Users column D)
+  schoolName: 'Test School',
+  resultsTabName: 'Students student results 2025',
+  year: '2025',
+  term: 'Term 1'
+};
+
+/* ============================================================
    STATE
    ============================================================ */
-let sessionToken = null;
-let userMasterTab = null;
-let userSchoolName = null;
-let userResultsTabName = null;
-let userYear = null;
+let sessionToken = HARDCODED_SESSION.token;
+let userMasterTab = HARDCODED_SESSION.tabName;
+let userSchoolName = HARDCODED_SESSION.schoolName;
+let userResultsTabName = HARDCODED_SESSION.resultsTabName;
+let userYear = HARDCODED_SESSION.year;
 
 let studentMaster = [];
 let subjectsCatalog = [];
 let marksCache = {};
 let currentClass = '';
 let currentSubject = '';
-let currentTerm = 'Term 1';
-
-const credStore = { email: '', password: '' };
-let loginInFlight = false;
+let currentTerm = HARDCODED_SESSION.term;
 
 /* ============================================================
    DEBUG LOGGER
@@ -400,7 +267,6 @@ function dbg(msg, type) {
   line.textContent = '[' + t + '] ' + msg;
   panel.appendChild(line);
   panel.scrollTop = panel.scrollHeight;
-  // Also console for good measure
   if (type === 'err') console.error(msg);
   else if (type === 'ok') console.log('✅', msg);
   else console.log('ℹ️', msg);
@@ -425,7 +291,6 @@ function testConnection() {
   setConnBadge('testing', '⏳ Testing connection…');
   dbg('Testing Apps Script connection…');
 
-  // Use a very short JSONP ping
   const cb = 'connTest_' + Date.now();
   const url = API_BASE_URL + '?action=test&callback=' + cb;
   dbg('Ping URL: ' + url);
@@ -437,8 +302,8 @@ function testConnection() {
   const timer = setTimeout(() => {
     delete window[cb];
     if (s.parentNode) s.remove();
-    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s. Check deployment access = "Anyone".');
-    dbg('❌ Connection test timeout — check Apps Script deployment', 'err');
+    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s.');
+    dbg('❌ Connection test timeout', 'err');
   }, 10000);
 
   window[cb] = function(resp) {
@@ -446,7 +311,7 @@ function testConnection() {
     delete window[cb];
     if (s.parentNode) s.remove();
     if (resp && resp.success) {
-      setConnBadge('ok', '✅ Connected', 'Apps Script responded OK at ' + new Date().toLocaleTimeString());
+      setConnBadge('ok', '✅ Connected', 'Apps Script responded OK');
       dbg('✅ Connection OK: ' + JSON.stringify(resp), 'ok');
     } else {
       setConnBadge('fail', '❌ Bad response', 'Got: ' + JSON.stringify(resp).slice(0, 80));
@@ -458,7 +323,7 @@ function testConnection() {
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
-    setConnBadge('fail', '❌ Script load blocked', 'Browser blocked the script tag. Check CSP / network.');
+    setConnBadge('fail', '❌ Script load blocked', 'Browser blocked the script tag.');
     dbg('❌ Script tag failed to load: ' + url, 'err');
   };
 
@@ -468,156 +333,12 @@ function testConnection() {
 document.getElementById('connBadge').addEventListener('click', function() {
   document.getElementById('debugPanel').classList.toggle('show');
 });
-
 document.getElementById('debugToggle').addEventListener('click', function() {
   document.getElementById('debugPanel').classList.toggle('show');
 });
 
 /* ============================================================
-   LOGIN FIELD CAPTURE
-   ============================================================ */
-function setupLoginFieldCapture() {
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-
-  function captureEmail() {
-    const v = emailEl.value || '';
-    if (v.length > 0) credStore.email = v.trim();
-  }
-  function capturePassword() {
-    const v = passEl.value || '';
-    if (v.length > 0) credStore.password = v;
-  }
-
-  ['input','keyup','keydown','change','blur','paste','compositionend','focusout']
-    .forEach(evt => {
-      emailEl.addEventListener(evt, captureEmail, true);
-      passEl.addEventListener(evt, capturePassword, true);
-    });
-
-  setInterval(() => {
-    if (emailEl.value && emailEl.value.trim().length > 0) credStore.email = emailEl.value.trim();
-    if (passEl.value && passEl.value.length > 0) credStore.password = passEl.value;
-  }, 400);
-
-  dbg('Login field capture installed');
-}
-
-function snapshotCredentialsNow() {
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-  if (emailEl && emailEl.value && emailEl.value.trim()) credStore.email = emailEl.value.trim();
-  if (passEl  && passEl.value  && passEl.value.length)  credStore.password = passEl.value;
-}
-
-/* ============================================================
-   SUBMIT LOGIN
-   ============================================================ */
-function submitLogin(evt) {
-  if (evt && evt.preventDefault) evt.preventDefault();
-  if (evt && evt.stopPropagation) evt.stopPropagation();
-
-  if (loginInFlight) { dbg('Submit ignored — already in flight'); return; }
-
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-  const errBox  = document.getElementById('loginErrorBox');
-  const btn     = document.getElementById('submitLogin');
-
-  snapshotCredentialsNow();
-
-  const email    = (credStore.email    || (emailEl && emailEl.value) || '').trim();
-  const password = (credStore.password || (passEl  && passEl.value)  || '');
-
-  dbg('Submit → email len: ' + email.length + ', pwd len: ' + password.length);
-
-  errBox.classList.remove('show');
-  errBox.textContent = '';
-
-  if (!email || !password) {
-    errBox.textContent = 'Please enter both email and password.';
-    errBox.classList.add('show');
-    return;
-  }
-
-  loginInFlight = true;
-  btn.disabled = true;
-  btn.innerHTML = 'Signing in... <span class="lf-spinner"></span>';
-
-  apiCall('authenticateUser', { email: email, password: password }, function(resp) {
-    dbg('Login response: ' + JSON.stringify(resp).slice(0, 200));
-    loginInFlight = false;
-
-    if (resp && resp.success) {
-      credStore.email = '';
-      credStore.password = '';
-      if (emailEl) emailEl.value = '';
-      if (passEl)  passEl.value  = '';
-
-      sessionToken       = resp.token;
-      userMasterTab      = resp.tabName;
-      userSchoolName     = resp.schoolName;
-      userResultsTabName = resp.resultsTabName;
-      userYear           = resp.year;
-
-      if (resp.term) {
-        const tsel = document.getElementById('termSelect');
-        tsel.value = resp.term;
-        currentTerm = resp.term;
-        document.getElementById('saveTermLabel').textContent = resp.term;
-      }
-
-      document.getElementById('userInfoDisplay').innerHTML =
-        '👤 ' + escapeHtml(resp.email) +
-        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
-        ' | 📅 Year: ' + escapeHtml(userYear) +
-        ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
-      document.getElementById('schoolBadge').innerHTML =
-        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
-
-      document.getElementById('loginFullscreen').style.display = 'none';
-      document.getElementById('appContainer').style.display = 'block';
-      dbg('Login success — loading data…', 'ok');
-      loadInitialData();
-    } else {
-      btn.disabled = false;
-      btn.innerHTML = '➡️ SIGN IN';
-      const errMsg = (resp && resp.error) || 'Login failed — no response from server.';
-      errBox.innerHTML =
-        '❌ ' + escapeHtml(errMsg) +
-        '<br><small style="opacity:0.75;font-size:0.7rem;">If this says "no response", open the 🐞 debug panel or test the URL directly in a new tab.</small>' +
-        '<br><code>' + escapeHtml(API_BASE_URL + '?action=test') + '</code>';
-      errBox.classList.add('show');
-      dbg('Login failed: ' + errMsg, 'err');
-    }
-  });
-}
-
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-function handleLogout() {
-  sessionToken = null;
-  userMasterTab = null;
-  credStore.email = '';
-  credStore.password = '';
-  loginInFlight = false;
-  const emailEl = document.getElementById('fieldEmail');
-  const passEl  = document.getElementById('fieldPassword');
-  if (emailEl) emailEl.value = '';
-  if (passEl)  passEl.value  = '';
-  const errBox = document.getElementById('loginErrorBox');
-  if (errBox) { errBox.classList.remove('show'); errBox.textContent = ''; }
-  const btn = document.getElementById('submitLogin');
-  if (btn) { btn.disabled = false; btn.innerHTML = '➡️ SIGN IN'; }
-
-  document.getElementById('loginFullscreen').style.display = 'flex';
-  document.getElementById('appContainer').style.display = 'none';
-  dbg('Logged out');
-}
-
-/* ============================================================
-   JSONP TRANSPORT — hardened
+   JSONP TRANSPORT
    ============================================================ */
 function apiCall(action, data, callback) {
   dbg('📡 apiCall: ' + action);
@@ -630,7 +351,6 @@ function apiCall(action, data, callback) {
     }
   }
   url += '&callback=' + cb;
-  dbg('URL length: ' + url.length);
 
   const s = document.createElement('script');
   s.src = url;
@@ -664,7 +384,7 @@ function apiCall(action, data, callback) {
     delete window[cb];
     if (s.parentNode) s.remove();
     dbg('❌ Script load error for ' + action, 'err');
-    callback({ error: 'Network error — Apps Script may not be deployed to "Anyone", or CORS/redirect blocked' });
+    callback({ error: 'Network error — Apps Script may not be deployed to "Anyone", or CORS blocked' });
   };
 
   document.body.appendChild(s);
@@ -925,37 +645,34 @@ function saveMarks() {
 }
 
 /* ============================================================
+   LOGOUT (just resets state — no login screen to return to)
+   ============================================================ */
+function handleLogout() {
+  if (confirm('Logout? (You will be prompted to reload the page.)')) {
+    location.reload();
+  }
+}
+
+/* ============================================================
    BOOT
    ============================================================ */
 function boot() {
-  dbg('🚀 Boot starting…');
+  dbg('🚀 Boot starting (login disabled)…');
 
-  setupLoginFieldCapture();
+  // Display the hardcoded user info
+  document.getElementById('userInfoDisplay').innerHTML =
+    '👤 ' + escapeHtml(HARDCODED_SESSION.email) +
+    ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
+    ' | 📅 Year: ' + escapeHtml(userYear) +
+    ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
+  document.getElementById('schoolBadge').innerHTML =
+    '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(userYear);
 
-  const btn = document.getElementById('submitLogin');
-  btn.addEventListener('click', submitLogin);
+  // Set default term
+  document.getElementById('termSelect').value = currentTerm;
+  document.getElementById('saveTermLabel').textContent = currentTerm;
 
-  let lastTouch = 0;
-  btn.addEventListener('touchend', function(e) {
-    const now = Date.now();
-    if (now - lastTouch < 600) return;
-    lastTouch = now;
-    setTimeout(function() {
-      if (!loginInFlight && !btn.disabled) submitLogin(e);
-    }, 60);
-  }, { passive: false });
-
-  ['mousedown','pointerdown','touchstart'].forEach(evt => {
-    btn.addEventListener(evt, snapshotCredentialsNow, { passive: true, capture: true });
-  });
-
-  document.getElementById('fieldEmail').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
-  });
-  document.getElementById('fieldPassword').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
-  });
-
+  // App bindings
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
   document.getElementById('classSelect').addEventListener('change', renderTable);
@@ -963,10 +680,11 @@ function boot() {
   document.getElementById('termSelect').addEventListener('change', renderTable);
   document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
 
-  dbg('Boot complete — all listeners bound', 'ok');
+  dbg('Boot complete', 'ok');
 
-  // Kick off connection test
+  // Kick off connection test then load data
   setTimeout(testConnection, 300);
+  setTimeout(loadInitialData, 800);
 }
 
 if (document.readyState === 'loading') {
