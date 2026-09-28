@@ -10,7 +10,25 @@
 html, body { height:100%; -webkit-text-size-adjust:100%; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
-/* LOGIN */
+/* Connection diagnostic badge */
+#connBadge {
+  position: fixed; top: 12px; right: 12px; z-index: 9999;
+  padding: 8px 14px; border-radius: 30px;
+  font-size: 11px; font-weight: 700;
+  background: #e2e8f0; color: #475569;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-family: 'Inter', sans-serif;
+  max-width: 90vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+#connBadge.ok      { background: #d4edda; color: #155724; }
+#connBadge.fail    { background: #f8d7da; color: #721c24; }
+#connBadge.testing { background: #fff3cd; color: #856404; }
+#connBadge small { font-weight: 500; opacity: 0.85; margin-left: 6px; }
+
 .login-fullscreen {
   position: fixed; inset: 0;
   background: radial-gradient(circle at 15% 20%, #103a54 0%, #061520 70%);
@@ -107,12 +125,18 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   border-left: 4px solid #dc3545;
   border-radius: 10px;
   color: #b3261e;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 500;
   display: none;
-  line-height: 1.4;
+  line-height: 1.5;
+  word-break: break-all;
 }
 .lf-error.show { display: block; }
+.lf-error code {
+  background: #fff; padding: 2px 5px; border-radius: 4px;
+  font-size: 0.7rem; word-break: break-all;
+  display: inline-block; margin-top: 6px;
+}
 .lf-hint {
   margin-top: 18px; text-align: center;
   font-size: 0.7rem; color: #93aec2;
@@ -126,6 +150,31 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   margin-left: 8px; vertical-align: -2px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Debug panel */
+#debugPanel {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #111; color: #0f0;
+  font-family: 'Courier New', monospace;
+  font-size: 10px; line-height: 1.4;
+  max-height: 28vh; overflow-y: auto;
+  padding: 6px 10px;
+  z-index: 9998;
+  display: none;
+  border-top: 2px solid #0f0;
+}
+#debugPanel.show { display: block; }
+#debugPanel .d-err { color: #f66; }
+#debugPanel .d-ok  { color: #6f6; }
+#debugPanel .d-info{ color: #6cf; }
+#debugToggle {
+  position: fixed; bottom: 8px; right: 8px; z-index: 9999;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #111; color: #0f0; border: 2px solid #0f0;
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
 
 /* APP */
 .app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
@@ -209,6 +258,13 @@ button { background:#1f6e93; color:white; border:none; }
 </head>
 <body>
 
+<!-- Live connection badge -->
+<div id="connBadge" class="testing" title="Click to see details">⏳ Testing connection…</div>
+
+<!-- Debug panel -->
+<div id="debugPanel"></div>
+<button id="debugToggle" title="Toggle debug log">🐞</button>
+
 <div id="loginFullscreen" class="login-fullscreen">
   <div class="login-card">
     <div class="login-logo">🏫</div>
@@ -217,30 +273,15 @@ button { background:#1f6e93; color:white; border:none; }
 
     <div class="lf-group">
       <label class="lf-label" for="fieldEmail">📧 Email address</label>
-      <input
-        type="text"
-        id="fieldEmail"
-        class="lf-input"
-        placeholder="teacher@school.edu"
-        autocomplete="off"
-        autocapitalize="none"
-        autocorrect="off"
-        spellcheck="false"
-        inputmode="email"
-        name="sm_email_field_no_autofill">
+      <input type="text" id="fieldEmail" class="lf-input" placeholder="teacher@school.edu"
+        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
+        inputmode="email" name="sm_email_field_no_autofill">
     </div>
 
     <div class="lf-group">
       <label class="lf-label" for="fieldPassword">🔒 Password</label>
-      <input
-        type="text"
-        id="fieldPassword"
-        class="lf-input lf-password"
-        placeholder="Enter password"
-        autocomplete="off"
-        autocapitalize="none"
-        autocorrect="off"
-        spellcheck="false"
+      <input type="text" id="fieldPassword" class="lf-input lf-password" placeholder="Enter password"
+        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
         name="sm_password_field_no_autofill">
     </div>
 
@@ -346,12 +387,94 @@ let currentTerm = 'Term 1';
 const credStore = { email: '', password: '' };
 let loginInFlight = false;
 
+/* ============================================================
+   DEBUG LOGGER
+   ============================================================ */
+function dbg(msg, type) {
+  const panel = document.getElementById('debugPanel');
+  if (!panel) return;
+  const line = document.createElement('div');
+  const cls = type === 'err' ? 'd-err' : (type === 'ok' ? 'd-ok' : 'd-info');
+  const t = new Date().toLocaleTimeString();
+  line.className = cls;
+  line.textContent = '[' + t + '] ' + msg;
+  panel.appendChild(line);
+  panel.scrollTop = panel.scrollHeight;
+  // Also console for good measure
+  if (type === 'err') console.error(msg);
+  else if (type === 'ok') console.log('✅', msg);
+  else console.log('ℹ️', msg);
+}
+
 window.addEventListener('error', function(e) {
-  console.error('💥 JS Error:', e.message, 'at', e.filename, ':', e.lineno);
+  dbg('💥 JS Error: ' + e.message + ' @ ' + e.filename + ':' + e.lineno, 'err');
 });
 
 /* ============================================================
-   LOGIN FIELD CAPTURE — no interference with click
+   CONNECTION BADGE + TEST
+   ============================================================ */
+function setConnBadge(state, text, detail) {
+  const b = document.getElementById('connBadge');
+  if (!b) return;
+  b.className = state;
+  b.textContent = text;
+  b.title = detail || text;
+}
+
+function testConnection() {
+  setConnBadge('testing', '⏳ Testing connection…');
+  dbg('Testing Apps Script connection…');
+
+  // Use a very short JSONP ping
+  const cb = 'connTest_' + Date.now();
+  const url = API_BASE_URL + '?action=test&callback=' + cb;
+  dbg('Ping URL: ' + url);
+
+  const s = document.createElement('script');
+  s.src = url;
+  s.charset = 'utf-8';
+
+  const timer = setTimeout(() => {
+    delete window[cb];
+    if (s.parentNode) s.remove();
+    setConnBadge('fail', '❌ No response', 'Apps Script did not respond within 10s. Check deployment access = "Anyone".');
+    dbg('❌ Connection test timeout — check Apps Script deployment', 'err');
+  }, 10000);
+
+  window[cb] = function(resp) {
+    clearTimeout(timer);
+    delete window[cb];
+    if (s.parentNode) s.remove();
+    if (resp && resp.success) {
+      setConnBadge('ok', '✅ Connected', 'Apps Script responded OK at ' + new Date().toLocaleTimeString());
+      dbg('✅ Connection OK: ' + JSON.stringify(resp), 'ok');
+    } else {
+      setConnBadge('fail', '❌ Bad response', 'Got: ' + JSON.stringify(resp).slice(0, 80));
+      dbg('❌ Bad ping response: ' + JSON.stringify(resp), 'err');
+    }
+  };
+
+  s.onerror = function() {
+    clearTimeout(timer);
+    delete window[cb];
+    if (s.parentNode) s.remove();
+    setConnBadge('fail', '❌ Script load blocked', 'Browser blocked the script tag. Check CSP / network.');
+    dbg('❌ Script tag failed to load: ' + url, 'err');
+  };
+
+  document.body.appendChild(s);
+}
+
+document.getElementById('connBadge').addEventListener('click', function() {
+  document.getElementById('debugPanel').classList.toggle('show');
+});
+
+document.getElementById('debugToggle').addEventListener('click', function() {
+  document.getElementById('debugPanel').classList.toggle('show');
+});
+
+/* ============================================================
+   LOGIN FIELD CAPTURE
    ============================================================ */
 function setupLoginFieldCapture() {
   const emailEl = document.getElementById('fieldEmail');
@@ -373,18 +496,13 @@ function setupLoginFieldCapture() {
     });
 
   setInterval(() => {
-    if (emailEl.value && emailEl.value.trim().length > 0) {
-      credStore.email = emailEl.value.trim();
-    }
-    if (passEl.value && passEl.value.length > 0) {
-      credStore.password = passEl.value;
-    }
+    if (emailEl.value && emailEl.value.trim().length > 0) credStore.email = emailEl.value.trim();
+    if (passEl.value && passEl.value.length > 0) credStore.password = passEl.value;
   }, 400);
 
-  console.log('✅ Login field capture installed');
+  dbg('Login field capture installed');
 }
 
-/* Snapshot BEFORE the button handles its click — captures autofill-wiped values */
 function snapshotCredentialsNow() {
   const emailEl = document.getElementById('fieldEmail');
   const passEl  = document.getElementById('fieldPassword');
@@ -393,13 +511,13 @@ function snapshotCredentialsNow() {
 }
 
 /* ============================================================
-   SUBMIT LOGIN — idempotent, safe against double-fire
+   SUBMIT LOGIN
    ============================================================ */
 function submitLogin(evt) {
   if (evt && evt.preventDefault) evt.preventDefault();
   if (evt && evt.stopPropagation) evt.stopPropagation();
 
-  if (loginInFlight) return;          // guard against double-tap
+  if (loginInFlight) { dbg('Submit ignored — already in flight'); return; }
 
   const emailEl = document.getElementById('fieldEmail');
   const passEl  = document.getElementById('fieldPassword');
@@ -411,7 +529,7 @@ function submitLogin(evt) {
   const email    = (credStore.email    || (emailEl && emailEl.value) || '').trim();
   const password = (credStore.password || (passEl  && passEl.value)  || '');
 
-  console.log('🔐 Submit → email len:', email.length, '| pwd len:', password.length);
+  dbg('Submit → email len: ' + email.length + ', pwd len: ' + password.length);
 
   errBox.classList.remove('show');
   errBox.textContent = '';
@@ -427,7 +545,7 @@ function submitLogin(evt) {
   btn.innerHTML = 'Signing in... <span class="lf-spinner"></span>';
 
   apiCall('authenticateUser', { email: email, password: password }, function(resp) {
-    console.log('🔐 Response:', resp);
+    dbg('Login response: ' + JSON.stringify(resp).slice(0, 200));
     loginInFlight = false;
 
     if (resp && resp.success) {
@@ -459,12 +577,18 @@ function submitLogin(evt) {
 
       document.getElementById('loginFullscreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'block';
+      dbg('Login success — loading data…', 'ok');
       loadInitialData();
     } else {
       btn.disabled = false;
       btn.innerHTML = '➡️ SIGN IN';
-      errBox.textContent = (resp && resp.error) || 'Login failed — no response from server.';
+      const errMsg = (resp && resp.error) || 'Login failed — no response from server.';
+      errBox.innerHTML =
+        '❌ ' + escapeHtml(errMsg) +
+        '<br><small style="opacity:0.75;font-size:0.7rem;">If this says "no response", open the 🐞 debug panel or test the URL directly in a new tab.</small>' +
+        '<br><code>' + escapeHtml(API_BASE_URL + '?action=test') + '</code>';
       errBox.classList.add('show');
+      dbg('Login failed: ' + errMsg, 'err');
     }
   });
 }
@@ -489,13 +613,15 @@ function handleLogout() {
 
   document.getElementById('loginFullscreen').style.display = 'flex';
   document.getElementById('appContainer').style.display = 'none';
+  dbg('Logged out');
 }
 
 /* ============================================================
-   JSONP TRANSPORT
+   JSONP TRANSPORT — hardened
    ============================================================ */
 function apiCall(action, data, callback) {
-  console.log('📡 apiCall:', action);
+  dbg('📡 apiCall: ' + action);
+
   const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
   let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
   for (let k in data) {
@@ -504,9 +630,12 @@ function apiCall(action, data, callback) {
     }
   }
   url += '&callback=' + cb;
+  dbg('URL length: ' + url.length);
 
   const s = document.createElement('script');
   s.src = url;
+  s.charset = 'utf-8';
+  s.async = true;
   let done = false;
 
   const timer = setTimeout(() => {
@@ -514,7 +643,8 @@ function apiCall(action, data, callback) {
     done = true;
     delete window[cb];
     if (s.parentNode) s.remove();
-    callback({ error: 'Request timeout — check your internet connection' });
+    dbg('⏱️ Timeout for ' + action, 'err');
+    callback({ error: 'Request timeout — check your internet connection or Apps Script deployment' });
   }, 60000);
 
   window[cb] = function(resp) {
@@ -523,6 +653,7 @@ function apiCall(action, data, callback) {
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
+    dbg('✅ Response for ' + action, 'ok');
     callback(resp);
   };
 
@@ -532,7 +663,8 @@ function apiCall(action, data, callback) {
     clearTimeout(timer);
     delete window[cb];
     if (s.parentNode) s.remove();
-    callback({ error: 'Network error — check your internet connection' });
+    dbg('❌ Script load error for ' + action, 'err');
+    callback({ error: 'Network error — Apps Script may not be deployed to "Anyone", or CORS/redirect blocked' });
   };
 
   document.body.appendChild(s);
@@ -585,19 +717,14 @@ function computeRowGrade(tr) {
   const t2El = tr.querySelector('.t2-input');
   const exEl = tr.querySelector('.exam-input');
   if (!t1El || !t2El || !exEl) return;
-
   const t1 = parseFloat(t1El.value) || 0;
   const t2 = parseFloat(t2El.value) || 0;
   const ex = parseFloat(exEl.value) || 0;
-  const total = Math.min(15, Math.max(0, t1)) +
-                Math.min(15, Math.max(0, t2)) +
-                Math.min(70, Math.max(0, ex));
+  const total = Math.min(15, Math.max(0, t1)) + Math.min(15, Math.max(0, t2)) + Math.min(70, Math.max(0, ex));
   const g = getGrade(total);
-
   const totalCell  = tr.querySelector('.total-cell');
   const gradeCell  = tr.querySelector('.grade-cell');
   const remarkCell = tr.querySelector('.remark-cell');
-
   if (totalCell)  totalCell.textContent  = total;
   if (gradeCell)  gradeCell.innerHTML    = '<span class="grade-badge grade-' + g.code + '">' + g.code + '</span>';
   if (remarkCell) remarkCell.textContent = g.remark;
@@ -609,22 +736,26 @@ function computeRowGrade(tr) {
 function loadInitialData() {
   if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
   setStatus('🔄 Loading data from "' + userMasterTab + '"...');
+  dbg('Loading student data…');
 
   apiCall('getStudentData', { token: sessionToken }, function(students) {
-    if (students && students.error) { setStatus(students.error, 'error'); return; }
+    if (students && students.error) { setStatus(students.error, 'error'); dbg('studentData error: ' + students.error, 'err'); return; }
     studentMaster = students || [];
+    dbg('Loaded ' + studentMaster.length + ' students', 'ok');
 
     apiCall('getSubjects', { token: sessionToken }, function(subjects) {
-      if (subjects && subjects.error) { setStatus(subjects.error, 'error'); return; }
+      if (subjects && subjects.error) { setStatus(subjects.error, 'error'); dbg('subjects error: ' + subjects.error, 'err'); return; }
       subjectsCatalog = subjects || [];
       populateSubjectDropdown();
+      dbg('Loaded ' + subjectsCatalog.length + ' subjects', 'ok');
 
       apiCall('getMarksData', { token: sessionToken }, function(marks) {
-        if (marks && marks.error) { setStatus(marks.error, 'error'); return; }
+        if (marks && marks.error) { setStatus(marks.error, 'error'); dbg('marks error: ' + marks.error, 'err'); return; }
         marksCache = marks || {};
         populateClassDropdown();
         renderTable();
         setStatus('✅ Loaded ' + studentMaster.length + ' students, ' + subjectsCatalog.length + ' subjects.', 'success');
+        dbg('All data loaded', 'ok');
       });
     });
   });
@@ -755,6 +886,7 @@ function saveMarks() {
 
   const btn = document.getElementById('saveBtnBottom');
   btn.disabled = true; btn.innerHTML = 'Saving... <span class="lf-spinner"></span>';
+  dbg('Saving marks for ' + updates.length + ' students…');
 
   apiCall('saveMarksData', {
     token: sessionToken,
@@ -784,47 +916,39 @@ function saveMarks() {
       if (addedCount > 0) msg += ' — ' + addedCount + ' newly added to results tab';
       if (skipped > 0)    msg += ' • Skipped ' + skipped + ' with no scores';
       setStatus(msg + '.', 'success');
+      dbg('Save success: ' + msg, 'ok');
     } else {
       setStatus('⚠️ ' + ((resp && resp.error) || 'Save failed'), 'error');
+      dbg('Save failed: ' + JSON.stringify(resp), 'err');
     }
   });
 }
 
 /* ============================================================
-   BIND EVERYTHING — single reliable click path
+   BOOT
    ============================================================ */
 function boot() {
+  dbg('🚀 Boot starting…');
+
   setupLoginFieldCapture();
 
   const btn = document.getElementById('submitLogin');
-
-  // PRIMARY: plain click (works on desktop + most mobile)
   btn.addEventListener('click', submitLogin);
 
-  // FALLBACK: touchend — only fires if click didn't already fire.
-  // We guard with loginInFlight inside submitLogin so double-fire is safe.
   let lastTouch = 0;
   btn.addEventListener('touchend', function(e) {
     const now = Date.now();
-    if (now - lastTouch < 600) return;   // debounce rapid taps
+    if (now - lastTouch < 600) return;
     lastTouch = now;
-    // Let the browser's synthesized click fire if it will; if not, call submit.
-    // Using a short timeout ensures click gets priority.
     setTimeout(function() {
-      if (!loginInFlight && !btn.disabled) {
-        // If click already fired, submitLogin set disabled=true — so we skip.
-        // If nothing happened, submit now.
-        if (!btn.disabled) submitLogin(e);
-      }
+      if (!loginInFlight && !btn.disabled) submitLogin(e);
     }, 60);
   }, { passive: false });
 
-  // Capture credentials on any pointer-down on the button (before autofill wipe)
   ['mousedown','pointerdown','touchstart'].forEach(evt => {
     btn.addEventListener(evt, snapshotCredentialsNow, { passive: true, capture: true });
   });
 
-  // Enter key on either field
   document.getElementById('fieldEmail').addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
   });
@@ -832,7 +956,6 @@ function boot() {
     if (e.key === 'Enter') { e.preventDefault(); submitLogin(e); }
   });
 
-  // App bindings
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
   document.getElementById('classSelect').addEventListener('change', renderTable);
@@ -840,7 +963,10 @@ function boot() {
   document.getElementById('termSelect').addEventListener('change', renderTable);
   document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
 
-  console.log('✅ Boot complete — all listeners bound');
+  dbg('Boot complete — all listeners bound', 'ok');
+
+  // Kick off connection test
+  setTimeout(testConnection, 300);
 }
 
 if (document.readyState === 'loading') {
