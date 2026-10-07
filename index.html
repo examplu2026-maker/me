@@ -9,11 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --ink: #1B2A4A;
@@ -85,9 +81,7 @@
       transition: var(--transition);
     }
 
-    .brand-mark:hover {
-      transform: scale(1.02);
-    }
+    .brand-mark:hover { transform: scale(1.02); }
 
     .brand {
       font-size: 22px;
@@ -96,10 +90,7 @@
       color: var(--ink);
     }
 
-    .brand span {
-      color: var(--gold);
-      font-weight: 700;
-    }
+    .brand span { color: var(--gold); font-weight: 700; }
 
     #greeting {
       margin: 0 0 6px;
@@ -167,18 +158,17 @@
       color: inherit;
       transition: var(--transition);
       box-shadow: var(--shadow-sm);
-      opacity: 0;
-      animation: rise 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
+      opacity: 1;
+      animation: rise 0.6s cubic-bezier(0.2, 0, 0, 1) both;
       position: relative;
       overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .role-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 4px;
       background: var(--c, var(--gold));
       opacity: 0;
@@ -191,13 +181,8 @@
       border-color: transparent;
     }
 
-    .role-card:hover::before {
-      opacity: 1;
-    }
-
-    .role-card:active {
-      transform: translateY(-2px) scale(0.99);
-    }
+    .role-card:hover::before { opacity: 1; }
+    .role-card:active { transform: translateY(-2px) scale(0.99); }
 
     .role-icon {
       width: 44px;
@@ -212,9 +197,7 @@
       transition: var(--transition);
     }
 
-    .role-card:hover .role-icon {
-      transform: scale(1.05);
-    }
+    .role-card:hover .role-icon { transform: scale(1.05); }
 
     .role-title {
       font-weight: 600;
@@ -248,11 +231,7 @@
       overflow: hidden;
     }
 
-    .account-link i {
-      color: var(--gold);
-      font-size: 18px;
-      transition: var(--transition);
-    }
+    .account-link i { color: var(--gold); font-size: 18px; transition: var(--transition); }
 
     .account-link:hover {
       background: var(--gold-light);
@@ -261,14 +240,12 @@
       box-shadow: var(--shadow-md);
     }
 
-    .account-link:hover i {
-      transform: scale(1.1);
-    }
+    .account-link:hover i { transform: scale(1.1); }
 
     /* ---------- DETAIL VIEW ---------- */
     #detailView {
       display: none;
-      animation: fadeIn 0.4s ease forwards;
+      animation: fadeIn 0.4s ease both;
     }
 
     .back-btn {
@@ -287,16 +264,8 @@
       opacity: 0.9;
     }
 
-    .back-btn:hover {
-      color: var(--ink);
-      opacity: 1;
-      gap: 10px;
-    }
-
-    .back-btn i {
-      font-size: 14px;
-      transition: var(--transition);
-    }
+    .back-btn:hover { color: var(--ink); opacity: 1; gap: 10px; }
+    .back-btn i { font-size: 14px; transition: var(--transition); }
 
     .detail-head {
       display: flex;
@@ -310,7 +279,7 @@
       border-radius: var(--radius-lg);
       border: 1px solid var(--line);
       box-shadow: var(--shadow-sm);
-      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) both;
     }
 
     #detailIcon {
@@ -351,8 +320,8 @@
       color: var(--ink);
       transition: var(--transition);
       box-shadow: var(--shadow-sm);
-      opacity: 0;
-      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+      opacity: 1;
+      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) both;
       position: relative;
       overflow: hidden;
     }
@@ -360,9 +329,7 @@
     .sub-card::after {
       content: '';
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       height: 3px;
       background: var(--c, var(--gold));
       opacity: 0;
@@ -375,9 +342,7 @@
       border-color: transparent;
     }
 
-    .sub-card:hover::after {
-      opacity: 1;
-    }
+    .sub-card:hover::after { opacity: 1; }
 
     .sub-card .icon {
       width: 44px;
@@ -392,9 +357,7 @@
       transition: var(--transition);
     }
 
-    .sub-card:hover .icon {
-      transform: scale(1.05);
-    }
+    .sub-card:hover .icon { transform: scale(1.05); }
 
     .sub-card .label {
       font-size: 15px;
@@ -414,35 +377,18 @@
       margin-top: auto;
     }
 
-    footer a {
-      color: var(--gold);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
+    footer a { color: var(--gold); text-decoration: none; font-weight: 500; }
+    footer a:hover { text-decoration: underline; }
 
     /* ---------- ANIMATIONS ---------- */
     @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(14px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -458,64 +404,26 @@
 
     /* ---------- RESPONSIVE ---------- */
     @media (max-width: 480px) {
-      main {
-        padding: 20px 16px 48px;
-      }
-      header {
-        padding: 28px 16px 22px;
-      }
-      .role-grid, .sub-grid, .account-row {
-        gap: 12px;
-      }
-      .role-card, .sub-card {
-        padding: 18px 14px;
-      }
-      .role-icon, .sub-card .icon {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-      }
-      .role-title, .sub-card .label {
-        font-size: 14px;
-      }
-      #detailIcon {
-        width: 56px;
-        height: 56px;
-        font-size: 24px;
-      }
-      #detailTitle {
-        font-size: 22px;
-      }
+      main { padding: 20px 16px 48px; }
+      header { padding: 28px 16px 22px; }
+      .role-grid, .sub-grid, .account-row { gap: 12px; }
+      .role-card, .sub-card { padding: 18px 14px; }
+      .role-icon, .sub-card .icon { width: 40px; height: 40px; font-size: 16px; }
+      .role-title, .sub-card .label { font-size: 14px; }
+      #detailIcon { width: 56px; height: 56px; font-size: 24px; }
+      #detailTitle { font-size: 22px; }
     }
 
     @media (min-width: 700px) {
-      .role-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      .sub-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .account-row {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 480px;
-        margin: 0 auto;
-      }
+      .role-grid { grid-template-columns: repeat(4, 1fr); }
+      .sub-grid { grid-template-columns: repeat(3, 1fr); }
+      .account-row { grid-template-columns: repeat(2, 1fr); max-width: 480px; margin: 0 auto; }
     }
 
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--paper);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--line);
-      border-radius: 8px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--ink-soft);
-    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--paper); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--ink-soft); }
   </style>
 </head>
 <body>
@@ -566,15 +474,19 @@
 </footer>
 
 <script>
-  const GROUPS = {
+(function () {
+  'use strict';
+
+  // ---- Data ----
+  var GROUPS = {
     superadmin: {
       title: "Super Admin",
       icon: "fa-solid fa-user-shield",
       c: "#4F46E5", bg: "#EEF0FE",
       pages: [
-        { file: "create-school.html", title: "Create School", icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#EEF0FE" },
-        { file: "view-schools.html",  title: "View Schools",  icon: "fa-solid fa-building-columns", c: "#0891B2", bg: "#E3F5FA" },
-        { file: "settings.html",      title: "System Settings", icon: "fa-solid fa-gear", c: "#4B5563", bg: "#F0F2F5" }
+        { file: "create-school.html", title: "Create School",    icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#EEF0FE" },
+        { file: "view-schools.html",  title: "View Schools",     icon: "fa-solid fa-building-columns",    c: "#0891B2", bg: "#E3F5FA" },
+        { file: "settings.html",      title: "System Settings",  icon: "fa-solid fa-gear",                c: "#4B5563", bg: "#F0F2F5" }
       ]
     },
     schooladmin: {
@@ -582,13 +494,13 @@
       icon: "fa-solid fa-building-user",
       c: "#0E9F6E", bg: "#E6F9F0",
       pages: [
-        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school", c: "#0E9F6E", bg: "#E6F9F0" },
-        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate", c: "#3B5BDB", bg: "#EBEFFF" },
-        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group", c: "#7C3AED", bg: "#F1E9FE" },
-        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book", c: "#D97706", bg: "#FEF3E2" },
-        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users", c: "#0891B2", bg: "#E3F5FA" },
-        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines", c: "#DC2626", bg: "#FEE9E9" },
-        { file: "contacts.html",      title: "Contact Us",      icon: "fa-solid fa-address-book", c: "#65A30D", bg: "#F0F9E6" }
+        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school",            c: "#0E9F6E", bg: "#E6F9F0" },
+        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate",     c: "#3B5BDB", bg: "#EBEFFF" },
+        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group",       c: "#7C3AED", bg: "#F1E9FE" },
+        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book",              c: "#D97706", bg: "#FEF3E2" },
+        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users",             c: "#0891B2", bg: "#E3F5FA" },
+        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines",        c: "#DC2626", bg: "#FEE9E9" },
+        { file: "contacts.html",      title: "Contact Us",      icon: "fa-solid fa-address-book",      c: "#65A30D", bg: "#F0F9E6" }
       ]
     },
     teacher: {
@@ -596,9 +508,9 @@
       icon: "fa-solid fa-chalkboard-user",
       c: "#D97706", bg: "#FEF3E2",
       pages: [
-        { file: "teacher.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
-        { file: "upload-result.html",    title: "Upload Result",   icon: "fa-solid fa-upload", c: "#D97706", bg: "#FEF3E2" },
-        { file: "view-results.html",     title: "View Results",    icon: "fa-solid fa-eye", c: "#0E9F6E", bg: "#E6F9F0" }
+        { file: "teacher.htm",        title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
+        { file: "upload-result.html", title: "Upload Result",   icon: "fa-solid fa-upload",   c: "#D97706", bg: "#FEF3E2" },
+        { file: "view-results.html",  title: "View Results",    icon: "fa-solid fa-eye",      c: "#0E9F6E", bg: "#E6F9F0" }
       ]
     },
     bursar: {
@@ -606,71 +518,96 @@
       icon: "fa-solid fa-money-check-dollar",
       c: "#DB2777", bg: "#FDE8F1",
       pages: [
-        { file: "bursar.htm",   title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
-        { file: "generate-receipt.html", title: "Generate Receipt",icon: "fa-solid fa-receipt", c: "#DB2777", bg: "#FDE8F1" },
-        { file: "receipt-history.html",  title: "Receipt History", icon: "fa-solid fa-clock-rotate-left", c: "#7C3AED", bg: "#F1E9FE" }
+        { file: "bursar.htm",           title: "Staff Dashboard",   icon: "fa-solid fa-id-badge",             c: "#B8863B", bg: "#F5EDDE" },
+        { file: "generate-receipt.html",title: "Generate Receipt",  icon: "fa-solid fa-receipt",              c: "#DB2777", bg: "#FDE8F1" },
+        { file: "receipt-history.html", title: "Receipt History",   icon: "fa-solid fa-clock-rotate-left",    c: "#7C3AED", bg: "#F1E9FE" }
       ]
     }
   };
 
-  const homeView = document.getElementById('homeView');
-  const detailView = document.getElementById('detailView');
-  const detailIcon = document.getElementById('detailIcon');
-  const detailTitle = document.getElementById('detailTitle');
-  const subGrid = document.getElementById('subGrid');
-  const backBtn = document.getElementById('backBtn');
-  const homeGrid = document.getElementById('grid-home');
+  // ---- Boot ----
+  function boot() {
+    var homeView    = document.getElementById('homeView');
+    var detailView  = document.getElementById('detailView');
+    var detailIcon  = document.getElementById('detailIcon');
+    var detailTitle = document.getElementById('detailTitle');
+    var subGrid     = document.getElementById('subGrid');
+    var backBtn     = document.getElementById('backBtn');
+    var homeGrid    = document.getElementById('grid-home');
+    var greetingEl  = document.getElementById('greeting');
 
-  // Populate home role cards
-  homeGrid.innerHTML = Object.entries(GROUPS).map(([key, group], i) => `
-    <button class="role-card" data-role="${key}" style="--c:${group.c}; --c-bg:${group.bg}; animation-delay:${(i * 0.07).toFixed(2)}s">
-      <div class="role-icon" style="--c:${group.c}; --c-bg:${group.bg}">
-        <i class="${group.icon}"></i>
-      </div>
-      <span class="role-title">${group.title}</span>
-    </button>
-  `).join('');
+    if (!homeGrid || !detailView || !subGrid || !backBtn) {
+      // Fail loudly instead of silently
+      console.error('EXAMPLUS home: required DOM nodes missing.', {
+        homeGrid: !!homeGrid, detailView: !!detailView,
+        subGrid: !!subGrid, backBtn: !!backBtn
+      });
+      return;
+    }
 
-  // Attach role card listeners
-  document.querySelectorAll('.role-card').forEach(btn => {
-    btn.addEventListener('click', () => openGroup(btn.dataset.role));
-  });
+    // Populate home role cards
+    homeGrid.innerHTML = Object.keys(GROUPS).map(function (key, i) {
+      var g = GROUPS[key];
+      return '<button type="button" class="role-card" data-role="' + key + '" ' +
+             'style="--c:' + g.c + '; --c-bg:' + g.bg + '; animation-delay:' + (i * 0.07).toFixed(2) + 's">' +
+               '<div class="role-icon" style="--c:' + g.c + '; --c-bg:' + g.bg + '">' +
+                 '<i class="' + g.icon + '"></i>' +
+               '</div>' +
+               '<span class="role-title">' + g.title + '</span>' +
+             '</button>';
+    }).join('');
 
-  function openGroup(key) {
-    const group = GROUPS[key];
-    if (!group) return;
+    // Event delegation: one listener handles all role cards
+    homeGrid.addEventListener('click', function (e) {
+      var btn = e.target.closest('.role-card');
+      if (!btn) return;
+      openGroup(btn.getAttribute('data-role'));
+    });
 
-    detailIcon.style.setProperty('--c', group.c);
-    detailIcon.style.setProperty('--c-bg', group.bg);
-    detailIcon.innerHTML = `<i class="${group.icon}"></i>`;
-    detailTitle.textContent = group.title;
+    function openGroup(key) {
+      var group = GROUPS[key];
+      if (!group) return;
 
-    subGrid.innerHTML = group.pages.map((p, i) => `
-      <a class="sub-card" href="${p.file}" style="--c:${p.c}; --c-bg:${p.bg}; animation-delay:${(i * 0.06).toFixed(2)}s">
-        <div class="icon" style="--c:${p.c}; --c-bg:${p.bg}">
-          <i class="${p.icon}"></i>
-        </div>
-        <span class="label">${p.title}</span>
-      </a>
-    `).join('');
+      detailIcon.style.setProperty('--c', group.c);
+      detailIcon.style.setProperty('--c-bg', group.bg);
+      detailIcon.innerHTML = '<i class="' + group.icon + '"></i>';
+      detailTitle.textContent = group.title;
 
-    homeView.style.display = 'none';
-    detailView.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      subGrid.innerHTML = group.pages.map(function (p, i) {
+        return '<a class="sub-card" href="' + p.file + '" ' +
+               'style="--c:' + p.c + '; --c-bg:' + p.bg + '; animation-delay:' + (i * 0.06).toFixed(2) + 's">' +
+                 '<div class="icon" style="--c:' + p.c + '; --c-bg:' + p.bg + '">' +
+                   '<i class="' + p.icon + '"></i>' +
+                 '</div>' +
+                 '<span class="label">' + p.title + '</span>' +
+               '</a>';
+      }).join('');
+
+      homeView.style.display = 'none';
+      detailView.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    backBtn.addEventListener('click', function () {
+      detailView.style.display = 'none';
+      homeView.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Time-based greeting
+    var hour = new Date().getHours();
+    if (hour < 12) greetingEl.textContent = 'Good morning ☀️';
+    else if (hour < 17) greetingEl.textContent = 'Good afternoon 🌤️';
+    else greetingEl.textContent = 'Good evening 🌙';
   }
 
-  backBtn.addEventListener('click', () => {
-    detailView.style.display = 'none';
-    homeView.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  // Time-based greeting with a touch of warmth
-  const hour = new Date().getHours();
-  const greetingEl = document.getElementById('greeting');
-  if (hour < 12) greetingEl.textContent = 'Good morning ☀️';
-  else if (hour < 17) greetingEl.textContent = 'Good afternoon 🌤️';
-  else greetingEl.textContent = 'Good evening 🌙';
+  // Run after DOM is ready — works on GitHub Pages, local files, anywhere
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
 </script>
 
 </body>
