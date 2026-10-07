@@ -1,614 +1,1879 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EXAMPLUS — School Management</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>ExamPlus | School Management System</title><meta name="description"
+content="ExamPlus - Modern school management system for schools, teachers, students and administrators.">
 
-    :root {
-      --ink: #1B2A4A;
-      --ink-soft: #5C6A85;
-      --paper: #F9F7F4;
-      --card: #FFFFFF;
-      --line: #EAE6DE;
-      --gold: #B8863B;
-      --gold-light: #F5EDDE;
-      --gold-soft: #F1E4C9;
-      --radius-lg: 24px;
-      --radius-md: 18px;
-      --radius-sm: 14px;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
-      --shadow-md: 0 12px 28px -8px rgba(27, 42, 74, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
-      --shadow-lg: 0 24px 48px -12px rgba(27, 42, 74, 0.15);
-      --transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  <meta name="theme-color" content="#0f172a">  <style>
+
+    /* =========================================================
+       RESET
+    ========================================================= */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Public Sans', system-ui, -apple-system, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
     }
 
-    h1, h2, h3, .brand {
-      font-family: 'Fraunces', serif;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    /* ---------- HEADER ---------- */
-    header {
-      padding: 36px 24px 28px;
-      background: var(--card);
-      border-bottom: 1px solid var(--line);
-      text-align: center;
-      position: relative;
-      z-index: 2;
-    }
-
-    .brand-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: var(--ink);
-      color: var(--gold-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Fraunces', serif;
-      font-weight: 700;
-      font-size: 18px;
-      box-shadow: 0 6px 14px rgba(27, 42, 74, 0.15);
-      transition: var(--transition);
-    }
-
-    .brand-mark:hover { transform: scale(1.02); }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-    }
-
-    .brand span { color: var(--gold); font-weight: 700; }
-
-    #greeting {
-      margin: 0 0 6px;
-      font-size: clamp(28px, 6vw, 36px);
-      font-weight: 600;
-      line-height: 1.2;
-      letter-spacing: -0.03em;
-      color: var(--ink);
-    }
-
-    .subline {
-      margin: 0;
-      color: var(--ink-soft);
-      font-size: 16px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-    }
-
-    /* ---------- MAIN ---------- */
-    main {
-      flex: 1;
-      padding: 28px 24px 64px;
-      max-width: 760px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    /* ---------- HOME VIEW ---------- */
-    .section-label {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      color: var(--ink-soft);
-      margin: 36px 0 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--line);
-    }
-
-    .role-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .role-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 22px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      text-align: left;
-      cursor: pointer;
-      font-family: inherit;
-      color: inherit;
-      transition: var(--transition);
-      box-shadow: var(--shadow-sm);
-      opacity: 1;
-      animation: rise 0.6s cubic-bezier(0.2, 0, 0, 1) both;
-      position: relative;
-      overflow: hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .role-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: var(--c, var(--gold));
-      opacity: 0;
-      transition: var(--transition);
-    }
-
-    .role-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: transparent;
-    }
-
-    .role-card:hover::before { opacity: 1; }
-    .role-card:active { transform: translateY(-2px) scale(0.99); }
-
-    .role-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      background: var(--c-bg, var(--paper));
-      color: var(--c, var(--ink));
-      transition: var(--transition);
-    }
-
-    .role-card:hover .role-icon { transform: scale(1.05); }
-
-    .role-title {
-      font-weight: 600;
-      font-size: 15px;
-      line-height: 1.3;
-      letter-spacing: -0.01em;
-    }
-
-    /* ---------- ACCOUNT ROW ---------- */
-    .account-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .account-link {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      padding: 18px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--ink);
+    a {
       text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
-      transition: var(--transition);
-      box-shadow: var(--shadow-sm);
+      color: inherit;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.97);
+      color: white;
+      box-shadow: 0 3px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .navbar {
+      max-width: 1250px;
+      margin: auto;
+      padding: 15px 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #38bdf8;
+      color: #082f49;
+
+      border-radius: 12px;
+      font-size: 22px;
+    }
+
+    .logo span {
+      color: #38bdf8;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+      font-size: 14px;
+      font-weight: 600;
+
+      transition: 0.25s;
+    }
+
+    .nav-links a:hover {
+      color: #38bdf8;
+    }
+
+    .nav-login {
+      padding: 9px 17px;
+      border-radius: 8px;
+
+      background: #38bdf8;
+      color: #082f49 !important;
+    }
+
+    .menu-button {
+      display: none;
+
+      border: none;
+      background: transparent;
+      color: white;
+
+      font-size: 27px;
+      cursor: pointer;
+    }
+
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .hero {
       position: relative;
       overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 80% 20%,
+          rgba(56, 189, 248, 0.18),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 10% 90%,
+          rgba(99, 102, 241, 0.15),
+          transparent 35%
+        ),
+        #0f172a;
+
+      color: white;
+
+      padding: 85px 20px 95px;
     }
 
-    .account-link i { color: var(--gold); font-size: 18px; transition: var(--transition); }
+    .hero-container {
+      max-width: 1250px;
+      margin: auto;
 
-    .account-link:hover {
-      background: var(--gold-light);
-      border-color: var(--gold-soft);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+
+      gap: 60px;
+      align-items: center;
     }
 
-    .account-link:hover i { transform: scale(1.1); }
+    .hero-badge {
+      display: inline-block;
 
-    /* ---------- DETAIL VIEW ---------- */
-    #detailView {
-      display: none;
-      animation: fadeIn 0.4s ease both;
+      padding: 7px 13px;
+
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 30px;
+
+      background: rgba(56, 189, 248, 0.08);
+      color: #7dd3fc;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      margin-bottom: 22px;
     }
 
-    .back-btn {
+    .hero h1 {
+      font-size: clamp(42px, 6vw, 70px);
+
+      line-height: 1.05;
+
+      letter-spacing: -2.5px;
+
+      margin-bottom: 25px;
+    }
+
+    .hero h1 span {
+      color: #38bdf8;
+    }
+
+    .hero-text {
+      max-width: 650px;
+
+      color: #cbd5e1;
+
+      font-size: 18px;
+
+      margin-bottom: 32px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 13px;
+    }
+
+    .button {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: none;
-      border: none;
-      color: var(--ink-soft);
-      font-family: inherit;
-      font-size: 15px;
-      font-weight: 500;
-      padding: 0 0 20px;
-      cursor: pointer;
-      transition: var(--transition);
-      opacity: 0.9;
-    }
-
-    .back-btn:hover { color: var(--ink); opacity: 1; gap: 10px; }
-    .back-btn i { font-size: 14px; transition: var(--transition); }
-
-    .detail-head {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 14px;
-      margin-bottom: 32px;
-      padding: 28px 20px;
-      background: var(--card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow-sm);
-      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) both;
-    }
-
-    #detailIcon {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 28px;
-      background: var(--c-bg, var(--ink));
-      color: var(--c, #fff);
-      box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.15);
+
+      padding: 13px 21px;
+
+      border-radius: 10px;
+
+      font-weight: 700;
+      font-size: 14px;
+
+      transition: 0.25s;
     }
 
-    #detailTitle {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
+    .button-primary {
+      background: #38bdf8;
+      color: #082f49;
     }
 
-    .sub-grid {
+    .button-primary:hover {
+      transform: translateY(-3px);
+      background: #7dd3fc;
+    }
+
+    .button-outline {
+      border: 1px solid #475569;
+      color: white;
+    }
+
+    .button-outline:hover {
+      background: white;
+      color: #0f172a;
+    }
+
+
+    /* =========================================================
+       HERO DASHBOARD CARD
+    ========================================================= */
+
+    .dashboard-preview {
+      padding: 20px;
+
+      border-radius: 22px;
+
+      background: rgba(255,255,255,0.07);
+
+      border: 1px solid rgba(255,255,255,0.12);
+
+      box-shadow:
+        0 25px 60px rgba(0,0,0,0.25);
+
+      backdrop-filter: blur(10px);
+    }
+
+    .preview-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      margin-bottom: 18px;
+    }
+
+    .preview-title {
+      font-weight: 700;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      color: #86efac;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .preview-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+
+      gap: 12px;
     }
 
-    .sub-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 20px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      text-decoration: none;
-      color: var(--ink);
-      transition: var(--transition);
-      box-shadow: var(--shadow-sm);
-      opacity: 1;
-      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) both;
-      position: relative;
-      overflow: hidden;
+    .preview-card {
+      padding: 18px;
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,0.08);
+
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .sub-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--c, var(--gold));
-      opacity: 0;
-      transition: var(--transition);
+    .preview-icon {
+      font-size: 23px;
+      margin-bottom: 8px;
     }
 
-    .sub-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: transparent;
+    .preview-card strong {
+      display: block;
+      font-size: 20px;
     }
 
-    .sub-card:hover::after { opacity: 1; }
+    .preview-card small {
+      color: #94a3b8;
+      font-size: 11px;
+    }
 
-    .sub-card .icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+
+    /* =========================================================
+       SECTION
+    ========================================================= */
+
+    section {
+      padding: 80px 20px;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: auto;
+    }
+
+    .section-heading {
+      text-align: center;
+
+      max-width: 700px;
+
+      margin: 0 auto 45px;
+    }
+
+    .section-heading h2 {
+      font-size: 36px;
+
+      margin-bottom: 10px;
+    }
+
+    .section-heading p {
+      color: #64748b;
+    }
+
+
+    /* =========================================================
+       MAIN MODULES
+    ========================================================= */
+
+    .modules {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 22px;
+    }
+
+    .module {
+      background: white;
+
+      border: 1px solid #e2e8f0;
+
+      border-radius: 18px;
+
+      padding: 27px;
+
+      box-shadow:
+        0 8px 25px rgba(15,23,42,0.05);
+
+      transition: 0.25s;
+    }
+
+    .module:hover {
+      transform: translateY(-6px);
+
+      box-shadow:
+        0 16px 35px rgba(15,23,42,0.10);
+    }
+
+    .module-icon {
+      width: 54px;
+      height: 54px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--c-bg, var(--paper));
-      color: var(--c, var(--ink));
-      font-size: 18px;
-      transition: var(--transition);
+
+      border-radius: 15px;
+
+      background: #e0f2fe;
+
+      font-size: 25px;
+
+      margin-bottom: 17px;
     }
 
-    .sub-card:hover .icon { transform: scale(1.05); }
-
-    .sub-card .label {
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 1.3;
-      letter-spacing: -0.01em;
+    .module h3 {
+      margin-bottom: 8px;
+      font-size: 19px;
     }
 
-    /* ---------- FOOTER ---------- */
-    footer {
+    .module p {
+      color: #64748b;
+      font-size: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .module-link {
+      color: #0284c7;
+
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+
+    /* =========================================================
+       QUICK ACCESS
+    ========================================================= */
+
+    .quick-section {
+      background: #f1f5f9;
+    }
+
+    .quick-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 18px;
+    }
+
+    .quick-card {
+      background: white;
+
+      border: 1px solid #e2e8f0;
+
+      border-radius: 16px;
+
+      padding: 23px;
+
       text-align: center;
-      padding: 24px;
+
+      transition: 0.25s;
+    }
+
+    .quick-card:hover {
+      transform: translateY(-5px);
+
+      border-color: #38bdf8;
+    }
+
+    .quick-card-icon {
+      font-size: 30px;
+
+      margin-bottom: 9px;
+    }
+
+    .quick-card h3 {
+      font-size: 16px;
+    }
+
+    .quick-card p {
+      color: #64748b;
+
+      font-size: 12px;
+    }
+
+
+    /* =========================================================
+       SCHOOL MANAGEMENT
+    ========================================================= */
+
+    .management {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 55px;
+
+      align-items: center;
+    }
+
+    .management h2 {
+      font-size: 38px;
+
+      line-height: 1.15;
+
+      margin-bottom: 18px;
+    }
+
+    .management-text {
+      color: #64748b;
+
+      margin-bottom: 25px;
+    }
+
+    .feature-list {
+      list-style: none;
+
+      display: grid;
+
+      gap: 12px;
+    }
+
+    .feature-list li {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      font-size: 14px;
+
+      font-weight: 600;
+    }
+
+    .check {
+      width: 25px;
+      height: 25px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #dcfce7;
+      color: #16a34a;
+
       font-size: 13px;
-      color: var(--ink-soft);
-      border-top: 1px solid var(--line);
-      background: var(--card);
-      margin-top: auto;
     }
 
-    footer a { color: var(--gold); text-decoration: none; font-weight: 500; }
-    footer a:hover { text-decoration: underline; }
+    .management-card {
+      background: #0f172a;
 
-    /* ---------- ANIMATIONS ---------- */
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
+      color: white;
+
+      border-radius: 24px;
+
+      padding: 35px;
+
+      box-shadow:
+        0 20px 45px rgba(15,23,42,0.18);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+    .management-card h3 {
+      font-size: 24px;
+
+      margin-bottom: 20px;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .role-card, .sub-card, #detailView {
-        animation: none;
-        opacity: 1;
-        transform: none;
+    .management-item {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      padding: 15px 0;
+
+      border-bottom:
+        1px solid rgba(255,255,255,0.09);
+    }
+
+    .management-item:last-child {
+      border-bottom: none;
+    }
+
+    .management-item span:last-child {
+      color: #38bdf8;
+
+      font-weight: 700;
+    }
+
+
+    /* =========================================================
+       CTA
+    ========================================================= */
+
+    .cta {
+      background: #0f172a;
+
+      color: white;
+
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: 38px;
+
+      margin-bottom: 12px;
+    }
+
+    .cta p {
+      color: #cbd5e1;
+
+      max-width: 650px;
+
+      margin: 0 auto 27px;
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    footer {
+      background: #020617;
+
+      color: #94a3b8;
+
+      padding: 55px 20px 25px;
+    }
+
+    .footer-grid {
+      max-width: 1250px;
+
+      margin: auto;
+
+      display: grid;
+
+      grid-template-columns:
+        2fr 1fr 1fr 1fr;
+
+      gap: 35px;
+    }
+
+    .footer-brand h2 {
+      color: white;
+
+      margin-bottom: 10px;
+    }
+
+    .footer-brand p {
+      max-width: 400px;
+
+      font-size: 14px;
+    }
+
+    footer h3 {
+      color: white;
+
+      font-size: 15px;
+
+      margin-bottom: 15px;
+    }
+
+    footer ul {
+      list-style: none;
+    }
+
+    footer li {
+      margin-bottom: 9px;
+
+      font-size: 13px;
+    }
+
+    footer a:hover {
+      color: #38bdf8;
+    }
+
+    .copyright {
+      max-width: 1250px;
+
+      margin: 40px auto 0;
+
+      padding-top: 20px;
+
+      border-top:
+        1px solid #1e293b;
+
+      text-align: center;
+
+      font-size: 12px;
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .menu-button {
+        display: block;
       }
-      .role-card:hover, .sub-card:hover, .account-link:hover {
-        transform: none;
+
+      .nav-links {
+        position: absolute;
+
+        left: 0;
+        top: 72px;
+
+        width: 100%;
+
+        display: none;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 0;
+
+        padding: 10px 20px 20px;
+
+        background: #0f172a;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 13px 5px;
+      }
+
+      .hero-container {
+        grid-template-columns: 1fr;
+      }
+
+      .modules {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .quick-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .management {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
       }
     }
 
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 480px) {
-      main { padding: 20px 16px 48px; }
-      header { padding: 28px 16px 22px; }
-      .role-grid, .sub-grid, .account-row { gap: 12px; }
-      .role-card, .sub-card { padding: 18px 14px; }
-      .role-icon, .sub-card .icon { width: 40px; height: 40px; font-size: 16px; }
-      .role-title, .sub-card .label { font-size: 14px; }
-      #detailIcon { width: 56px; height: 56px; font-size: 24px; }
-      #detailTitle { font-size: 22px; }
+
+    @media (max-width: 550px) {
+
+      .hero {
+        padding: 65px 18px 70px;
+      }
+
+      .hero h1 {
+        font-size: 43px;
+      }
+
+      .hero-text {
+        font-size: 16px;
+      }
+
+      section {
+        padding: 60px 18px;
+      }
+
+      .modules,
+      .quick-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading h2,
+      .management h2,
+      .cta h2 {
+        font-size: 29px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .preview-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
-    @media (min-width: 700px) {
-      .role-grid { grid-template-columns: repeat(4, 1fr); }
-      .sub-grid { grid-template-columns: repeat(3, 1fr); }
-      .account-row { grid-template-columns: repeat(2, 1fr); max-width: 480px; margin: 0 auto; }
-    }
+  </style></head><body>  <!-- =========================================================
+       HEADER
+  ========================================================= -->  <header><div class="navbar">
 
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--paper); }
-    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--ink-soft); }
-  </style>
-</head>
-<body>
+  <a href="index.html" class="logo">
 
-<header>
-  <div class="brand-row">
-    <div class="brand-mark">E+</div>
-    <div class="brand">EXAM<span>PLUS</span></div>
-  </div>
-  <h1 id="greeting">Good day</h1>
-  <p class="subline">What would you like to do today?</p>
-</header>
-
-<main>
-
-  <div id="homeView">
-    <div class="section-label">Choose your role</div>
-    <div class="role-grid" id="grid-home"></div>
-
-    <div class="section-label">New to EXAMPLUS?</div>
-    <div class="account-row">
-      <a class="account-link" href="signup.html">
-        <i class="fa-solid fa-user-plus"></i>
-        <span>Sign Up</span>
-      </a>
-      <a class="account-link" href="activate.html">
-        <i class="fa-solid fa-circle-check"></i>
-        <span>Activate</span>
-      </a>
+    <div class="logo-icon">
+      🎓
     </div>
-  </div>
 
-  <div id="detailView">
-    <button class="back-btn" id="backBtn">
-      <i class="fa-solid fa-arrow-left"></i> Back to roles
-    </button>
-    <div class="detail-head">
-      <div id="detailIcon"></div>
-      <h2 id="detailTitle"></h2>
+    Exam<span>Plus</span>
+
+  </a>
+
+
+  <button
+    class="menu-button"
+    id="menuButton"
+    aria-label="Open menu">
+
+    ☰
+
+  </button>
+
+
+  <nav class="nav-links" id="navLinks">
+
+    <a href="index.html">
+      Home
+    </a>
+
+    <a href="school.html">
+      Schools
+    </a>
+
+    <a href="students.html">
+      Students
+    </a>
+
+    <a href="teacher.htm">
+      Teachers
+    </a>
+
+    <a href="bursar.htm">
+      Bursar
+    </a>
+
+    <a href="settings.html">
+      Settings
+    </a>
+
+    <a
+      href="signup.html"
+      class="nav-login">
+
+      Get Started
+
+    </a>
+
+  </nav>
+
+</div>
+
+  </header>  <!-- =========================================================
+       HERO
+  ========================================================= -->  <section class="hero"><div class="hero-container">
+
+
+  <div>
+
+    <div class="hero-badge">
+      MODERN SCHOOL MANAGEMENT SYSTEM
     </div>
-    <div class="sub-grid" id="subGrid"></div>
+
+
+    <h1>
+      Manage Your School
+      <span>Smarter.</span>
+    </h1>
+
+
+    <p class="hero-text">
+
+      ExamPlus brings school management, students,
+      teachers, examinations, results and financial
+      records together in one simple platform.
+
+    </p>
+
+
+    <div class="hero-buttons">
+
+      <a
+        href="school.html"
+        class="button button-primary">
+
+        🏫 Manage School
+
+      </a>
+
+
+      <a
+        href="signup.html"
+        class="button button-outline">
+
+        Create Account
+
+      </a>
+
+    </div>
+
   </div>
 
-</main>
 
-<footer>
-  <p>© 2025 <a href="#">EXAMPLUS</a> — School Management System. All rights reserved.</p>
-</footer>
 
-<script>
-(function () {
-  'use strict';
+  <!-- Dashboard Preview -->
 
-  // ---- Data ----
-  var GROUPS = {
-    superadmin: {
-      title: "Super Admin",
-      icon: "fa-solid fa-user-shield",
-      c: "#4F46E5", bg: "#EEF0FE",
-      pages: [
-        { file: "create-school.html", title: "Create School",    icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#EEF0FE" },
-        { file: "view-schools.html",  title: "View Schools",     icon: "fa-solid fa-building-columns",    c: "#0891B2", bg: "#E3F5FA" },
-        { file: "settings.html",      title: "System Settings",  icon: "fa-solid fa-gear",                c: "#4B5563", bg: "#F0F2F5" }
-      ]
-    },
-    schooladmin: {
-      title: "School Admin",
-      icon: "fa-solid fa-building-user",
-      c: "#0E9F6E", bg: "#E6F9F0",
-      pages: [
-        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school",            c: "#0E9F6E", bg: "#E6F9F0" },
-        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate",     c: "#3B5BDB", bg: "#EBEFFF" },
-        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group",       c: "#7C3AED", bg: "#F1E9FE" },
-        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book",              c: "#D97706", bg: "#FEF3E2" },
-        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users",             c: "#0891B2", bg: "#E3F5FA" },
-        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines",        c: "#DC2626", bg: "#FEE9E9" },
-        { file: "contacts.html",      title: "Contact Us",      icon: "fa-solid fa-address-book",      c: "#65A30D", bg: "#F0F9E6" }
-      ]
-    },
-    teacher: {
-      title: "Teacher",
-      icon: "fa-solid fa-chalkboard-user",
-      c: "#D97706", bg: "#FEF3E2",
-      pages: [
-        { file: "teacher.htm",        title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
-        { file: "upload-result.html", title: "Upload Result",   icon: "fa-solid fa-upload",   c: "#D97706", bg: "#FEF3E2" },
-        { file: "view-results.html",  title: "View Results",    icon: "fa-solid fa-eye",      c: "#0E9F6E", bg: "#E6F9F0" }
-      ]
-    },
-    bursar: {
-      title: "Bursar",
-      icon: "fa-solid fa-money-check-dollar",
-      c: "#DB2777", bg: "#FDE8F1",
-      pages: [
-        { file: "bursar.htm",           title: "Staff Dashboard",   icon: "fa-solid fa-id-badge",             c: "#B8863B", bg: "#F5EDDE" },
-        { file: "generate-receipt.html",title: "Generate Receipt",  icon: "fa-solid fa-receipt",              c: "#DB2777", bg: "#FDE8F1" },
-        { file: "receipt-history.html", title: "Receipt History",   icon: "fa-solid fa-clock-rotate-left",    c: "#7C3AED", bg: "#F1E9FE" }
-      ]
-    }
-  };
+  <div class="dashboard-preview">
 
-  // ---- Boot ----
-  function boot() {
-    var homeView    = document.getElementById('homeView');
-    var detailView  = document.getElementById('detailView');
-    var detailIcon  = document.getElementById('detailIcon');
-    var detailTitle = document.getElementById('detailTitle');
-    var subGrid     = document.getElementById('subGrid');
-    var backBtn     = document.getElementById('backBtn');
-    var homeGrid    = document.getElementById('grid-home');
-    var greetingEl  = document.getElementById('greeting');
+    <div class="preview-top">
 
-    if (!homeGrid || !detailView || !subGrid || !backBtn) {
-      // Fail loudly instead of silently
-      console.error('EXAMPLUS home: required DOM nodes missing.', {
-        homeGrid: !!homeGrid, detailView: !!detailView,
-        subGrid: !!subGrid, backBtn: !!backBtn
+      <div class="preview-title">
+        ExamPlus Dashboard
+      </div>
+
+      <div class="status">
+
+        <span class="status-dot"></span>
+
+        System Active
+
+      </div>
+
+    </div>
+
+
+    <div class="preview-grid">
+
+
+      <a
+        href="students.html"
+        class="preview-card">
+
+        <div class="preview-icon">
+          👨‍🎓
+        </div>
+
+        <strong>Students</strong>
+
+        <small>
+          Student management
+        </small>
+
+      </a>
+
+
+      <a
+        href="teacher.htm"
+        class="preview-card">
+
+        <div class="preview-icon">
+          👨‍🏫
+        </div>
+
+        <strong>Teachers</strong>
+
+        <small>
+          Teacher management
+        </small>
+
+      </a>
+
+
+      <a
+        href="view-results.html"
+        class="preview-card">
+
+        <div class="preview-icon">
+          📊
+        </div>
+
+        <strong>Results</strong>
+
+        <small>
+          Academic results
+        </small>
+
+      </a>
+
+
+      <a
+        href="generate-receipt.html"
+        class="preview-card">
+
+        <div class="preview-icon">
+          💳
+        </div>
+
+        <strong>Finance</strong>
+
+        <small>
+          Receipts & payments
+        </small>
+
+      </a>
+
+
+    </div>
+
+  </div>
+
+</div>
+
+  </section>  <!-- =========================================================
+       MAIN MODULES
+  ========================================================= -->  <section><div class="container">
+
+
+  <div class="section-heading">
+
+    <h2>
+      Everything Your School Needs
+    </h2>
+
+    <p>
+      Access the major areas of your school
+      management system from one place.
+    </p>
+
+  </div>
+
+
+
+  <div class="modules">
+
+
+    <!-- SCHOOL -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        🏫
+      </div>
+
+      <h3>
+        School Management
+      </h3>
+
+      <p>
+        Create, view and manage schools and
+        important school information.
+      </p>
+
+      <a
+        href="school.html"
+        class="module-link">
+
+        Open School →
+        
+      </a>
+
+    </div>
+
+
+
+    <!-- STUDENTS -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        👨‍🎓
+      </div>
+
+      <h3>
+        Student Management
+      </h3>
+
+      <p>
+        Manage students individually or upload
+        students in bulk.
+      </p>
+
+      <a
+        href="students.html"
+        class="module-link">
+
+        Manage Students →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- CLASSES -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        🏛️
+      </div>
+
+      <h3>
+        Classes
+      </h3>
+
+      <p>
+        Organize your school's classes and
+        academic structure.
+      </p>
+
+      <a
+        href="classes.html"
+        class="module-link">
+
+        Manage Classes →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- SUBJECTS -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        📚
+      </div>
+
+      <h3>
+        Subjects
+      </h3>
+
+      <p>
+        Create and manage subjects used across
+        your school.
+      </p>
+
+      <a
+        href="subjects.html"
+        class="module-link">
+
+        Manage Subjects →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- TEACHERS -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        👨‍🏫
+      </div>
+
+      <h3>
+        Teachers
+      </h3>
+
+      <p>
+        Access teacher management and
+        teaching-related tools.
+      </p>
+
+      <a
+        href="teacher.htm"
+        class="module-link">
+
+        Open Teachers →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- RESULTS -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        📊
+      </div>
+
+      <h3>
+        Results & Reports
+      </h3>
+
+      <p>
+        Upload results, view academic results
+        and generate reports.
+      </p>
+
+      <a
+        href="view-results.html"
+        class="module-link">
+
+        View Results →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- BURSAR -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        💰
+      </div>
+
+      <h3>
+        Bursar & Finance
+      </h3>
+
+      <p>
+        Manage receipts, payments and financial
+        transaction records.
+      </p>
+
+      <a
+        href="bursar.htm"
+        class="module-link">
+
+        Open Bursar →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- REPORT -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        📋
+      </div>
+
+      <h3>
+        Reports
+      </h3>
+
+      <p>
+        Generate and review useful school
+        reports and information.
+      </p>
+
+      <a
+        href="report.html"
+        class="module-link">
+
+        Open Reports →
+
+      </a>
+
+    </div>
+
+
+
+    <!-- SETTINGS -->
+
+    <div class="module">
+
+      <div class="module-icon">
+        ⚙️
+      </div>
+
+      <h3>
+        System Settings
+      </h3>
+
+      <p>
+        Configure your ExamPlus system and
+        manage important settings.
+      </p>
+
+      <a
+        href="settings.html"
+        class="module-link">
+
+        Open Settings →
+
+      </a>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+  </section>  <!-- =========================================================
+       QUICK ACCESS
+  ========================================================= -->  <section class="quick-section"><div class="container">
+
+
+  <div class="section-heading">
+
+    <h2>
+      Quick Access
+    </h2>
+
+    <p>
+      Go directly to the tools you use most.
+    </p>
+
+  </div>
+
+
+  <div class="quick-grid">
+
+
+    <a
+      href="create-school.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        🏫
+      </div>
+
+      <h3>
+        Create School
+      </h3>
+
+      <p>
+        Add a new school
+      </p>
+
+    </a>
+
+
+    <a
+      href="view-schools.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        👁️
+      </div>
+
+      <h3>
+        View Schools
+      </h3>
+
+      <p>
+        View registered schools
+      </p>
+
+    </a>
+
+
+    <a
+      href="students-bulk.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        📥
+      </div>
+
+      <h3>
+        Bulk Students
+      </h3>
+
+      <p>
+        Upload students
+      </p>
+
+    </a>
+
+
+    <a
+      href="upload-result.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        📤
+      </div>
+
+      <h3>
+        Upload Results
+      </h3>
+
+      <p>
+        Enter academic results
+      </p>
+
+    </a>
+
+
+    <a
+      href="view-results.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        📊
+      </div>
+
+      <h3>
+        View Results
+      </h3>
+
+      <p>
+        Check results
+      </p>
+
+    </a>
+
+
+    <a
+      href="generate-receipt.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        🧾
+      </div>
+
+      <h3>
+        Generate Receipt
+      </h3>
+
+      <p>
+        Create payment receipt
+      </p>
+
+    </a>
+
+
+    <a
+      href="receipt-history.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        📜
+      </div>
+
+      <h3>
+        Receipt History
+      </h3>
+
+      <p>
+        View previous receipts
+      </p>
+
+    </a>
+
+
+    <a
+      href="contacts.html"
+      class="quick-card">
+
+      <div class="quick-card-icon">
+        📞
+      </div>
+
+      <h3>
+        Contacts
+      </h3>
+
+      <p>
+        Manage contacts
+      </p>
+
+    </a>
+
+
+  </div>
+
+</div>
+
+  </section>  <!-- =========================================================
+       MANAGEMENT SECTION
+  ========================================================= -->  <section><div class="container">
+
+
+  <div class="management">
+
+
+    <div>
+
+      <h2>
+        One Platform.
+        Many School Functions.
+      </h2>
+
+
+      <p class="management-text">
+
+        ExamPlus is organized to make it easier
+        to move between different areas of your
+        school's daily activities.
+
+      </p>
+
+
+      <ul class="feature-list">
+
+        <li>
+
+          <span class="check">✓</span>
+
+          School management
+
+        </li>
+
+
+        <li>
+
+          <span class="check">✓</span>
+
+          Student records
+
+        </li>
+
+
+        <li>
+
+          <span class="check">✓</span>
+
+          Classes and subjects
+
+        </li>
+
+
+        <li>
+
+          <span class="check">✓</span>
+
+          Teacher management
+
+        </li>
+
+
+        <li>
+
+          <span class="check">✓</span>
+
+          Examination and results
+
+        </li>
+
+
+        <li>
+
+          <span class="check">✓</span>
+
+          Financial receipts
+
+        </li>
+
+      </ul>
+
+    </div>
+
+
+
+    <div class="management-card">
+
+      <h3>
+        ExamPlus Modules
+      </h3>
+
+
+      <a
+        href="school.html"
+        class="management-item">
+
+        <span>🏫 School</span>
+
+        <span>→</span>
+
+      </a>
+
+
+      <a
+        href="students.html"
+        class="management-item">
+
+        <span>👨‍🎓 Students</span>
+
+        <span>→</span>
+
+      </a>
+
+
+      <a
+        href="teacher.htm"
+        class="management-item">
+
+        <span>👨‍🏫 Teachers</span>
+
+        <span>→</span>
+
+      </a>
+
+
+      <a
+        href="view-results.html"
+        class="management-item">
+
+        <span>📊 Results</span>
+
+        <span>→</span>
+
+      </a>
+
+
+      <a
+        href="bursar.htm"
+        class="management-item">
+
+        <span>💰 Finance</span>
+
+        <span>→</span>
+
+      </a>
+
+
+      <a
+        href="settings.html"
+        class="management-item">
+
+        <span>⚙️ Settings</span>
+
+        <span>→</span>
+
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+  </section>  <!-- =========================================================
+       CTA
+  ========================================================= -->  <section class="cta"><div class="container">
+
+  <h2>
+    Start Managing Your School
+  </h2>
+
+  <p>
+
+    Create your account, activate your school
+    and start using ExamPlus.
+
+  </p>
+
+
+  <div class="hero-buttons">
+
+    <a
+      href="signup.html"
+      class="button button-primary">
+
+      Create Account
+
+    </a>
+
+
+    <a
+      href="activate.html"
+      class="button button-outline">
+
+      Activate Account
+
+    </a>
+
+  </div>
+
+</div>
+
+  </section>  <!-- =========================================================
+       FOOTER
+  ========================================================= -->  <footer><div class="footer-grid">
+
+
+  <div class="footer-brand">
+
+    <h2>
+      ExamPlus
+    </h2>
+
+    <p>
+
+      A modern school management system
+      designed to make school administration,
+      teaching, student management and academic
+      activities easier.
+
+    </p>
+
+  </div>
+
+
+
+  <div>
+
+    <h3>
+      School
+    </h3>
+
+    <ul>
+
+      <li>
+        <a href="school.html">
+          School Dashboard
+        </a>
+      </li>
+
+      <li>
+        <a href="create-school.html">
+          Create School
+        </a>
+      </li>
+
+      <li>
+        <a href="view-schools.html">
+          View Schools
+        </a>
+      </li>
+
+      <li>
+        <a href="settings.html">
+          Settings
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+
+
+  <div>
+
+    <h3>
+      Academic
+    </h3>
+
+    <ul>
+
+      <li>
+        <a href="students.html">
+          Students
+        </a>
+      </li>
+
+      <li>
+        <a href="classes.html">
+          Classes
+        </a>
+      </li>
+
+      <li>
+        <a href="subjects.html">
+          Subjects
+        </a>
+      </li>
+
+      <li>
+        <a href="teacher.htm">
+          Teachers
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+
+
+  <div>
+
+    <h3>
+      Results & Finance
+    </h3>
+
+    <ul>
+
+      <li>
+        <a href="upload-result.html">
+          Upload Results
+        </a>
+      </li>
+
+      <li>
+        <a href="view-results.html">
+          View Results
+        </a>
+      </li>
+
+      <li>
+        <a href="bursar.htm">
+          Bursar
+        </a>
+      </li>
+
+      <li>
+        <a href="receipt-history.html">
+          Receipt History
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+
+</div>
+
+
+<div class="copyright">
+
+  © <span id="year"></span>
+  ExamPlus. All Rights Reserved.
+
+</div>
+
+  </footer>  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================= -->  <script>
+
+    /*
+      MOBILE MENU
+    */
+
+    const menuButton =
+      document.getElementById("menuButton");
+
+    const navLinks =
+      document.getElementById("navLinks");
+
+
+    menuButton.addEventListener("click", function () {
+
+      navLinks.classList.toggle("active");
+
+    });
+
+
+    /*
+      CLOSE MOBILE MENU
+      AFTER CLICKING A LINK
+    */
+
+    document
+      .querySelectorAll("#navLinks a")
+      .forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+          navLinks.classList.remove("active");
+
+        });
+
       });
-      return;
-    }
 
-    // Populate home role cards
-    homeGrid.innerHTML = Object.keys(GROUPS).map(function (key, i) {
-      var g = GROUPS[key];
-      return '<button type="button" class="role-card" data-role="' + key + '" ' +
-             'style="--c:' + g.c + '; --c-bg:' + g.bg + '; animation-delay:' + (i * 0.07).toFixed(2) + 's">' +
-               '<div class="role-icon" style="--c:' + g.c + '; --c-bg:' + g.bg + '">' +
-                 '<i class="' + g.icon + '"></i>' +
-               '</div>' +
-               '<span class="role-title">' + g.title + '</span>' +
-             '</button>';
-    }).join('');
 
-    // Event delegation: one listener handles all role cards
-    homeGrid.addEventListener('click', function (e) {
-      var btn = e.target.closest('.role-card');
-      if (!btn) return;
-      openGroup(btn.getAttribute('data-role'));
-    });
+    /*
+      AUTOMATIC COPYRIGHT YEAR
+    */
 
-    function openGroup(key) {
-      var group = GROUPS[key];
-      if (!group) return;
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
 
-      detailIcon.style.setProperty('--c', group.c);
-      detailIcon.style.setProperty('--c-bg', group.bg);
-      detailIcon.innerHTML = '<i class="' + group.icon + '"></i>';
-      detailTitle.textContent = group.title;
-
-      subGrid.innerHTML = group.pages.map(function (p, i) {
-        return '<a class="sub-card" href="' + p.file + '" ' +
-               'style="--c:' + p.c + '; --c-bg:' + p.bg + '; animation-delay:' + (i * 0.06).toFixed(2) + 's">' +
-                 '<div class="icon" style="--c:' + p.c + '; --c-bg:' + p.bg + '">' +
-                   '<i class="' + p.icon + '"></i>' +
-                 '</div>' +
-                 '<span class="label">' + p.title + '</span>' +
-               '</a>';
-      }).join('');
-
-      homeView.style.display = 'none';
-      detailView.style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    backBtn.addEventListener('click', function () {
-      detailView.style.display = 'none';
-      homeView.style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Time-based greeting
-    var hour = new Date().getHours();
-    if (hour < 12) greetingEl.textContent = 'Good morning ☀️';
-    else if (hour < 17) greetingEl.textContent = 'Good afternoon 🌤️';
-    else greetingEl.textContent = 'Good evening 🌙';
-  }
-
-  // Run after DOM is ready — works on GitHub Pages, local files, anywhere
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
-  }
-})();
-</script>
-
-</body>
+  </script></body>
 </html>
