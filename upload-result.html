@@ -9,7 +9,6 @@
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
 body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:100vh; overflow-x:hidden; }
 
-/* LOGIN */
 .login-fullscreen { position:fixed; inset:0; background: radial-gradient(circle at 10% 30%,#0b2b3f,#071a24);
   display:flex; justify-content:center; align-items:center; z-index:2000; padding:20px; }
 .login-card { background:rgba(255,255,255,0.98); border-radius:48px; padding:40px 32px;
@@ -38,7 +37,6 @@ body { background: linear-gradient(135deg,#e8f0f7 0%,#d4e2ed 100%); min-height:1
   margin-left:8px; vertical-align:middle; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* APP */
 .app-container { max-width:1600px; width:100%; margin:0 auto; padding:16px; display:none; }
 .header-area { margin-bottom:20px; }
 .header-area h1 { font-size:1.3rem; font-weight:800;
@@ -104,7 +102,6 @@ button { background:#1f6e93; color:white; border:none; }
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginFullscreen" class="login-fullscreen">
   <div class="login-card">
     <h1>🏫 School Marks Manager</h1>
@@ -117,12 +114,11 @@ button { background:#1f6e93; color:white; border:none; }
       <label>🔒 PASSWORD</label>
       <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
     </div>
-    <button class="login-btn" id="loginBtn">➡️ SIGN IN</button>
+    <button class="login-btn" id="loginBtn" type="button">➡️ SIGN IN</button>
     <div id="loginError" class="error-msg"></div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="appContainer" class="app-container">
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
@@ -131,7 +127,7 @@ button { background:#1f6e93; color:white; border:none; }
 
   <div class="user-info-bar">
     <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+    <button id="logoutBtn" class="logout-btn" type="button">🚪 Logout</button>
   </div>
 
   <div class="card-control">
@@ -152,7 +148,7 @@ button { background:#1f6e93; color:white; border:none; }
       </select>
     </div>
     <div class="action-group">
-      <button id="refreshBtn" class="btn-outline">🔄 Reload</button>
+      <button id="refreshBtn" class="btn-outline" type="button">🔄 Reload</button>
     </div>
   </div>
 
@@ -179,7 +175,7 @@ button { background:#1f6e93; color:white; border:none; }
   </div>
 
   <div class="save-footer">
-    <button id="saveBtnBottom" class="btn-primary">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
+    <button id="saveBtnBottom" class="btn-primary" type="button">💾 Save Marks for <span id="saveTermLabel">Term 1</span></button>
   </div>
 
   <div class="footer-note">
@@ -190,16 +186,7 @@ button { background:#1f6e93; color:white; border:none; }
 
 <script>
 // ⚠️ REPLACE with your deployment URL
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwmzNXA1C8l3khJ9CLvgtFeUScoQL-mo3k_gAnXe9skk42bImimtX4tqj3lcqHmaX_udA/exec';
-
-// ——— Diagnostics: show any JS error on the login screen ———
-window.addEventListener('error', function(ev) {
-  var el = document.getElementById('loginError');
-  if (el) {
-    el.style.display = 'block';
-    el.textContent = 'JS error: ' + (ev.message || 'unknown');
-  }
-});
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycby7RtGT3M9UzmPpqm2i5WGL0dFVFWqZXk3zYvTRivGvwfjncSV3-LkZFX8eLL0a-nla6g/exec';
 
 let sessionToken = null;
 let userMasterTab = null;
@@ -214,95 +201,70 @@ let currentClass = '';
 let currentSubject = '';
 let currentTerm = 'Term 1';
 
-/* ============ JSONP ============ */
+/* ============ fetch()-based API ============ */
+/* POST with Content-Type text/plain avoids the CORS preflight that
+   Apps Script cannot answer. The body is URL-encoded. */
 function apiCall(action, data, callback) {
-  const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
-  let url = API_BASE_URL + '?action=' + encodeURIComponent(action) + '&_=' + Date.now();
-  for (let k in data) {
+  var parts = ['action=' + encodeURIComponent(action)];
+  for (var k in data) {
     if (data.hasOwnProperty(k) && data[k] !== null && data[k] !== undefined) {
-      url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(JSON.stringify(data[k]));
+      var v = (typeof data[k] === 'object') ? JSON.stringify(data[k]) : String(data[k]);
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
     }
   }
-  url += '&callback=' + cb;
+  var body = parts.join('&');
 
-  const s = document.createElement('script');
-  s.src = url;
-
-  let finished = false;
-
-  const timer = setTimeout(() => {
-    if (finished) return;
-    finished = true;
-    delete window[cb];
-    if (s.parentNode) s.remove();
-    callback({ error: 'Request timeout — check deployment URL and that "Who has access" = Anyone.' });
-  }, 30000);
-
-  window[cb] = function(resp) {
-    if (finished) return;
-    finished = true;
-    clearTimeout(timer);
-    delete window[cb];
-    if (s.parentNode) s.remove();
+  fetch(API_BASE_URL, {
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: body
+  })
+  .then(function (r) { return r.text(); })
+  .then(function (txt) {
+    var resp;
+    try { resp = JSON.parse(txt); }
+    catch (e) {
+      callback({ error: 'Bad JSON from server: ' + txt.slice(0, 200) });
+      return;
+    }
     callback(resp);
-  };
-
-  s.onerror = function() {
-    if (finished) return;
-    finished = true;
-    clearTimeout(timer);
-    delete window[cb];
-    if (s.parentNode) s.remove();
-    callback({ error: 'Network error — check deployment URL and that "Who has access" = Anyone.' });
-  };
-
-  s.onload = function() {
-    setTimeout(function() {
-      if (finished) return;
-      if (window[cb]) {
-        finished = true;
-        clearTimeout(timer);
-        delete window[cb];
-        if (s.parentNode) s.remove();
-        callback({ error: 'Backend did not return JSONP. Confirm the Apps Script HTML file is named EXAM and deployment access is "Anyone".' });
-      }
-    }, 300);
-  };
-
-  document.body.appendChild(s);
+  })
+  .catch(function (err) {
+    callback({ error: 'Network error: ' + (err && err.message ? err.message : err) });
+  });
 }
 
 /* ============ UI helpers ============ */
 function escapeHtml(s) {
   if (s === null || s === undefined) return '';
-  return s.toString().replace(/[&<>"']/g, m => ({
-    '&':'&','<':'<','>':'>','"':'"',"'":'''
-  }[m]));
+  return s.toString().replace(/[&<>"']/g, function (m) {
+    return ({ '&':'&','<':'<','>':'>','"':'"',"'":''' })[m];
+  });
 }
 function setStatus(msg, type) {
-  const el = document.getElementById('statusMsg');
+  var el = document.getElementById('statusMsg');
   if (!el) return;
   el.className = 'status-bar ' + (type || '');
-  const span = el.querySelector('span:not(#syncStatus)');
+  var span = el.querySelector('span:not(#syncStatus)');
   if (span) span.textContent = msg;
 }
 function naturalSort(arr) {
-  return arr.sort((a,b) => {
-    const mA = a.match(/^([A-Za-z\s-]+?)(\d*)$/);
-    const mB = b.match(/^([A-Za-z\s-]+?)(\d*)$/);
-    const tA = mA ? mA[1].trim() : a;
-    const tB = mB ? mB[1].trim() : b;
-    const nA = mA && mA[2] ? parseInt(mA[2],10) : -1;
-    const nB = mB && mB[2] ? parseInt(mB[2],10) : -1;
+  return arr.sort(function (a, b) {
+    var mA = a.match(/^([A-Za-z\s-]+?)(\d*)$/);
+    var mB = b.match(/^([A-Za-z\s-]+?)(\d*)$/);
+    var tA = mA ? mA[1].trim() : a;
+    var tB = mB ? mB[1].trim() : b;
+    var nA = mA && mA[2] ? parseInt(mA[2], 10) : -1;
+    var nB = mB && mB[2] ? parseInt(mB[2], 10) : -1;
     if (tA === tB) return nA - nB;
     return tA.localeCompare(tB);
   });
 }
-
-/* ============ MARK PARSING HELPERS ============ */
 function detectAbs(raw) {
   if (raw === null || raw === undefined) return null;
-  const s = raw.toString().trim().toUpperCase();
+  var s = raw.toString().trim().toUpperCase();
   if (s === 'ABS' || s === 'A' || s === 'AB') return 'ABS';
   return null;
 }
@@ -317,19 +279,22 @@ function displayValue(val) {
 
 /* ============ LOGIN ============ */
 function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const err = document.getElementById('loginError');
+  var email = document.getElementById('loginEmail').value.trim();
+  var password = document.getElementById('loginPassword').value.trim();
+  var err = document.getElementById('loginError');
   if (!email || !password) {
     err.textContent = 'Please enter both email and password.';
-    err.style.display = 'block'; return;
+    err.style.display = 'block';
+    return;
   }
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = true; btn.innerHTML = 'Authenticating... <span class="spinner"></span>';
+  var btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = 'Authenticating... <span class="spinner"></span>';
   err.style.display = 'none';
 
-  apiCall('authenticateUser', { email, password }, function(resp) {
-    btn.disabled = false; btn.innerHTML = '➡️ SIGN IN';
+  apiCall('authenticateUser', { email: email, password: password }, function (resp) {
+    btn.disabled = false;
+    btn.innerHTML = '➡️ SIGN IN';
     if (resp && resp.success) {
       sessionToken = resp.token;
       userMasterTab = resp.tabName;
@@ -338,16 +303,17 @@ function handleLogin() {
       userYear = resp.year;
 
       if (resp.term) {
-        const tsel = document.getElementById('termSelect');
+        var tsel = document.getElementById('termSelect');
         tsel.value = resp.term;
         currentTerm = resp.term;
         document.getElementById('saveTermLabel').textContent = resp.term;
       }
 
       document.getElementById('userInfoDisplay').innerHTML =
-        `👤 ${escapeHtml(resp.email)} | 🏷️ Slug: ${escapeHtml(userMasterTab)} | 📅 Year: ${escapeHtml(userYear)} | 📊 Tab: "${escapeHtml(userResultsTabName)}"`;
+        '👤 ' + escapeHtml(resp.email) + ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
+        ' | 📅 Year: ' + escapeHtml(userYear) + ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
       document.getElementById('schoolBadge').innerHTML =
-        `🏫 ${escapeHtml(userSchoolName)} — ${escapeHtml(resp.sessionRaw || userYear)}`;
+        '🏫 ' + escapeHtml(userSchoolName) + ' — ' + escapeHtml(resp.sessionRaw || userYear);
 
       showApp();
       loadInitialData();
@@ -372,48 +338,48 @@ function showApp() {
 /* ============ LOAD DATA ============ */
 function loadInitialData() {
   if (!userMasterTab) { setStatus('No school slug assigned.', 'error'); return; }
-  setStatus(`🔄 Loading data from "${userMasterTab}"...`);
+  setStatus('🔄 Loading data from "' + userMasterTab + '"...');
 
-  apiCall('getStudentData', { token: sessionToken }, function(students) {
+  apiCall('getStudentData', { token: sessionToken }, function (students) {
     if (students && students.error) { setStatus(students.error, 'error'); return; }
     studentMaster = students || [];
 
-    apiCall('getSubjects', { token: sessionToken }, function(subjects) {
+    apiCall('getSubjects', { token: sessionToken }, function (subjects) {
       if (subjects && subjects.error) { setStatus(subjects.error, 'error'); return; }
       subjectsCatalog = subjects || [];
       populateSubjectDropdown();
 
-      apiCall('getMarksData', { token: sessionToken }, function(marks) {
+      apiCall('getMarksData', { token: sessionToken }, function (marks) {
         if (marks && marks.error) { setStatus(marks.error, 'error'); return; }
         marksCache = marks || {};
         populateClassDropdown();
         renderTable();
-        setStatus(`✅ Loaded ${studentMaster.length} students, ${subjectsCatalog.length} subjects.`, 'success');
+        setStatus('✅ Loaded ' + studentMaster.length + ' students, ' + subjectsCatalog.length + ' subjects.', 'success');
       });
     });
   });
 }
 
 function populateClassDropdown() {
-  const el = document.getElementById('classSelect');
-  const classes = naturalSort([...new Set(studentMaster.map(s => s.className).filter(Boolean))]);
+  var el = document.getElementById('classSelect');
+  var classes = naturalSort([].concat.apply([], [Array.from(new Set(studentMaster.map(function (s) { return s.className; }).filter(Boolean)))]));
   el.innerHTML = '<option value="">-- Select Class --</option>';
-  classes.forEach(c => {
-    const opt = document.createElement('option');
+  classes.forEach(function (c) {
+    var opt = document.createElement('option');
     opt.value = c; opt.textContent = c;
     el.appendChild(opt);
   });
 }
 
 function populateSubjectDropdown() {
-  const el = document.getElementById('subjectSelect');
+  var el = document.getElementById('subjectSelect');
   if (!subjectsCatalog.length) {
     el.innerHTML = '<option value="">-- No subjects found --</option>';
     return;
   }
   el.innerHTML = '<option value="">-- Select Subject --</option>';
-  subjectsCatalog.forEach(s => {
-    const opt = document.createElement('option');
+  subjectsCatalog.forEach(function (s) {
+    var opt = document.createElement('option');
     opt.value = s.id; opt.textContent = s.display;
     el.appendChild(opt);
   });
@@ -423,10 +389,10 @@ function populateSubjectDropdown() {
 
 /* ============ RENDER TABLE ============ */
 function renderTable() {
-  const tbody = document.getElementById('tableBody');
-  const cls = document.getElementById('classSelect').value;
-  const subjId = document.getElementById('subjectSelect').value;
-  const term = document.getElementById('termSelect').value;
+  var tbody = document.getElementById('tableBody');
+  var cls = document.getElementById('classSelect').value;
+  var subjId = document.getElementById('subjectSelect').value;
+  var term = document.getElementById('termSelect').value;
 
   currentClass = cls; currentSubject = subjId; currentTerm = term;
   document.getElementById('saveTermLabel').textContent = term;
@@ -434,30 +400,29 @@ function renderTable() {
   if (!cls) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a class</td></tr>'; return; }
   if (!subjId) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a subject</td></tr>'; return; }
 
-  const filtered = studentMaster.filter(s => s.className === cls);
+  var filtered = studentMaster.filter(function (s) { return s.className === cls; });
   if (!filtered.length) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">🏫 No students in this class</td></tr>';
     return;
   }
 
   tbody.innerHTML = '';
-  filtered.forEach(stu => {
-    let marks = { test1: 0, test2: 0, exam: 0 };
-    if (marksCache[subjId] && marksCache[subjId][cls] && marksCache[subjId][cls][stu.roll]
-        && marksCache[subjId][cls][stu.roll][term]) {
+  filtered.forEach(function (stu) {
+    var marks = { test1: 0, test2: 0, exam: 0 };
+    if (marksCache[subjId] && marksCache[subjId][cls] && marksCache[subjId][cls][stu.roll] &&
+        marksCache[subjId][cls][stu.roll][term]) {
       marks = marksCache[subjId][cls][stu.roll][term];
     }
-    const tr = document.createElement('tr');
+    var tr = document.createElement('tr');
     tr.setAttribute('data-roll', stu.roll);
-    tr.innerHTML = `
-      <td class="col-roll">${escapeHtml(stu.roll)}</td>
-      <td class="col-name student-name">${escapeHtml(stu.name)}</td>
-      <td class="col-test1"><input type="text" inputmode="text" value="${escapeHtml(displayValue(marks.test1))}" class="marks-input t1-input" placeholder="0-15/ABS"></td>
-      <td class="col-test2"><input type="text" inputmode="text" value="${escapeHtml(displayValue(marks.test2))}" class="marks-input t2-input" placeholder="0-15/ABS"></td>
-      <td class="col-exam"><input type="text" inputmode="text" value="${escapeHtml(displayValue(marks.exam))}" class="marks-input exam-input" placeholder="0-70/ABS"></td>
-    `;
+    tr.innerHTML =
+      '<td class="col-roll">' + escapeHtml(stu.roll) + '</td>' +
+      '<td class="col-name student-name">' + escapeHtml(stu.name) + '</td>' +
+      '<td class="col-test1"><input type="text" inputmode="text" value="' + escapeHtml(displayValue(marks.test1)) + '" class="marks-input t1-input" placeholder="0-15/ABS"></td>' +
+      '<td class="col-test2"><input type="text" inputmode="text" value="' + escapeHtml(displayValue(marks.test2)) + '" class="marks-input t2-input" placeholder="0-15/ABS"></td>' +
+      '<td class="col-exam"><input type="text" inputmode="text" value="' + escapeHtml(displayValue(marks.exam)) + '" class="marks-input exam-input" placeholder="0-70/ABS"></td>';
     tbody.appendChild(tr);
-    tr.querySelectorAll('.marks-input').forEach(inp => {
+    Array.prototype.forEach.call(tr.querySelectorAll('.marks-input'), function (inp) {
       if (detectAbs(inp.value)) inp.classList.add('abs');
     });
   });
@@ -465,36 +430,30 @@ function renderTable() {
 
 /* ============ VALIDATION ============ */
 function validateAll() {
-  const rows = document.querySelectorAll('#tableBody tr');
-  let ok = true;
-  let firstErr = '';
-  rows.forEach(tr => {
-    const t1 = tr.querySelector('.t1-input');
-    const t2 = tr.querySelector('.t2-input');
-    const ex = tr.querySelector('.exam-input');
+  var rows = document.querySelectorAll('#tableBody tr');
+  var ok = true;
+  var firstErr = '';
+  Array.prototype.forEach.call(rows, function (tr) {
+    var t1 = tr.querySelector('.t1-input');
+    var t2 = tr.querySelector('.t2-input');
+    var ex = tr.querySelector('.exam-input');
     if (!t1 || !t2 || !ex) return;
 
-    const check = (el, max) => {
-      const raw = el.value.trim();
-      const upper = raw.toUpperCase();
-
+    function check(el, max) {
+      var raw = el.value.trim();
+      var upper = raw.toUpperCase();
       if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
-        el.classList.remove('invalid');
-        el.classList.add('abs');
-        return true;
+        el.classList.remove('invalid'); el.classList.add('abs'); return true;
       }
-      if (raw === '') {
-        el.classList.remove('invalid', 'abs');
-        return true;
-      }
-      const v = parseFloat(raw);
-      const bad = isNaN(v) || v < 0 || v > max;
+      if (raw === '') { el.classList.remove('invalid', 'abs'); return true; }
+      var v = parseFloat(raw);
+      var bad = isNaN(v) || v < 0 || v > max;
       el.classList.toggle('invalid', bad);
       el.classList.remove('abs');
-      if (bad && !firstErr) firstErr = `Value must be 0–${max} or "ABS"`;
+      if (bad && !firstErr) firstErr = 'Value must be 0–' + max + ' or "ABS"';
       return !bad;
-    };
-    if (!check(t1,15) || !check(t2,15) || !check(ex,70)) ok = false;
+    }
+    if (!check(t1, 15) || !check(t2, 15) || !check(ex, 70)) ok = false;
   });
   if (!ok) setStatus('❌ ' + firstErr, 'error');
   return ok;
@@ -502,27 +461,25 @@ function validateAll() {
 
 /* ============ SAVE ============ */
 function saveMarks() {
-  const cls = document.getElementById('classSelect').value;
-  const subjId = document.getElementById('subjectSelect').value;
-  const term = document.getElementById('termSelect').value;
-  if (!cls) return setStatus('⚠️ Select a class.', 'warning');
-  if (!subjId) return setStatus('⚠️ Select a subject.', 'warning');
+  var cls = document.getElementById('classSelect').value;
+  var subjId = document.getElementById('subjectSelect').value;
+  var term = document.getElementById('termSelect').value;
+  if (!cls) { setStatus('⚠️ Select a class.', 'warning'); return; }
+  if (!subjId) { setStatus('⚠️ Select a subject.', 'warning'); return; }
   if (!validateAll()) return;
 
-  const updates = [];
-  document.querySelectorAll('#tableBody tr').forEach(tr => {
-    const roll = tr.getAttribute('data-roll');
+  var updates = [];
+  Array.prototype.forEach.call(document.querySelectorAll('#tableBody tr'), function (tr) {
+    var roll = tr.getAttribute('data-roll');
     if (!roll) return;
-
-    const parseCell = (el, max) => {
-      const raw = el.value.trim();
+    function parseCell(el, max) {
+      var raw = el.value.trim();
       if (detectAbs(raw)) return 'ABS';
       if (raw === '') return 0;
-      const v = parseFloat(raw);
+      var v = parseFloat(raw);
       if (isNaN(v)) return 0;
       return Math.min(max, Math.max(0, v));
-    };
-
+    }
     updates.push({
       roll: roll,
       test1: parseCell(tr.querySelector('.t1-input'), 15),
@@ -531,8 +488,9 @@ function saveMarks() {
     });
   });
 
-  const btn = document.getElementById('saveBtnBottom');
-  btn.disabled = true; btn.innerHTML = 'Saving... <span class="spinner"></span>';
+  var btn = document.getElementById('saveBtnBottom');
+  btn.disabled = true;
+  btn.innerHTML = 'Saving... <span class="spinner"></span>';
 
   apiCall('saveMarksData', {
     token: sessionToken,
@@ -540,28 +498,26 @@ function saveMarks() {
     className: cls,
     term: term,
     updates: updates
-  }, function(resp) {
+  }, function (resp) {
     btn.disabled = false;
     btn.innerHTML = '💾 Save Marks for ' + term;
 
     if (resp && resp.success) {
       if (!marksCache[subjId]) marksCache[subjId] = {};
       if (!marksCache[subjId][cls]) marksCache[subjId][cls] = {};
-      updates.forEach(u => {
-        const hasScore = isAbs(u.test1) || isAbs(u.test2) || isAbs(u.exam)
-                      || u.test1 !== 0 || u.test2 !== 0 || u.exam !== 0;
+      updates.forEach(function (u) {
+        var hasScore = isAbs(u.test1) || isAbs(u.test2) || isAbs(u.exam) ||
+                       u.test1 !== 0 || u.test2 !== 0 || u.exam !== 0;
         if (!hasScore) return;
         if (!marksCache[subjId][cls][u.roll]) marksCache[subjId][cls][u.roll] = {};
         marksCache[subjId][cls][u.roll][term] = { test1: u.test1, test2: u.test2, exam: u.exam };
       });
-
-      const savedCount = resp.saved || 0;
-      const addedCount = resp.addedNew || 0;
-      const skipped   = resp.skippedZero || 0;
-
-      let msg = `✅ Saved ${savedCount} student(s) for ${term}`;
-      if (addedCount > 0) msg += ` — ${addedCount} newly added to results tab`;
-      if (skipped > 0)    msg += ` • Skipped ${skipped} with no scores`;
+      var savedCount = resp.saved || 0;
+      var addedCount = resp.addedNew || 0;
+      var skipped   = resp.skippedZero || 0;
+      var msg = '✅ Saved ' + savedCount + ' student(s) for ' + term;
+      if (addedCount > 0) msg += ' — ' + addedCount + ' newly added';
+      if (skipped > 0)    msg += ' • Skipped ' + skipped + ' with no scores';
       setStatus(msg + '.', 'success');
     } else {
       setStatus('⚠️ ' + ((resp && resp.error) || 'Save failed'), 'error');
@@ -584,8 +540,8 @@ function bindUI() {
 
   if (lb) lb.addEventListener('click', handleLogin);
   if (lo) lo.addEventListener('click', handleLogout);
-  if (lp) lp.addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
-  if (le) le.addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+  if (lp) lp.addEventListener('keypress', function (e) { if (e.key === 'Enter') handleLogin(); });
+  if (le) le.addEventListener('keypress', function (e) { if (e.key === 'Enter') handleLogin(); });
   if (rb) rb.addEventListener('click', loadInitialData);
   if (cs) cs.addEventListener('change', renderTable);
   if (ss) ss.addEventListener('change', renderTable);
@@ -593,24 +549,20 @@ function bindUI() {
   if (sb) sb.addEventListener('click', saveMarks);
 
   if (tb) {
-    tb.addEventListener('input', function(e) {
+    tb.addEventListener('input', function (e) {
       var el = e.target;
       if (!el.classList || !el.classList.contains('marks-input')) return;
       var upper = el.value.trim().toUpperCase();
       if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
-        el.classList.add('abs');
-        el.classList.remove('invalid');
-      } else {
-        el.classList.remove('abs');
-      }
+        el.classList.add('abs'); el.classList.remove('invalid');
+      } else { el.classList.remove('abs'); }
     });
-    tb.addEventListener('blur', function(e) {
+    tb.addEventListener('blur', function (e) {
       var el = e.target;
       if (!el.classList || !el.classList.contains('marks-input')) return;
       var upper = el.value.trim().toUpperCase();
       if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
-        el.value = 'ABS';
-        el.classList.add('abs');
+        el.value = 'ABS'; el.classList.add('abs');
       }
     }, true);
   }
