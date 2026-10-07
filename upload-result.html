@@ -190,7 +190,16 @@ button { background:#1f6e93; color:white; border:none; }
 
 <script>
 // ⚠️ REPLACE with your deployment URL
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzqlxKKevgRJHIio4BBalxgg9haumEnErLyJPikrAJT8hefHB067_XWYCvjNqz5NR2O1g/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwmzNXA1C8l3khJ9CLvgtFeUScoQL-mo3k_gAnXe9skk42bImimtX4tqj3lcqHmaX_udA/exec';
+
+// ——— Diagnostics: show any JS error on the login screen ———
+window.addEventListener('error', function(ev) {
+  var el = document.getElementById('loginError');
+  if (el) {
+    el.style.display = 'block';
+    el.textContent = 'JS error: ' + (ev.message || 'unknown');
+  }
+});
 
 let sessionToken = null;
 let userMasterTab = null;
@@ -265,13 +274,14 @@ function apiCall(action, data, callback) {
 
 /* ============ UI helpers ============ */
 function escapeHtml(s) {
-  if (!s) return '';
+  if (s === null || s === undefined) return '';
   return s.toString().replace(/[&<>"']/g, m => ({
     '&':'&','<':'<','>':'>','"':'"',"'":'''
   }[m]));
 }
 function setStatus(msg, type) {
   const el = document.getElementById('statusMsg');
+  if (!el) return;
   el.className = 'status-bar ' + (type || '');
   const span = el.querySelector('span:not(#syncStatus)');
   if (span) span.textContent = msg;
@@ -504,7 +514,6 @@ function saveMarks() {
     const roll = tr.getAttribute('data-roll');
     if (!roll) return;
 
-    // "ABS" is sent as the string "ABS"; numbers as numbers; empty as 0
     const parseCell = (el, max) => {
       const raw = el.value.trim();
       if (detectAbs(raw)) return 'ABS';
@@ -561,37 +570,57 @@ function saveMarks() {
 }
 
 /* ============ BIND ============ */
-document.getElementById('loginBtn').addEventListener('click', handleLogin);
-document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-document.getElementById('loginPassword').addEventListener('keypress', e => {
-  if (e.key === 'Enter') handleLogin();
-});
-document.getElementById('refreshBtn').addEventListener('click', loadInitialData);
-document.getElementById('classSelect').addEventListener('change', renderTable);
-document.getElementById('subjectSelect').addEventListener('change', renderTable);
-document.getElementById('termSelect').addEventListener('change', renderTable);
-document.getElementById('saveBtnBottom').addEventListener('click', saveMarks);
+function bindUI() {
+  var lb = document.getElementById('loginBtn');
+  var lo = document.getElementById('logoutBtn');
+  var lp = document.getElementById('loginPassword');
+  var le = document.getElementById('loginEmail');
+  var rb = document.getElementById('refreshBtn');
+  var cs = document.getElementById('classSelect');
+  var ss = document.getElementById('subjectSelect');
+  var ts = document.getElementById('termSelect');
+  var sb = document.getElementById('saveBtnBottom');
+  var tb = document.getElementById('tableBody');
 
-document.getElementById('tableBody').addEventListener('input', function(e) {
-  const el = e.target;
-  if (!el.classList.contains('marks-input')) return;
-  const upper = el.value.trim().toUpperCase();
-  if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
-    el.classList.add('abs');
-    el.classList.remove('invalid');
-  } else {
-    el.classList.remove('abs');
+  if (lb) lb.addEventListener('click', handleLogin);
+  if (lo) lo.addEventListener('click', handleLogout);
+  if (lp) lp.addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+  if (le) le.addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+  if (rb) rb.addEventListener('click', loadInitialData);
+  if (cs) cs.addEventListener('change', renderTable);
+  if (ss) ss.addEventListener('change', renderTable);
+  if (ts) ts.addEventListener('change', renderTable);
+  if (sb) sb.addEventListener('click', saveMarks);
+
+  if (tb) {
+    tb.addEventListener('input', function(e) {
+      var el = e.target;
+      if (!el.classList || !el.classList.contains('marks-input')) return;
+      var upper = el.value.trim().toUpperCase();
+      if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
+        el.classList.add('abs');
+        el.classList.remove('invalid');
+      } else {
+        el.classList.remove('abs');
+      }
+    });
+    tb.addEventListener('blur', function(e) {
+      var el = e.target;
+      if (!el.classList || !el.classList.contains('marks-input')) return;
+      var upper = el.value.trim().toUpperCase();
+      if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
+        el.value = 'ABS';
+        el.classList.add('abs');
+      }
+    }, true);
   }
-});
-document.getElementById('tableBody').addEventListener('blur', function(e) {
-  const el = e.target;
-  if (!el.classList || !el.classList.contains('marks-input')) return;
-  const upper = el.value.trim().toUpperCase();
-  if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
-    el.value = 'ABS';
-    el.classList.add('abs');
-  }
-}, true);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bindUI);
+} else {
+  bindUI();
+}
 </script>
 </body>
 </html>
