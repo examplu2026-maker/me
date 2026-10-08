@@ -1,175 +1,440 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
-  <title>Student Records · ExamPlus</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }body {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ExamPlus Student Results</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f7fb;
+  color: #172033;
+}
+
+body {
   min-height: 100vh;
-  background: radial-gradient(ellipse at 30% 20%, #0f2e24, #071a14);
+}
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+.login-page {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
   padding: 20px;
+  background:
+    linear-gradient(
+      135deg,
+      #0b5ed7 0%,
+      #1647a3 50%,
+      #092b68 100%
+    );
 }
 
-/* ===== LOGIN OVERLAY ===== */
-.login-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  padding: 20px;
-  animation: fadeIn 0.35s ease;
-}
-
-.login-overlay.hidden {
-  display: none;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.login-card {
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: 48px;
-  padding: 40px 32px;
+.login-box {
   width: 100%;
   max-width: 420px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32px 25px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.20);
+}
+
+.logo-area {
   text-align: center;
-  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5);
-  animation: floatIn 0.4s ease;
+  margin-bottom: 25px;
 }
 
-@keyframes floatIn {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.96);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 480px) {
-  .login-card {
-    border-radius: 36px;
-    padding: 32px 24px;
-  }
-}
-
-.login-card h2 {
-  margin-bottom: 8px;
+.logo {
+  width: 70px;
+  height: 70px;
+  margin: auto;
+  border-radius: 18px;
+  background: #0b5ed7;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
   font-weight: 800;
-  font-size: 1.6rem;
-  background: linear-gradient(125deg, #1e5a48, #2d8f6e);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
-.login-card .sub {
-  color: #5a8f7a;
-  font-size: 0.8rem;
-  margin-bottom: 24px;
+.logo-area h1 {
+  margin: 14px 0 5px;
+  font-size: 25px;
+  color: #13284c;
+}
+
+.logo-area p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
 }
 
 .input-group {
-  margin: 14px 0;
-  width: 100%;
+  margin-bottom: 17px;
 }
 
-.login-card input {
-  width: 100%;
-  padding: 14px 20px;
-  border: 2px solid #e2e8f0;
-  border-radius: 60px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  background: white;
-  transition: all 0.2s ease;
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 7px;
+  color: #334155;
 }
 
-.login-card input:focus {
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 50px;
+  border: 1px solid #d6dce5;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 16px;
   outline: none;
-  border-color: #0f9d58;
-  box-shadow: 0 0 0 4px rgba(15, 157, 88, 0.15);
+  background: #fff;
+  color: #111827;
+  transition: border-color .2s, box-shadow .2s;
 }
 
-.login-card input::placeholder {
-  color: #a8c0d0;
-  font-size: 0.85rem;
+.input-wrapper input:focus {
+  border-color: #0b5ed7;
+  box-shadow: 0 0 0 3px rgba(11,94,215,.10);
 }
 
-.login-card button {
+.login-button {
   width: 100%;
-  padding: 14px 20px;
-  margin-top: 18px;
-  background: linear-gradient(95deg, #0f9d58, #0c7e46);
+  height: 52px;
+  border: 0;
+  border-radius: 10px;
+  background: #0b5ed7;
   color: white;
-  border: none;
-  border-radius: 60px;
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  touch-action: manipulation;
+  transition: .2s;
 }
 
-.login-card button:disabled {
-  opacity: 0.7;
-  cursor: wait;
+.login-button:hover {
+  background: #084cae;
 }
 
-.login-card button:active {
-  transform: scale(0.97);
+.login-button:disabled {
+  opacity: .65;
+  cursor: not-allowed;
 }
 
-.error-msg {
+.login-message {
+  min-height: 22px;
   margin-top: 14px;
+  text-align: center;
+  font-size: 14px;
   font-weight: 600;
-  font-size: 0.75rem;
-  background: #fff0f0;
-  padding: 10px 16px;
-  border-radius: 60px;
-  color: #dc3545;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.success {
+  color: #15803d;
+}
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app {
   display: none;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: #0b5ed7;
+  color: white;
+  padding: 14px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+}
+
+.topbar-inner {
+  max-width: 1300px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand {
+  min-width: 0;
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  opacity: .9;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-button {
+  border: 1px solid rgba(255,255,255,.5);
+  background: transparent;
+  color: white;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.logout-button:hover {
+  background: rgba(255,255,255,.12);
+}
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.container {
+  width: 100%;
+  max-width: 1300px;
+  margin: auto;
+  padding: 20px;
+}
+
+.school-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 3px 15px rgba(15,23,42,.06);
+  margin-bottom: 18px;
+}
+
+.school-card h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #13284c;
+}
+
+.session {
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns:
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    minmax(180px, 1.5fr)
+    auto
+    auto;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.control {
+  background: white;
+  border-radius: 11px;
+  padding: 10px;
+  box-shadow: 0 3px 15px rgba(15,23,42,.05);
+}
+
+.control label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+.control select,
+.control input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: white;
+  font-size: 14px;
+  color: #172033;
+  outline: none;
+}
+
+.control select:focus,
+.control input:focus {
+  border-color: #0b5ed7;
+}
+
+.action-button {
+  align-self: end;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 15px;
+  cursor: pointer;
+  background: #0b5ed7;
+  color: white;
+  font-weight: 700;
+}
+
+.action-button.secondary {
+  background: #64748b;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status {
+  padding: 13px 15px;
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  color: #475569;
+  font-size: 14px;
+  box-shadow: 0 3px 12px rgba(15,23,42,.05);
+}
+
+.status.error {
+  color: #b91c1c;
+  background: #fff1f2;
+}
+
+.status.success {
+  color: #166534;
+  background: #f0fdf4;
+}
+
+/* =========================================================
+   RESULTS
+   ========================================================= */
+
+.results-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 3px 15px rgba(15,23,42,.06);
+  overflow: hidden;
+}
+
+.results-header {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.results-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #172033;
+}
+
+.student-count {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.results-table {
+  width: 100%;
+  min-width: 950px;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  border: 1px solid #dfe5ed;
+  padding: 9px 10px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.results-table thead th {
+  background: #edf4ff;
+  color: #16345f;
+  font-weight: 800;
+}
+
+.results-table .student-info {
+  text-align: left;
+  background: #fafcff;
+  font-weight: 700;
+  min-width: 120px;
+}
+
+.results-table .subject-name {
+  background: #dbeafe;
+  color: #123a72;
+}
+
+.results-table .sub-head {
+  background: #f3f7fc;
+  font-size: 11px;
+}
+
+.results-table tbody tr:hover {
+  background: #fafcff;
+}
+
+.no-results {
+  padding: 40px 20px;
+  text-align: center;
+  color: #64748b;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading {
+  display: none;
+  text-align: center;
+  padding: 30px;
+  color: #64748b;
 }
 
 .spinner {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #ffffff;
-  border-top-color: transparent;
+  width: 35px;
+  height: 35px;
+  margin: auto auto 12px;
+  border: 4px solid #dbe5f5;
+  border-top-color: #0b5ed7;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-left: 8px;
-  vertical-align: middle;
+  animation: spin .8s linear infinite;
 }
 
 @keyframes spin {
@@ -178,1465 +443,1613 @@
   }
 }
 
-/* ===== MAIN VIEWER ===== */
-.viewer-container {
-  display: none;
-  max-width: 100%;
-  margin: 12px;
-  background: #ffffff;
-  border-radius: 28px;
-  padding: 16px 20px;
-  border: 1px solid #eef2f8;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  overflow-x: auto;
-  width: 100%;
-}
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
-@media (min-width: 768px) {
-  .viewer-container {
-    margin: 20px;
-    padding: 24px 28px;
-  }
-}
+@media (max-width: 900px) {
 
-.viewer-container h2 {
-  text-align: center;
-  color: #1e3c2c;
-  font-weight: 800;
-  font-size: 1.3rem;
-}
-
-.school-badge {
-  background: linear-gradient(135deg, #1e5a48, #2d8f6e);
-  color: white;
-  padding: 6px 16px;
-  border-radius: 40px;
-  font-size: 0.7rem;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-.filter-bar {
-  background: #fafcfc;
-  padding: 14px 18px;
-  border-radius: 40px;
-  margin: 12px 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid #eef2f8;
-}
-
-.filter-bar label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #1e3c2c;
-  background: #eef5ea;
-  padding: 5px 14px;
-  border-radius: 40px;
-}
-
-select {
-  padding: 9px 16px;
-  border-radius: 40px;
-  border: 2px solid #e2e8f0;
-  font-size: 0.8rem;
-  background: white;
-  cursor: pointer;
-  min-width: 180px;
-  font-weight: 500;
-  flex: 1;
-}
-
-.reset-btn,
-.toggle-btn,
-.logout-btn {
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  padding: 8px 16px;
-  border-radius: 40px;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 0.75rem;
-  touch-action: manipulation;
-  transition: all 0.2s ease;
-  color: #1e3c2c;
-}
-
-.reset-btn:hover,
-.toggle-btn:hover,
-.logout-btn:hover {
-  background: #eef2f8;
-}
-
-.reset-btn:active,
-.toggle-btn:active,
-.logout-btn:active {
-  transform: scale(0.96);
-}
-
-.logout-btn {
-  color: #dc3545;
-  border-color: #f0d4d4;
-}
-
-.logout-btn:hover {
-  background: #ffe5e5;
-  border-color: #dc3545;
-}
-
-.header-info {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  gap: 12px;
-}
-
-.header-info h2 {
-  margin: 0;
-  flex: 1;
-  text-align: center;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-  width: 100%;
-  margin-top: 15px;
-  border: 1px solid #eef2f8;
-  border-radius: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 750px;
-}
-
-th,
-td {
-  border: 1px solid #eef2f8;
-  padding: 10px 10px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-th {
-  background: #f8fafc;
-  color: #1e3c2c;
-  font-weight: 700;
-  position: sticky;
-  top: 0;
-  font-size: 0.7rem;
-  z-index: 10;
-}
-
-.subject-header {
-  text-align: center;
-  background: #eef5ea;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #1e5a48;
-}
-
-.marks-subheader {
-  text-align: center;
-  background: #f0f6f0;
-  font-weight: 600;
-  font-size: 0.6rem;
-}
-
-.marks-cell {
-  text-align: center;
-  font-weight: 500;
-}
-
-.image-preview {
-  max-width: 40px;
-  max-height: 44px;
-  cursor: pointer;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
-
-.image-preview:hover {
-  transform: scale(1.1);
-}
-
-.image-preview:active {
-  transform: scale(1.05);
-}
-
-.image-modal {
-  display: none;
-  position: fixed;
-  z-index: 3000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.94);
-  cursor: pointer;
-}
-
-.image-modal-content {
-  margin: auto;
-  display: block;
-  max-width: 90%;
-  max-height: 85%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-.close-modal {
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.close-modal:hover {
-  color: #ccc;
-}
-
-.close-modal:active {
-  color: #999;
-}
-
-.no-data {
-  text-align: center;
-  padding: 40px 20px;
-  color: #5a6874;
-  font-weight: 500;
-  font-size: 0.85rem;
-}
-
-.record-count {
-  background: #eef5ea;
-  padding: 5px 14px;
-  border-radius: 40px;
-  display: inline-block;
-  margin-bottom: 10px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #1e5a48;
-}
-
-.status-msg {
-  background: #e8f1f8;
-  border-radius: 40px;
-  padding: 8px 16px;
-  margin-bottom: 15px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #1d6f94;
-  transition: all 0.3s ease;
-}
-
-.status-msg.error {
-  background: #ffe0e0;
-  color: #c0392b;
-}
-
-.status-msg.success {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-msg.warning {
-  background: #fff3cd;
-  color: #856404;
-}
-
-@media (max-width: 640px) {
-  .header-info {
-    flex-direction: column;
-    text-align: center;
+  .controls {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .header-info h2 {
-    order: -1;
-  }
-
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  select {
+  .action-button {
     width: 100%;
   }
+}
 
-  .reset-btn,
-  .toggle-btn,
-  .logout-btn {
-    text-align: center;
+@media (max-width: 600px) {
+
+  .container {
+    padding: 12px;
+  }
+
+  .topbar {
+    padding: 12px;
+  }
+
+  .topbar-inner {
+    align-items: flex-start;
+  }
+
+  .brand-title {
+    font-size: 17px;
+  }
+
+  .brand-subtitle {
+    max-width: 210px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .school-card h2 {
+    font-size: 19px;
+  }
+
+  .login-box {
+    padding: 27px 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =======================================================
+     LOGIN PAGE
+     ======================================================= -->
+
+<div id="loginPage" class="login-page">
+
+  <div class="login-box">
+
+    <div class="logo-area">
+
+      <div class="logo">
+        EP
+      </div>
+
+      <h1>ExamPlus</h1>
+
+      <p>Student Result Portal</p>
+
+    </div>
+
+    <form id="loginForm" autocomplete="off">
+
+      <div class="input-group">
+
+        <label for="username">
+          Username / Email
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="Enter username or email"
+            required
+          >
+
+        </div>
+
+      </div>
+
+      <div class="input-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            placeholder="Enter password"
+            required
+          >
+
+        </div>
+
+      </div>
+
+      <button
+        type="submit"
+        class="login-button"
+        id="loginButton"
+      >
+        Login
+      </button>
+
+      <div
+        id="loginMessage"
+        class="login-message"
+      ></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =======================================================
+     APPLICATION
+     ======================================================= -->
+
+<div id="app" class="app">
+
+  <div class="topbar">
+
+    <div class="topbar-inner">
+
+      <div class="brand">
+
+        <div
+          id="topSchoolName"
+          class="brand-title"
+        >
+          ExamPlus
+        </div>
+
+        <div
+          id="topSession"
+          class="brand-subtitle"
+        >
+          Student Result Portal
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        id="logoutButton"
+        class="logout-button"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <main class="container">
+
+    <div class="school-card">
+
+      <h2 id="schoolName">
+        School
+      </h2>
+
+      <div
+        id="sessionText"
+        class="session"
+      >
+        Academic Session
+      </div>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div class="controls">
+
+      <div class="control">
+
+        <label for="termSelect">
+          Term
+        </label>
+
+        <select id="termSelect">
+          <option value="First Term">
+            First Term
+          </option>
+
+          <option value="Second Term">
+            Second Term
+          </option>
+
+          <option value="Third Term">
+            Third Term
+          </option>
+        </select>
+
+      </div>
+
+
+      <div class="control">
+
+        <label for="classSelect">
+          Class
+        </label>
+
+        <select id="classSelect">
+
+          <option value="">
+            All Classes
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="control">
+
+        <label for="searchInput">
+          Search Student
+        </label>
+
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Name or admission number"
+          autocomplete="off"
+        >
+
+      </div>
+
+
+      <button
+        type="button"
+        id="refreshButton"
+        class="action-button"
+      >
+        Refresh
+      </button>
+
+
+      <button
+        type="button"
+        id="resetButton"
+        class="action-button secondary"
+      >
+        Reset
+      </button>
+
+    </div>
+
+
+    <div
+      id="status"
+      class="status"
+    >
+      Loading results...
+    </div>
+
+
+    <div
+      id="loading"
+      class="loading"
+    >
+
+      <div class="spinner"></div>
+
+      Loading student results...
+
+    </div>
+
+
+    <!-- RESULTS -->
+
+    <div class="results-card">
+
+      <div class="results-header">
+
+        <h3>
+          Student Results
+        </h3>
+
+        <div
+          id="studentCount"
+          class="student-count"
+        >
+          0 students
+        </div>
+
+      </div>
+
+      <div class="table-wrap">
+
+        <table
+          id="resultsTable"
+          class="results-table"
+        >
+
+          <thead id="resultsHead"></thead>
+
+          <tbody id="resultsBody"></tbody>
+
+        </table>
+
+        <div
+          id="noResults"
+          class="no-results"
+          style="display:none;"
+        >
+          No student results found.
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   EXAMPLUS API
+   ========================================================= */
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzc74TgXR7GMnK7aut-kHESEOPDidBVETNQSfs05-j96um-eG-u0whLWT3XQOWA_OZRaw/exec";
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let sessionToken = "";
+
+let schoolInfo = {
+  schoolName: "",
+  schoolSlug: "",
+  termName: "",
+  termSession: "",
+  academicYear: "",
+  resultTab: ""
+};
+
+let allStudents = [];
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const loginPage =
+  document.getElementById("loginPage");
+
+const app =
+  document.getElementById("app");
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const usernameInput =
+  document.getElementById("username");
+
+const passwordInput =
+  document.getElementById("password");
+
+const loginButton =
+  document.getElementById("loginButton");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const schoolName =
+  document.getElementById("schoolName");
+
+const sessionText =
+  document.getElementById("sessionText");
+
+const topSchoolName =
+  document.getElementById("topSchoolName");
+
+const topSession =
+  document.getElementById("topSession");
+
+const termSelect =
+  document.getElementById("termSelect");
+
+const classSelect =
+  document.getElementById("classSelect");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const refreshButton =
+  document.getElementById("refreshButton");
+
+const resetButton =
+  document.getElementById("resetButton");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+const statusBox =
+  document.getElementById("status");
+
+const loading =
+  document.getElementById("loading");
+
+const resultsHead =
+  document.getElementById("resultsHead");
+
+const resultsBody =
+  document.getElementById("resultsBody");
+
+const noResults =
+  document.getElementById("noResults");
+
+const studentCount =
+  document.getElementById("studentCount");
+
+
+/* =========================================================
+   LOGIN FORM
+   ========================================================= */
+
+loginForm.addEventListener(
+  "submit",
+  function(event) {
+
+    event.preventDefault();
+
+    /*
+     * Read values only when the user presses Login.
+     * Nothing here clears or changes the input fields
+     * while the user is typing.
+     */
+
+    const username =
+      usernameInput.value.trim();
+
+    const password =
+      passwordInput.value;
+
+    if (!username || !password) {
+
+      showLoginMessage(
+        "Please enter your username/email and password.",
+        true
+      );
+
+      return;
+    }
+
+    loginUser(
+      username,
+      password
+    );
+  }
+);
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+function loginUser(
+  username,
+  password
+) {
+
+  setLoginLoading(true);
+
+  showLoginMessage(
+    "Signing in...",
+    false
+  );
+
+  const params = new URLSearchParams();
+
+  params.set(
+    "action",
+    "login"
+  );
+
+  params.set(
+    "email",
+    username
+  );
+
+  params.set(
+    "username",
+    username
+  );
+
+  params.set(
+    "password",
+    password
+  );
+
+  jsonp(
+    API_URL +
+    "?" +
+    params.toString(),
+    function(response) {
+
+      setLoginLoading(false);
+
+      if (
+        !response ||
+        response.success !== true
+      ) {
+
+        showLoginMessage(
+          response &&
+          response.message
+            ? response.message
+            : "Login failed.",
+          true
+        );
+
+        return;
+      }
+
+      sessionToken =
+        response.token || "";
+
+      const user =
+        response.user || {};
+
+      schoolInfo.schoolName =
+        user.schoolName || "";
+
+      schoolInfo.schoolSlug =
+        user.schoolSlug || "";
+
+      schoolInfo.termName =
+        user.termName || "";
+
+      schoolInfo.termSession =
+        user.termSession || "";
+
+      schoolInfo.academicYear =
+        user.academicYear || "";
+
+      schoolInfo.resultTab =
+        user.resultTab || "";
+
+      /*
+       * Set term from Users!I.
+       */
+
+      setTermFromUser();
+
+      /*
+       * Keep login username, but clear password
+       * only after successful login.
+       */
+
+      passwordInput.value = "";
+
+      showApplication();
+
+      loadResults();
+    }
+  );
+}
+
+
+/* =========================================================
+   SET TERM
+   ========================================================= */
+
+function setTermFromUser() {
+
+  const term =
+    normalize(
+      schoolInfo.termName
+    );
+
+  if (
+    term === "first term"
+  ) {
+
+    termSelect.value =
+      "First Term";
+
+  } else if (
+    term === "second term"
+  ) {
+
+    termSelect.value =
+      "Second Term";
+
+  } else if (
+    term === "third term"
+  ) {
+
+    termSelect.value =
+      "Third Term";
   }
 }
 
-@media print {
-  .login-overlay {
-    display: none !important;
+
+/* =========================================================
+   LOAD RESULTS
+   ========================================================= */
+
+function loadResults() {
+
+  if (!sessionToken) {
+
+    showStatus(
+      "Your login session is missing. Please login again.",
+      true
+    );
+
+    return;
   }
 
-  .viewer-container {
-    display: block !important;
-    margin: 0;
-    padding: 10px;
-    box-shadow: none;
-    border: 1px solid #ddd;
-    border-radius: 0;
-  }
+  showLoading(true);
 
-  .filter-bar {
-    display: none;
-  }
+  showStatus(
+    "Loading results...",
+    false
+  );
 
-  .logout-btn {
-    display: none;
+  const params =
+    new URLSearchParams();
+
+  params.set(
+    "action",
+    "getresults"
+  );
+
+  params.set(
+    "token",
+    sessionToken
+  );
+
+  jsonp(
+    API_URL +
+    "?" +
+    params.toString(),
+    function(response) {
+
+      showLoading(false);
+
+      if (
+        !response ||
+        response.success !== true
+      ) {
+
+        showStatus(
+          response &&
+          response.message
+            ? response.message
+            : "Unable to load results.",
+          true
+        );
+
+        return;
+      }
+
+      /*
+       * Store students received from backend.
+       */
+
+      allStudents =
+        Array.isArray(
+          response.students
+        )
+          ? response.students
+          : [];
+
+      /*
+       * Update school/session information
+       * from backend.
+       */
+
+      if (response.schoolName) {
+        schoolInfo.schoolName =
+          response.schoolName;
+      }
+
+      if (response.schoolSlug) {
+        schoolInfo.schoolSlug =
+          response.schoolSlug;
+      }
+
+      if (response.termName) {
+        schoolInfo.termName =
+          response.termName;
+      }
+
+      if (response.termSession) {
+        schoolInfo.termSession =
+          response.termSession;
+      }
+
+      if (response.academicYear) {
+        schoolInfo.academicYear =
+          response.academicYear;
+      }
+
+      if (response.resultTab) {
+        schoolInfo.resultTab =
+          response.resultTab;
+      }
+
+      updateSchoolDisplay();
+
+      buildClassList();
+
+      renderResults();
+
+      showStatus(
+        "Results loaded successfully.",
+        false
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   SCHOOL DISPLAY
+   ========================================================= */
+
+function updateSchoolDisplay() {
+
+  const name =
+    schoolInfo.schoolName ||
+    schoolInfo.schoolSlug ||
+    "ExamPlus";
+
+  const session =
+    schoolInfo.termSession ||
+    (
+      schoolInfo.termName +
+      " " +
+      schoolInfo.academicYear
+    ).trim();
+
+  schoolName.textContent =
+    name;
+
+  sessionText.textContent =
+    session || "Academic Session";
+
+  topSchoolName.textContent =
+    name;
+
+  topSession.textContent =
+    session || "Student Result Portal";
+}
+
+
+/* =========================================================
+   CLASS LIST
+   ========================================================= */
+
+function buildClassList() {
+
+  const current =
+    classSelect.value;
+
+  const map = {};
+
+  allStudents.forEach(
+    function(student) {
+
+      const value =
+        String(
+          student.className || ""
+        ).trim();
+
+      if (value) {
+
+        map[
+          normalize(value)
+        ] = value;
+      }
+    }
+  );
+
+  const classes =
+    Object.keys(map)
+      .map(function(key) {
+        return map[key];
+      })
+      .sort(function(a, b) {
+
+        return a.localeCompare(
+          b,
+          undefined,
+          {
+            numeric: true,
+            sensitivity: "base"
+          }
+        );
+
+      });
+
+  classSelect.innerHTML =
+    '<option value="">All Classes</option>';
+
+  classes.forEach(
+    function(className) {
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        className;
+
+      option.textContent =
+        className;
+
+      classSelect.appendChild(
+        option
+      );
+    }
+  );
+
+  if (
+    current &&
+    classes.some(
+      function(value) {
+        return normalize(value) ===
+          normalize(current);
+      }
+    )
+  ) {
+
+    classSelect.value =
+      current;
   }
 }
 
-  </style>
-</head><body>  <!-- ===== LOGIN OVERLAY ===== -->  <div class="login-overlay" id="loginOverlay">
-    <div class="login-card">
-      <h2>📊 Student Records</h2>
-      <div class="sub">Sign in to access student information</div>  <div class="input-group">
-    <input
-      type="email"
-      id="loginEmail"
-      placeholder="Email address"
-      autocomplete="email"
-      inputmode="email"
-    >
-  </div>
 
-  <div class="input-group">
-    <input
-      type="password"
-      id="loginPassword"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-  </div>
+/* =========================================================
+   RENDER RESULTS
+   ========================================================= */
 
-  <button type="button" id="loginBtn">
-    ➡️ ACCESS PORTAL ⬅️
-  </button>
+function renderResults() {
 
-  <div id="loginError" class="error-msg"></div>
-</div>
+  const selectedClass =
+    normalize(
+      classSelect.value
+    );
 
-  </div>  <!-- ===== MAIN VIEWER ===== -->  <div id="viewerSection" class="viewer-container"><div class="header-info">
-  <button type="button" class="logout-btn" id="logoutBtn">
-    🚪 Logout
-  </button>
+  const search =
+    normalize(
+      searchInput.value
+    );
 
-  <h2>📋 STUDENT RECORDS</h2>
+  const filtered =
+    allStudents.filter(
+      function(student) {
 
-  <div id="schoolBadge" class="school-badge">
-    🏫 Loading...
-  </div>
-</div>
+        const classMatches =
+          !selectedClass ||
+          normalize(
+            student.className
+          ) === selectedClass;
 
-<div id="statusMsg" class="status-msg">
-  ✅ Ready — Select a class to view students
-</div>
-
-<div class="filter-bar">
-  <label>📚 SELECT CLASS</label>
-
-  <select id="classSelect">
-    <option value="ALL">🏫 Loading classes...</option>
-  </select>
-
-  <button type="button" class="reset-btn" id="resetBtn">
-    ⟳ Show All
-  </button>
-
-  <button type="button" class="toggle-btn" id="togglePhotoBtn">
-    👁️ Show Student Photo
-  </button>
-</div>
-
-<div class="table-wrapper">
-  <table id="dataTable">
-    <tr>
-      <td colspan="10" class="no-data">
-        🔐 Please login to view records...
-      </td>
-    </tr>
-  </table>
-</div>
-
-  </div>  <!-- ===== IMAGE MODAL ===== -->  <div id="imageModal" class="image-modal" onclick="closeImageModal()">
-    <span class="close-modal">×</span>
-    <img class="image-modal-content" id="modalImage" alt="Student photo">
-  </div>  <script>
-    // ============================================================
-    // EXAMPLUS STUDENT RECORDS
-    // ============================================================
-
-    const API_BASE_URL =
-      'https://script.google.com/macros/s/AKfycbyz4V0txUMAfytn8vkukUrLSjBJdCl5nri02MiYWBqoJcI5pJ7BjM9dxjCC1oLND5c7Qg/exec';
-
-    // ==================== STATE ====================
-
-    let currentTabName = null;
-    let userEmail = null;
-    let allData = null;
-    let dataRows = [];
-    let headers = [];
-    let uniqueClasses = [];
-    let selectedClass = "ALL";
-    let showPhotoColumn = false;
-
-    const COL_CLASS_LIST = 0;
-    const COL_ROLL_NO = 1;
-    const COL_NAME = 2;
-    const COL_ACTUAL_CLASS = 3;
-    const COL_PHOTO = 4;
-    const COL_EXTRA_START = 5;
-    const COL_EXTRA_END = 9;
-    const COL_SUBJECT_START = 10;
-
-    let extraHeaders = [];
-    let subjectGroups = [];
-
-    // ============================================================
-    // HTML ESCAPING
-    // ============================================================
-
-    function escapeHtml(text) {
-      if (text === undefined || text === null) {
-        return '';
-      }
-
-      return String(text).replace(/[&<>"']/g, function(char) {
-        const entities = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        };
-
-        return entities[char];
-      });
-    }
-
-    function escapeHtmlAttr(text) {
-      if (text === undefined || text === null) {
-        return '';
-      }
-
-      return String(text).replace(/[&<>"']/g, function(char) {
-        const entities = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        };
-
-        return entities[char];
-      });
-    }
-
-    // ============================================================
-    // API CALL
-    // ============================================================
-
-    function apiCallWithCallback(action, data, callback) {
-      const callbackName =
-        'jsonpCallback_' +
-        Date.now() +
-        '_' +
-        Math.random().toString(36).substr(2, 5);
-
-      let url =
-        API_BASE_URL +
-        '?action=' +
-        encodeURIComponent(action);
-
-      for (let key in data) {
-        if (
-          Object.prototype.hasOwnProperty.call(data, key) &&
-          data[key] !== null &&
-          data[key] !== undefined
-        ) {
-          url +=
-            '&' +
-            encodeURIComponent(key) +
-            '=' +
-            encodeURIComponent(JSON.stringify(data[key]));
-        }
-      }
-
-      url += '&callback=' + callbackName;
-
-      const script = document.createElement('script');
-      script.src = url;
-      script.async = true;
-
-      let completed = false;
-
-      function finish(response) {
-        if (completed) return;
-
-        completed = true;
-
-        clearTimeout(timeoutId);
-
-        delete window[callbackName];
-
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
+        if (!classMatches) {
+          return false;
         }
 
-        callback(response);
-      }
-
-      window[callbackName] = function(response) {
-        finish(response);
-      };
-
-      script.onerror = function() {
-        finish({
-          error: 'Network error or invalid response'
-        });
-      };
-
-      const timeoutId = setTimeout(function() {
-        finish({
-          error: 'Request timeout. Please check your internet connection.'
-        });
-      }, 30000);
-
-      document.body.appendChild(script);
-    }
-
-    // ============================================================
-    // UI FUNCTIONS
-    // ============================================================
-
-    function setStatus(message, type = "info") {
-      const statusDiv = document.getElementById("statusMsg");
-
-      if (statusDiv) {
-        statusDiv.innerHTML = message;
-        statusDiv.className = "status-msg " + type;
-      }
-    }
-
-    function showApp() {
-      const loginOverlay =
-        document.getElementById('loginOverlay');
-
-      const viewerSection =
-        document.getElementById('viewerSection');
-
-      loginOverlay.classList.add('hidden');
-      viewerSection.style.display = 'block';
-    }
-
-    function showLogin() {
-      const viewerSection =
-        document.getElementById('viewerSection');
-
-      const loginOverlay =
-        document.getElementById('loginOverlay');
-
-      viewerSection.style.display = 'none';
-      loginOverlay.classList.remove('hidden');
-    }
-
-    // ============================================================
-    // LOGIN
-    // ============================================================
-
-    function handleLogin() {
-      const emailInput =
-        document.getElementById("loginEmail");
-
-      const passwordInput =
-        document.getElementById("loginPassword");
-
-      const errorDiv =
-        document.getElementById("loginError");
-
-      const loginBtn =
-        document.getElementById("loginBtn");
-
-      const email =
-        emailInput.value.trim();
-
-      const password =
-        passwordInput.value.trim();
-
-      errorDiv.style.display = "none";
-
-      if (!email || !password) {
-        errorDiv.textContent =
-          "Please enter both email and password.";
-
-        errorDiv.style.display = "block";
-        return;
-      }
-
-      loginBtn.disabled = true;
-      loginBtn.innerHTML =
-        "Authenticating... <span class='spinner'></span>";
-
-      apiCallWithCallback(
-        'loginUser',
-        {
-          email: email,
-          password: password
-        },
-        function(response) {
-
-          loginBtn.disabled = false;
-          loginBtn.innerHTML =
-            "➡️ ACCESS PORTAL ⬅️";
-
-          if (response && response.success) {
-
-            currentTabName =
-              response.tabName;
-
-            userEmail =
-              response.email || email;
-
-            const schoolBadge =
-              document.getElementById("schoolBadge");
-
-            schoolBadge.innerHTML =
-              "🏫 Welcome: " +
-              escapeHtml(
-                String(currentTabName || "").toUpperCase()
-              );
-
-            showApp();
-
-            setStatus(
-              "✅ Login successful! Loading data...",
-              "success"
-            );
-
-            loadDataFromTab();
-
-          } else {
-
-            errorDiv.textContent =
-              response?.error ||
-              "Login failed. Please verify credentials.";
-
-            errorDiv.style.display =
-              "block";
-          }
+        if (!search) {
+          return true;
         }
-      );
-    }
 
-    // ============================================================
-    // LOGOUT
-    // ============================================================
+        const name =
+          normalize(
+            student.studentName
+          );
 
-    function doLogout() {
+        const adm =
+          normalize(
+            student.admNo
+          );
 
-      currentTabName = null;
-      userEmail = null;
-      allData = null;
-
-      dataRows = [];
-      headers = [];
-      uniqueClasses = [];
-      selectedClass = "ALL";
-      showPhotoColumn = false;
-      extraHeaders = [];
-      subjectGroups = [];
-
-      document.getElementById(
-        "viewerSection"
-      ).style.display = 'none';
-
-      document.getElementById(
-        "loginOverlay"
-      ).classList.remove('hidden');
-
-      document.getElementById(
-        "loginEmail"
-      ).value = "";
-
-      document.getElementById(
-        "loginPassword"
-      ).value = "";
-
-      document.getElementById(
-        "loginError"
-      ).style.display = "none";
-
-      const toggleBtn =
-        document.getElementById("togglePhotoBtn");
-
-      if (toggleBtn) {
-        toggleBtn.innerHTML =
-          "👁️ Show Student Photo";
-      }
-
-      const classSelect =
-        document.getElementById("classSelect");
-
-      if (classSelect) {
-        classSelect.innerHTML =
-          '<option value="ALL">🏫 Login to load classes</option>';
-      }
-
-      document.getElementById(
-        "dataTable"
-      ).innerHTML =
-        '<tr><td colspan="10" class="no-data">🔐 Please login to view records...</td></tr>';
-
-      setStatus(
-        '👋 Logged out',
-        'info'
-      );
-    }
-
-    // ============================================================
-    // DATA LOADING
-    // ============================================================
-
-    function loadDataFromTab() {
-
-      if (!currentTabName) {
-        setStatus(
-          "Access restricted. Please contact administrator.",
-          "error"
+        return (
+          name.includes(search) ||
+          adm.includes(search)
         );
-        return;
       }
+    );
 
-      setStatus(
-        `🔄 Loading data from "${escapeHtml(currentTabName)}"...`,
-        "info"
-      );
+  studentCount.textContent =
+    filtered.length +
+    (
+      filtered.length === 1
+        ? " student"
+        : " students"
+    );
 
-      document.getElementById(
-        "dataTable"
-      ).innerHTML =
-        '<tr><td colspan="10" class="no-data">📂 Loading data... <span class="spinner"></span></td></tr>';
+  resultsHead.innerHTML = "";
+  resultsBody.innerHTML = "";
 
-      apiCallWithCallback(
-        'getDataFromTab',
-        {
-          tabName: currentTabName
-        },
-        function(response) {
+  if (!filtered.length) {
 
-          if (response && response.error) {
+    noResults.style.display =
+      "block";
 
-            document.getElementById(
-              "dataTable"
-            ).innerHTML =
-              '<tr><td colspan="10" class="no-data" style="color:#dc3545;">❌ ' +
-              escapeHtml(response.error) +
-              '</td></tr>';
+    return;
+  }
 
-            setStatus(
-              "❌ Error loading data",
-              "error"
+  noResults.style.display =
+    "none";
+
+  /*
+   * Find every subject available
+   * in the result data.
+   */
+
+  const subjectMap = {};
+
+  filtered.forEach(
+    function(student) {
+
+      (
+        student.subjects || []
+      ).forEach(
+        function(subject) {
+
+          const key =
+            normalize(
+              subject.name
             );
-
-            return;
-          }
 
           if (
-            !response ||
-            !Array.isArray(response) ||
-            response.length < 2
+            key &&
+            !subjectMap[key]
           ) {
 
-            document.getElementById(
-              "dataTable"
-            ).innerHTML =
-              '<tr><td colspan="10" class="no-data">📭 No student records found</td></tr>';
+            subjectMap[key] =
+              subject.name;
+          }
+        }
+      );
+    }
+  );
 
-            setStatus(
-              "📭 No records found",
-              "warning"
+  const subjects =
+    Object.keys(subjectMap)
+      .map(function(key) {
+        return subjectMap[key];
+      });
+
+  /*
+   * HEADER ROW 1
+   */
+
+  const row1 =
+    document.createElement("tr");
+
+  addHeader(
+    row1,
+    "ADM NO.",
+    1,
+    2
+  );
+
+  addHeader(
+    row1,
+    "STUDENT NAME",
+    1,
+    2
+  );
+
+  addHeader(
+    row1,
+    "CLASS",
+    1,
+    2
+  );
+
+  subjects.forEach(
+    function(subject) {
+
+      addHeader(
+        row1,
+        subject,
+        3,
+        1,
+        "subject-name"
+      );
+    }
+  );
+
+  resultsHead.appendChild(row1);
+
+
+  /*
+   * HEADER ROW 2
+   */
+
+  const row2 =
+    document.createElement("tr");
+
+  addHeader(
+    row2,
+    "",
+    1,
+    1,
+    "sub-head"
+  );
+
+  addHeader(
+    row2,
+    "",
+    1,
+    1,
+    "sub-head"
+  );
+
+  addHeader(
+    row2,
+    "",
+    1,
+    1,
+    "sub-head"
+  );
+
+  subjects.forEach(
+    function() {
+
+      addHeader(
+        row2,
+        "Test 1",
+        1,
+        1,
+        "sub-head"
+      );
+
+      addHeader(
+        row2,
+        "Test 2",
+        1,
+        1,
+        "sub-head"
+      );
+
+      addHeader(
+        row2,
+        "Exam",
+        1,
+        1,
+        "sub-head"
+      );
+    }
+  );
+
+  resultsHead.appendChild(row2);
+
+
+  /*
+   * STUDENT ROWS
+   */
+
+  filtered.forEach(
+    function(student) {
+
+      const tr =
+        document.createElement("tr");
+
+      addCell(
+        tr,
+        student.admNo,
+        "student-info"
+      );
+
+      addCell(
+        tr,
+        student.studentName,
+        "student-info"
+      );
+
+      addCell(
+        tr,
+        student.className,
+        "student-info"
+      );
+
+      subjects.forEach(
+        function(subjectName) {
+
+          const subject =
+            findSubject(
+              student.subjects,
+              subjectName
             );
 
-            return;
-          }
+          addCell(
+            tr,
+            subject
+              ? subject.test1
+              : ""
+          );
 
-          allData = response;
+          addCell(
+            tr,
+            subject
+              ? subject.test2
+              : ""
+          );
 
-          headers =
-            response[0] || [];
-
-          dataRows =
-            response.slice(1) || [];
-
-          parseExtraHeaders();
-          parseSubjectGroups();
-          extractUniqueClasses();
-          populateClassDropdown();
-          renderTable();
-
-          setStatus(
-            `✅ Loaded ${dataRows.length} student records from "${escapeHtml(currentTabName)}"`,
-            "success"
+          addCell(
+            tr,
+            subject
+              ? subject.exam
+              : ""
           );
         }
       );
+
+      resultsBody.appendChild(tr);
     }
+  );
+}
 
-    // ============================================================
-    // HEADER PROCESSING
-    // ============================================================
 
-    function parseExtraHeaders() {
+/* =========================================================
+   FIND SUBJECT
+   ========================================================= */
 
-      extraHeaders = [];
+function findSubject(
+  subjects,
+  subjectName
+) {
 
-      for (
-        let col = COL_EXTRA_START;
-        col <= COL_EXTRA_END;
-        col++
-      ) {
+  if (
+    !Array.isArray(subjects)
+  ) {
+    return null;
+  }
 
-        if (
-          col < headers.length &&
-          headers[col] &&
-          headers[col].toString().trim() !== ""
-        ) {
+  const target =
+    normalize(subjectName);
 
-          extraHeaders.push({
-            index: col,
-            name: headers[col]
-              .toString()
-              .trim()
-          });
-        }
-      }
+  for (
+    let i = 0;
+    i < subjects.length;
+    i++
+  ) {
+
+    if (
+      normalize(
+        subjects[i].name
+      ) === target
+    ) {
+      return subjects[i];
     }
-
-    function parseSubjectGroups() {
-
-      subjectGroups = [];
-
-      let col = COL_SUBJECT_START;
-
-      while (col < headers.length) {
-
-        const subjectName =
-          headers[col];
-
-        if (
-          subjectName &&
-          subjectName.toString().trim() !== ""
-        ) {
-
-          if (col + 2 < headers.length) {
-
-            subjectGroups.push({
-              name: subjectName
-                .toString()
-                .trim(),
-
-              startCol: col,
-
-              test1Col: col,
-
-              test2Col: col + 1,
-
-              examCol: col + 2
-            });
-
-            col += 3;
-
-          } else {
-
-            col++;
-          }
-
-        } else {
-
-          col++;
-        }
-      }
-    }
-
-    function extractUniqueClasses() {
-
-      const classSet =
-        new Set();
-
-      for (
-        let i = 0;
-        i < dataRows.length;
-        i++
-      ) {
-
-        const classValue =
-          dataRows[i][COL_ACTUAL_CLASS];
-
-        if (
-          classValue &&
-          classValue.toString().trim() !== ""
-        ) {
-
-          classSet.add(
-            classValue
-              .toString()
-              .trim()
-          );
-        }
-      }
-
-      uniqueClasses =
-        Array.from(classSet)
-          .sort(function(a, b) {
-            return a.localeCompare(b);
-          });
-    }
-
-    function populateClassDropdown() {
-
-      const select =
-        document.getElementById("classSelect");
-
-      if (!uniqueClasses.length) {
-
-        select.innerHTML =
-          '<option value="ALL">⚠️ No class data available</option>';
-
-        return;
-      }
-
-      const totalCount =
-        dataRows.length;
-
-      let options =
-        '<option value="ALL">🏫 All Classes (' +
-        totalCount +
-        ')</option>';
-
-      for (
-        let i = 0;
-        i < uniqueClasses.length;
-        i++
-      ) {
-
-        const cls =
-          uniqueClasses[i];
-
-        let count = 0;
-
-        for (
-          let j = 0;
-          j < dataRows.length;
-          j++
-        ) {
-
-          if (
-            (
-              dataRows[j][COL_ACTUAL_CLASS] ||
-              ""
-            )
-              .toString()
-              .trim() === cls
-          ) {
-            count++;
-          }
-        }
-
-        options +=
-          '<option value="' +
-          escapeHtmlAttr(cls) +
-          '">' +
-          escapeHtml(cls) +
-          ' (' +
-          count +
-          ')' +
-          '</option>';
-      }
-
-      select.innerHTML =
-        options;
-
-      select.value =
-        "ALL";
-    }
-
-    // ============================================================
-    // FILTERING
-    // ============================================================
-
-    function filterByClass() {
-
-      selectedClass =
-        document.getElementById(
-          "classSelect"
-        ).value;
-
-      renderTable();
-    }
-
-    function resetFilter() {
-
-      document.getElementById(
-        "classSelect"
-      ).value = "ALL";
-
-      selectedClass =
-        "ALL";
-
-      renderTable();
-    }
-
-    function togglePhotoColumn() {
-
-      showPhotoColumn =
-        !showPhotoColumn;
-
-      document.getElementById(
-        "togglePhotoBtn"
-      ).innerHTML =
-        showPhotoColumn
-          ? "🙈 Hide Student Photo"
-          : "👁️ Show Student Photo";
-
-      renderTable();
-    }
-
-    function getFilteredRows() {
-
-      if (selectedClass === "ALL") {
-        return dataRows;
-      }
-
-      return dataRows.filter(
-        function(row) {
-
-          const rowClass =
-            (
-              row[COL_ACTUAL_CLASS] ||
-              ""
-            )
-              .toString()
-              .trim();
-
-          return rowClass ===
-            selectedClass;
-        }
-      );
-    }
-
-    // ============================================================
-    // IMAGE FUNCTIONS
-    // ============================================================
-
-    function isImageUrl(value) {
-
-      if (
-        !value ||
-        typeof value !== 'string'
-      ) {
-        return false;
-      }
-
-      const lower =
-        value.toLowerCase();
-
-      return (
-        lower.startsWith('data:image') ||
-        lower.indexOf('.jpg') > -1 ||
-        lower.indexOf('.png') > -1 ||
-        lower.indexOf('.jpeg') > -1 ||
-        lower.indexOf('.gif') > -1 ||
-        lower.indexOf('.webp') > -1
-      );
-    }
-
-    function createImageThumbnail(imageUrl) {
-
-      if (
-        !imageUrl ||
-        imageUrl === ""
-      ) {
-        return "—";
-      }
-
-      const safeUrl =
-        String(imageUrl)
-          .replace(/\\/g, "\\\\")
-          .replace(/'/g, "\\'")
-          .replace(/\r/g, "")
-          .replace(/\n/g, "");
-
-      return (
-        '<img src="' +
-        escapeHtmlAttr(imageUrl) +
-        '" class="image-preview" ' +
-        'alt="Student photo" ' +
-        'onclick="event.stopPropagation(); showFullImage(\'' +
-        safeUrl +
-        '\')" ' +
-        'onerror="this.outerHTML=\'<span>📷 No image</span>\'">'
-      );
-    }
-
-    function showFullImage(imageUrl) {
-
-      const modal =
-        document.getElementById(
-          "imageModal"
-        );
-
-      const modalImg =
-        document.getElementById(
-          "modalImage"
-        );
-
-      modal.style.display =
-        "block";
-
-      modalImg.src =
-        imageUrl;
-    }
-
-    function closeImageModal() {
-
-      document.getElementById(
-        "imageModal"
-      ).style.display =
-        "none";
-    }
-
-    // ============================================================
-    // TABLE RENDERING
-    // ============================================================
-
-    function renderTable() {
-
-      const filteredRows =
-        getFilteredRows();
-
-      const totalCount =
-        filteredRows.length;
-
-      updateRecordCount(
-        totalCount,
-        selectedClass === "ALL"
-          ? "All Classes"
-          : selectedClass
+  }
+
+  return null;
+}
+
+
+/* =========================================================
+   TABLE HELPERS
+   ========================================================= */
+
+function addHeader(
+  row,
+  text,
+  colspan,
+  rowspan,
+  className
+) {
+
+  const th =
+    document.createElement("th");
+
+  th.textContent =
+    text || "";
+
+  if (colspan > 1) {
+    th.colSpan =
+      colspan;
+  }
+
+  if (rowspan > 1) {
+    th.rowSpan =
+      rowspan;
+  }
+
+  if (className) {
+    th.className =
+      className;
+  }
+
+  row.appendChild(th);
+}
+
+
+function addCell(
+  row,
+  text,
+  className
+) {
+
+  const td =
+    document.createElement("td");
+
+  td.textContent =
+    text == null
+      ? ""
+      : String(text);
+
+  if (className) {
+    td.className =
+      className;
+  }
+
+  row.appendChild(td);
+}
+
+
+/* =========================================================
+   FILTER EVENTS
+   ========================================================= */
+
+termSelect.addEventListener(
+  "change",
+  function() {
+
+    /*
+     * The backend session is based on Users!I.
+     *
+     * We do not send an arbitrary term to the backend,
+     * because the logged-in user's configured term
+     * determines the permitted result rows.
+     */
+
+    const allowedTerm =
+      normalize(
+        schoolInfo.termName
       );
 
-      if (
-        filteredRows.length === 0
-      ) {
+    const selected =
+      normalize(
+        termSelect.value
+      );
 
-        document.getElementById(
-          "dataTable"
-        ).innerHTML =
-          '<tr><td colspan="10" class="no-data">📭 No students found in this class</td></tr>';
-
-        return;
-      }
-
-      let html =
-        '<thead>';
-
-      html +=
-        '<tr>';
-
-      html +=
-        '<th rowspan="2">Roll No</th>';
-
-      html +=
-        '<th rowspan="2">Full Name</th>';
-
-      html +=
-        '<th rowspan="2">Class</th>';
-
-      if (showPhotoColumn) {
-        html +=
-          '<th rowspan="2">Student Photo</th>';
-      }
-
-      for (
-        const extra of extraHeaders
-      ) {
-
-        html +=
-          `<th rowspan="2">${escapeHtml(extra.name)}</th>`;
-      }
-
-      for (
-        const group of subjectGroups
-      ) {
-
-        html +=
-          `<th colspan="3" class="subject-header">${escapeHtml(group.name)}</th>`;
-      }
-
-      html +=
-        '</tr>';
-
-      html +=
-        '<tr>';
-
-      for (
-        let i = 0;
-        i < subjectGroups.length;
-        i++
-      ) {
-
-        html +=
-          '<th class="marks-subheader">Test 1<br><span style="font-weight:normal; font-size:8px;">(max 15)</span></th>';
-
-        html +=
-          '<th class="marks-subheader">Test 2<br><span style="font-weight:normal; font-size:8px;">(max 15)</span></th>';
-
-        html +=
-          '<th class="marks-subheader">Exam<br><span style="font-weight:normal; font-size:8px;">(max 70)</span></th>';
-      }
-
-      html +=
-        '</tr>';
-
-      html +=
-        '</thead><tbody>';
-
-      for (
-        const row of filteredRows
-      ) {
-
-        html +=
-          '<tr>';
-
-        html +=
-          `<td>${escapeHtml(row[COL_ROLL_NO] || '—')}</td>`;
-
-        html +=
-          `<td>${escapeHtml(row[COL_NAME] || '—')}</td>`;
-
-        html +=
-          `<td>${escapeHtml(row[COL_ACTUAL_CLASS] || '—')}</td>`;
-
-        if (showPhotoColumn) {
-
-          const photoUrl =
-            row[COL_PHOTO];
-
-          if (
-            photoUrl &&
-            isImageUrl(photoUrl)
-          ) {
-
-            html +=
-              `<td>${createImageThumbnail(photoUrl)}</td>`;
-
-          } else {
-
-            html +=
-              '<td>—</td>';
-          }
-        }
-
-        for (
-          const extra of extraHeaders
-        ) {
-
-          const value =
-            row[extra.index] !== undefined &&
-            row[extra.index] !== ""
-              ? row[extra.index]
-              : "—";
-
-          html +=
-            `<td>${escapeHtml(value)}</td>`;
-        }
-
-        for (
-          const group of subjectGroups
-        ) {
-
-          const test1 =
-            row[group.test1Col] !== undefined &&
-            row[group.test1Col] !== "" &&
-            row[group.test1Col] !== 0
-              ? row[group.test1Col]
-              : "—";
-
-          const test2 =
-            row[group.test2Col] !== undefined &&
-            row[group.test2Col] !== "" &&
-            row[group.test2Col] !== 0
-              ? row[group.test2Col]
-              : "—";
-
-          const exam =
-            row[group.examCol] !== undefined &&
-            row[group.examCol] !== "" &&
-            row[group.examCol] !== 0
-              ? row[group.examCol]
-              : "—";
-
-          html +=
-            `<td class="marks-cell">${escapeHtml(test1)}</td>`;
-
-          html +=
-            `<td class="marks-cell">${escapeHtml(test2)}</td>`;
-
-          html +=
-            `<td class="marks-cell">${escapeHtml(exam)}</td>`;
-        }
-
-        html +=
-          '</tr>';
-      }
-
-      html +=
-        '</tbody>';
-
-      document.getElementById(
-        "dataTable"
-      ).innerHTML =
-        html;
-    }
-
-    function updateRecordCount(
-      count,
-      label
+    if (
+      allowedTerm &&
+      allowedTerm !== selected
     ) {
 
-      const existingCount =
-        document.querySelector(
-          ".record-count"
-        );
+      termSelect.value =
+        schoolInfo.termName;
 
-      if (existingCount) {
-        existingCount.remove();
-      }
+      showStatus(
+        "The current term is " +
+        schoolInfo.termName +
+        " according to the Users tab.",
+        true
+      );
 
-      const headerDiv =
-        document.querySelector(
-          ".header-info"
-        );
+      return;
+    }
 
-      if (!headerDiv) {
+    renderResults();
+  }
+);
+
+
+classSelect.addEventListener(
+  "change",
+  function() {
+    renderResults();
+  }
+);
+
+
+searchInput.addEventListener(
+  "input",
+  function() {
+    renderResults();
+  }
+);
+
+
+/* =========================================================
+   REFRESH
+   ========================================================= */
+
+refreshButton.addEventListener(
+  "click",
+  function() {
+
+    loadResults();
+  }
+);
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+resetButton.addEventListener(
+  "click",
+  function() {
+
+    searchInput.value = "";
+
+    classSelect.value = "";
+
+    setTermFromUser();
+
+    renderResults();
+
+    showStatus(
+      "Filters have been reset.",
+      false
+    );
+  }
+);
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+logoutButton.addEventListener(
+  "click",
+  function() {
+
+    sessionToken = "";
+
+    allStudents = [];
+
+    schoolInfo = {
+      schoolName: "",
+      schoolSlug: "",
+      termName: "",
+      termSession: "",
+      academicYear: "",
+      resultTab: ""
+    };
+
+    usernameInput.value = "";
+    passwordInput.value = "";
+
+    resultsHead.innerHTML = "";
+    resultsBody.innerHTML = "";
+
+    app.style.display =
+      "none";
+
+    loginPage.style.display =
+      "flex";
+
+    showLoginMessage(
+      "",
+      false
+    );
+
+    usernameInput.focus();
+  }
+);
+
+
+/* =========================================================
+   SHOW APPLICATION
+   ========================================================= */
+
+function showApplication() {
+
+  loginPage.style.display =
+    "none";
+
+  app.style.display =
+    "block";
+
+  updateSchoolDisplay();
+}
+
+
+/* =========================================================
+   LOGIN MESSAGE
+   ========================================================= */
+
+function showLoginMessage(
+  message,
+  isError
+) {
+
+  loginMessage.textContent =
+    message || "";
+
+  loginMessage.className =
+    "login-message " +
+    (
+      isError
+        ? "error"
+        : "success"
+    );
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+function showStatus(
+  message,
+  isError
+) {
+
+  statusBox.textContent =
+    message || "";
+
+  statusBox.className =
+    "status " +
+    (
+      isError
+        ? "error"
+        : "success"
+    );
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+function showLoading(
+  visible
+) {
+
+  loading.style.display =
+    visible
+      ? "block"
+      : "none";
+}
+
+
+/* =========================================================
+   LOGIN BUTTON STATE
+   ========================================================= */
+
+function setLoginLoading(
+  loadingState
+) {
+
+  loginButton.disabled =
+    loadingState;
+
+  loginButton.textContent =
+    loadingState
+      ? "Signing in..."
+      : "Login";
+}
+
+
+/* =========================================================
+   NORMALIZE
+   ========================================================= */
+
+function normalize(
+  value
+) {
+
+  return String(
+    value == null
+      ? ""
+      : value
+  )
+    .trim()
+    .toLowerCase()
+    .replace(
+      /\s+/g,
+      " "
+    );
+}
+
+
+/* =========================================================
+   JSONP
+   ========================================================= */
+
+function jsonp(
+  url,
+  callback
+) {
+
+  const callbackName =
+    "examplusCallback_" +
+    Date.now() +
+    "_" +
+    Math.floor(
+      Math.random() * 100000
+    );
+
+  const script =
+    document.createElement("script");
+
+  let finished = false;
+
+  const cleanup =
+    function() {
+
+      if (finished) {
         return;
       }
 
-      const countHtml =
-        '<div class="record-count">📊 ' +
-        escapeHtml(label) +
-        ' • ' +
-        count +
-        ' student(s)</div>';
+      finished = true;
 
-      headerDiv.insertAdjacentHTML(
-        'beforeend',
-        countHtml
-      );
-    }
-
-    // ============================================================
-    // EVENT LISTENERS
-    // ============================================================
-
-    document
-      .getElementById("loginBtn")
-      .addEventListener(
-        "click",
-        handleLogin
-      );
-
-    document
-      .getElementById("logoutBtn")
-      .addEventListener(
-        "click",
-        doLogout
-      );
-
-    document
-      .getElementById("classSelect")
-      .addEventListener(
-        "change",
-        filterByClass
-      );
-
-    document
-      .getElementById("resetBtn")
-      .addEventListener(
-        "click",
-        resetFilter
-      );
-
-    document
-      .getElementById("togglePhotoBtn")
-      .addEventListener(
-        "click",
-        togglePhotoColumn
-      );
-
-    document
-      .getElementById("loginPassword")
-      .addEventListener(
-        "keypress",
-        function(event) {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            handleLogin();
-          }
-        }
-      );
-
-    document.addEventListener(
-      'keydown',
-      function(event) {
-
-        if (event.key === 'Escape') {
-          closeImageModal();
-        }
+      try {
+        delete window[
+          callbackName
+        ];
+      } catch (error) {
+        window[
+          callbackName
+        ] = undefined;
       }
+
+      if (
+        script &&
+        script.parentNode
+      ) {
+        script.parentNode.removeChild(
+          script
+        );
+      }
+    };
+
+  window[callbackName] =
+    function(data) {
+
+      cleanup();
+
+      callback(data);
+    };
+
+  script.onerror =
+    function() {
+
+      cleanup();
+
+      callback({
+        success: false,
+        message:
+          "Unable to connect to the ExamPlus server."
+      });
+    };
+
+  script.src =
+    url +
+    (
+      url.indexOf("?") >= 0
+        ? "&"
+        : "?"
+    ) +
+    "callback=" +
+    encodeURIComponent(
+      callbackName
     );
 
-    // ============================================================
-    // INITIAL PAGE STATE
-    // ============================================================
+  document.body.appendChild(
+    script
+  );
+}
 
-    window.addEventListener(
-      'load',
-      function() {
 
-        document.getElementById(
-          'viewerSection'
-        ).style.display = 'none';
+/* =========================================================
+   START
+   ========================================================= */
 
-        document.getElementById(
-          'loginOverlay'
-        ).classList.remove('hidden');
+usernameInput.focus();
 
-        document.getElementById(
-          'loginEmail'
-        ).focus();
-      }
-    );
-  </script></body>
+</script>
+
+</body>
 </html>
