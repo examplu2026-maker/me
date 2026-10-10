@@ -7,8 +7,8 @@
   <style>
     /* EXAMPLUS THEME
        navy base  #0a1f33 → #12324d → #2a4d6b
-       card dark  #06101c   border #1c2f44
-       gold       #f2b705   (pressed #d9a304)
+       card dark  #06101c   inner #0b1a2b   border #1c2f44 / #26405a
+       gold       #f2b705   (pressed #d9a304)   text on gold #0a1420
        text       #ffffff   muted #9fb3c8
        alert red  #e5222e
     */
@@ -768,7 +768,7 @@ Carol Davis"></textarea>
 
   <script>
     // ==================== CONFIGURATION ====================
-    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbytQl3TJ6y0LA5KTQK-WKqcdBTfUjzwAMGAcwR1PvlKl3EIEkkeJ08-txAHNIHkqRRDUg/exec';
+    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycby52UtEJJsdEe6-ttLx01kjXwMEwxYW-Vgz815O8FKmfmfvtSeQUQ2a_JMWXxy5jvVcUQ/exec';
 
     // ==================== STATE ====================
     let currentTabName = null;
@@ -925,9 +925,9 @@ Carol Davis"></textarea>
     function escapeHtml(t) {
       if (!t) return '';
       return String(t).replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&';
-        if (m === '<') return '<';
-        if (m === '>') return '>';
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
         return m;
       });
     }
