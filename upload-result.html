@@ -1,8 +1,25 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Student Marks Manager - School Portal</title><link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet"><style>
+<title>Student Marks Manager - School Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+/* EXAMPLUS THEME
+   navy base  #0a1f33 → #12324d → #2a4d6b
+   card dark  #06101c   inner #0b1a2b   border #1c2f44 / #26405a
+   gold       #f2b705   (pressed #d9a304)   text on gold #0a1420
+   text       #ffffff   muted #9fb3c8
+   alert red  #e5222e
+*/
+:root {
+  --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+  --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+  --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+  --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +28,9 @@
 }
 
 body {
-  background: linear-gradient(135deg, #e8f0f7 0%, #d4e2ed 100%);
+  background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+  background-attachment: fixed;
+  color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -21,7 +40,7 @@ body {
 .login-fullscreen {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 10% 30%, #0b2b3f, #071a24);
+  background: radial-gradient(circle at 20% 20%, var(--navy-2), var(--navy-1) 70%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,13 +49,14 @@ body {
 }
 
 .login-card {
-  background: rgba(255,255,255,0.98);
+  background: var(--card);
+  border: 1px solid var(--line-2);
   border-radius: 48px;
   padding: 40px 32px;
   width: 100%;
   max-width: 460px;
   text-align: center;
-  box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 30px 50px rgba(0,0,0,0.5);
   animation: floatIn 0.5s ease;
 }
 
@@ -55,15 +75,12 @@ body {
 .login-card h1 {
   font-size: 1.8rem;
   font-weight: 800;
-  background: linear-gradient(125deg, #0f5c7a, #1d8fbb);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
   margin-bottom: 10px;
 }
 
 .login-card .sub {
-  color: #5588a7;
+  color: var(--muted);
   font-size: 0.85rem;
   margin-bottom: 28px;
 }
@@ -78,7 +95,7 @@ body {
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #1c6a8f;
+  color: var(--gold);
   margin-bottom: 6px;
   letter-spacing: 0.5px;
 }
@@ -86,34 +103,41 @@ body {
 .input-group input {
   width: 100%;
   padding: 14px 18px;
-  border: 2px solid #d4e3ef;
+  border: 2px solid var(--line-2);
   border-radius: 60px;
   font-size: 0.95rem;
-  background: white;
+  background: var(--card-2);
+  color: var(--text);
   transition: all 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: #6f879e;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #1f8fc7;
-  box-shadow: 0 0 0 4px rgba(31,143,199,0.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(242,183,5,0.18);
 }
 
 .login-btn {
   width: 100%;
   padding: 14px 20px;
-  background: linear-gradient(95deg, #1a6d8f, #0e5270);
-  color: white;
+  background: var(--gold);
+  color: var(--on-gold);
   border: none;
   border-radius: 60px;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(242,183,5,0.25);
 }
 
 .login-btn:active {
   transform: scale(0.97);
+  background: var(--gold-dark);
 }
 
 .login-btn:disabled {
@@ -122,10 +146,11 @@ body {
 }
 
 .error-msg {
-  color: #dc3545;
+  color: #ff8a92;
   font-size: 0.8rem;
   margin-top: 16px;
-  background: #fff0f0;
+  background: rgba(229,34,46,0.15);
+  border: 1px solid rgba(229,34,46,0.5);
   border-radius: 40px;
   padding: 10px 16px;
   display: none;
@@ -135,7 +160,7 @@ body {
   display: inline-block;
   width: 18px;
   height: 18px;
-  border: 2px solid #fff;
+  border: 2px solid var(--on-gold);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
@@ -166,15 +191,13 @@ body {
 .header-area h1 {
   font-size: 1.3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #1a5d7a, #2c9bcf);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
 }
 
 .school-badge {
-  background: linear-gradient(135deg, #1a5d7a, #2c9bcf);
-  color: white;
+  background: var(--gold);
+  color: var(--on-gold);
+  font-weight: 700;
   padding: 6px 16px;
   border-radius: 30px;
   font-size: 0.7rem;
@@ -183,7 +206,7 @@ body {
 }
 
 .user-info-bar {
-  background: white;
+  background: var(--card);
   border-radius: 48px;
   padding: 12px 20px;
   margin-bottom: 20px;
@@ -192,18 +215,18 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  border: 1px solid #e2edf7;
+  border: 1px solid var(--line-2);
 }
 
 .user-details {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #2c6f91;
+  color: var(--muted);
   word-break: break-word;
 }
 
 .logout-btn {
-  background: #dc3545;
+  background: var(--red);
   padding: 8px 24px;
   font-size: 0.8rem;
   border-radius: 40px;
@@ -214,7 +237,7 @@ body {
 }
 
 .card-control {
-  background: white;
+  background: var(--card);
   border-radius: 36px;
   padding: 20px;
   margin-bottom: 24px;
@@ -222,7 +245,7 @@ body {
   flex-wrap: wrap;
   gap: 16px;
   align-items: flex-end;
-  border: 1px solid #e9f1f8;
+  border: 1px solid var(--line-2);
 }
 
 .field-group {
@@ -238,7 +261,7 @@ body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #2c6f91;
+  color: var(--gold);
 }
 
 select,
@@ -246,17 +269,29 @@ button {
   padding: 11px 16px;
   border-radius: 32px;
   font-weight: 600;
-  background: white;
-  border: 1px solid #cde0ec;
+  background: var(--card-2);
+  color: var(--text);
+  border: 1px solid var(--line-2);
   font-size: 0.8rem;
   cursor: pointer;
   font-family: inherit;
 }
 
+select option {
+  background: var(--card-2);
+  color: var(--text);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
 button {
-  background: #1f6e93;
-  color: white;
+  background: var(--gold);
+  color: var(--on-gold);
   border: none;
+  font-weight: 700;
 }
 
 button:disabled {
@@ -265,9 +300,9 @@ button:disabled {
 }
 
 .btn-outline {
-  background: white;
-  color: #1f6e93;
-  border: 1px solid #1f6e93;
+  background: transparent;
+  color: var(--gold);
+  border: 2px solid var(--gold);
 }
 
 .action-group {
@@ -277,13 +312,14 @@ button:disabled {
 }
 
 .status-bar {
-  background: #e8f1f8;
+  background: rgba(242,183,5,0.12);
+  border: 1px solid rgba(242,183,5,0.3);
   border-radius: 60px;
   padding: 10px 18px;
   margin-bottom: 20px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #1d6f94;
+  color: var(--gold);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -292,33 +328,36 @@ button:disabled {
 }
 
 .status-bar.error {
-  background: #ffe0e0;
-  color: #c0392b;
+  background: rgba(229,34,46,0.15);
+  border-color: rgba(229,34,46,0.5);
+  color: #ff8a92;
 }
 
 .status-bar.success {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(46,204,113,0.15);
+  border-color: rgba(46,204,113,0.4);
+  color: #6ee7a0;
 }
 
 .status-bar.warning {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(242,183,5,0.18);
+  border-color: rgba(242,183,5,0.5);
+  color: var(--gold);
 }
 
 .sync-indicator {
   font-size: 0.65rem;
-  background: rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.08);
   padding: 4px 12px;
   border-radius: 20px;
   white-space: nowrap;
 }
 
 .table-wrapper {
-  background: white;
+  background: var(--card);
   border-radius: 28px;
   overflow-x: auto;
-  border: 1px solid #e6eff8;
+  border: 1px solid var(--line-2);
   margin-bottom: 20px;
   padding: 8px 6px;
 }
@@ -329,21 +368,22 @@ button:disabled {
   font-size: 0.78rem;
   min-width: 420px;
   table-layout: fixed;
+  color: var(--text);
 }
 
 .marks-table th {
-  background: #fafeff;
+  background: var(--card-2);
   padding: 10px 8px;
   font-weight: 700;
   font-size: 0.7rem;
-  color: #1b5a7c;
-  border-bottom: 2px solid #d4e3ef;
+  color: var(--gold);
+  border-bottom: 2px solid var(--line-2);
   text-align: center;
 }
 
 .marks-table td {
   padding: 8px 6px;
-  border-bottom: 1px solid #f0f6fc;
+  border-bottom: 1px solid var(--line);
   text-align: center;
   vertical-align: middle;
 }
@@ -380,37 +420,39 @@ button:disabled {
   max-width: 75px;
   padding: 7px 4px;
   border-radius: 20px;
-  border: 1px solid #cbdef0;
+  border: 1px solid var(--line-2);
   text-align: center;
   font-weight: 500;
   font-size: 0.78rem;
-  background: #fafffe;
+  background: var(--card-2);
+  color: var(--text);
   text-transform: uppercase;
 }
 
 .marks-input:focus {
-  border-color: #1f8fc7;
+  border-color: var(--gold);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(31,143,199,0.12);
-  background: white;
+  box-shadow: 0 0 0 3px rgba(242,183,5,0.18);
+  background: var(--card);
 }
 
 .marks-input.invalid {
-  border-color: #dc3545;
-  background: #fff0f0;
+  border-color: var(--red);
+  background: rgba(229,34,46,0.15);
+  color: #ff8a92;
 }
 
 .marks-input.abs {
-  border-color: #f0a020;
-  background: #fff8ec;
-  color: #a05a00;
+  border-color: var(--gold);
+  background: rgba(242,183,5,0.15);
+  color: var(--gold);
   font-weight: 700;
 }
 
 .empty-msg {
   text-align: center;
   padding: 30px 10px !important;
-  color: #6c8faa;
+  color: var(--muted);
   font-size: 0.85rem;
 }
 
@@ -418,10 +460,15 @@ button:disabled {
   margin-top: 20px;
   text-align: right;
   font-size: 0.6rem;
-  color: #3a789b;
-  background: #eef4fa;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--line);
   padding: 8px 16px;
   border-radius: 60px;
+}
+
+.footer-note strong {
+  color: var(--text);
 }
 
 .save-footer {
@@ -437,11 +484,12 @@ button:disabled {
   padding: 10px 20px;
   font-size: 0.8rem;
   border-radius: 60px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .save-footer .btn-primary {
-  background: #28a745;
+  background: var(--gold);
+  color: var(--on-gold);
 }
 
 @media (max-width: 640px) {
@@ -454,226 +502,147 @@ button:disabled {
     padding: 32px 24px;
   }
 }
-</style></head><body><!-- ================= LOGIN ================= --><div id="loginFullscreen" class="login-fullscreen">  <div class="login-card"><h1>🏫 School Marks Manager</h1>
+</style>
+</head>
+<body>
 
-<div class="sub">
-  Sign in to access your school's marks dashboard
+<!-- ================= LOGIN ================= -->
+<div id="loginFullscreen" class="login-fullscreen">
+  <div class="login-card">
+    <h1>🏫 School Marks Manager</h1>
+
+    <div class="sub">
+      Sign in to access your school's marks dashboard
+    </div>
+
+    <div class="input-group">
+      <label>📧 EMAIL ADDRESS</label>
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="teacher@school.edu"
+        autocomplete="off"
+        inputmode="email">
+    </div>
+
+    <div class="input-group">
+      <label>🔒 PASSWORD</label>
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Enter password"
+        autocomplete="current-password">
+    </div>
+
+    <button
+      class="login-btn"
+      id="loginBtn"
+      type="button">
+      ➡️ SIGN IN
+    </button>
+
+    <div id="loginError" class="error-msg"></div>
+  </div>
 </div>
 
-<div class="input-group">
+<!-- ================= APPLICATION ================= -->
+<div id="appContainer" class="app-container">
 
-  <label>📧 EMAIL ADDRESS</label>
+  <div class="header-area">
+    <h1>📋 School Marks Manager</h1>
+    <div class="school-badge" id="schoolBadge">
+      🏫 Loading school data...
+    </div>
+  </div>
 
-  <input
-    type="email"
-    id="loginEmail"
-    placeholder="teacher@school.edu"
-    autocomplete="off"
-    inputmode="email">
+  <div class="user-info-bar">
+    <div class="user-details" id="userInfoDisplay"></div>
+    <button id="logoutBtn" class="logout-btn" type="button">
+      🚪 Logout
+    </button>
+  </div>
 
-</div>
+  <div class="card-control">
 
-<div class="input-group">
+    <div class="field-group">
+      <label>🏫 SELECT CLASS</label>
+      <select id="classSelect">
+        <option value="">-- Loading classes... --</option>
+      </select>
+    </div>
 
-  <label>🔒 PASSWORD</label>
+    <div class="field-group">
+      <label>📖 SELECT SUBJECT</label>
+      <select id="subjectSelect">
+        <option value="">-- Loading subjects... --</option>
+      </select>
+    </div>
 
-  <input
-    type="password"
-    id="loginPassword"
-    placeholder="Enter password"
-    autocomplete="current-password">
+    <div class="field-group">
+      <label>📅 SELECT TERM</label>
+      <select id="termSelect">
+        <option value="Term 1">Term 1</option>
+        <option value="Term 2">Term 2</option>
+        <option value="Term 3">Term 3</option>
+      </select>
+    </div>
 
-</div>
+    <div class="action-group">
+      <button id="refreshBtn" class="btn-outline" type="button">
+        🔄 Reload
+      </button>
+    </div>
 
-<button
-  class="login-btn"
-  id="loginBtn"
-  type="button">
+  </div>
 
-  ➡️ SIGN IN
+  <div id="statusMsg" class="status-bar">
+    <span>
+      ✅ Ready — Test 1 / Test 2 max 15, Exam max 70 | Type ABS for absent
+    </span>
+    <span id="syncStatus" class="sync-indicator">
+      📡 Online
+    </span>
+  </div>
 
-</button>
+  <div class="table-wrapper">
+    <table class="marks-table">
+      <thead>
+        <tr>
+          <th class="col-roll">Roll</th>
+          <th class="col-name">Student Name</th>
+          <th class="col-test1">Test 1</th>
+          <th class="col-test2">Test 2</th>
+          <th class="col-exam">Exam</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr>
+          <td colspan="5" class="empty-msg">
+            🔐 Please login to continue...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-<div id="loginError" class="error-msg"></div>
+  <div class="save-footer">
+    <button id="saveBtnBottom" class="btn-primary" type="button">
+      💾 Save Marks for <span id="saveTermLabel">Term 1</span>
+    </button>
+  </div>
 
-  </div></div><!-- ================= APPLICATION ================= --><div id="appContainer" class="app-container">  <div class="header-area"><h1>
-  📋 School Marks Manager
-</h1>
-
-<div
-  class="school-badge"
-  id="schoolBadge">
-
-  🏫 Loading school data...
-
-</div>
-
-  </div>  <div class="user-info-bar"><div
-  class="user-details"
-  id="userInfoDisplay">
-</div>
-
-<button
-  id="logoutBtn"
-  class="logout-btn"
-  type="button">
-
-  🚪 Logout
-
-</button>
-
-  </div>  <div class="card-control"><div class="field-group">
-
-  <label>🏫 SELECT CLASS</label>
-
-  <select id="classSelect">
-
-    <option value="">
-      -- Loading classes... --
-    </option>
-
-  </select>
-
-</div>
-
-
-<div class="field-group">
-
-  <label>📖 SELECT SUBJECT</label>
-
-  <select id="subjectSelect">
-
-    <option value="">
-      -- Loading subjects... --
-    </option>
-
-  </select>
-
-</div>
-
-
-<div class="field-group">
-
-  <label>📅 SELECT TERM</label>
-
-  <select id="termSelect">
-
-    <option value="Term 1">
-      Term 1
-    </option>
-
-    <option value="Term 2">
-      Term 2
-    </option>
-
-    <option value="Term 3">
-      Term 3
-    </option>
-
-  </select>
+  <div class="footer-note">
+    ⭐ Each school's scores go to its own
+    "<em>&lt;slug&gt; student results &lt;year&gt;</em>" tab
+    <br>
+    📏 <strong>Validation:</strong>
+    Test ≤ 15 | Exam ≤ 70 |
+    Type <strong>ABS</strong> for absent
+  </div>
 
 </div>
 
-
-<div class="action-group">
-
-  <button
-    id="refreshBtn"
-    class="btn-outline"
-    type="button">
-
-    🔄 Reload
-
-  </button>
-
-</div>
-
-  </div>  <div
-    id="statusMsg"
-    class="status-bar"><span>
-  ✅ Ready — Test 1 / Test 2 max 15, Exam max 70 | Type ABS for absent
-</span>
-
-<span
-  id="syncStatus"
-  class="sync-indicator">
-
-  📡 Online
-
-</span>
-
-  </div>  <div class="table-wrapper"><table class="marks-table">
-
-  <thead>
-
-    <tr>
-
-      <th class="col-roll">
-        Roll
-      </th>
-
-      <th class="col-name">
-        Student Name
-      </th>
-
-      <th class="col-test1">
-        Test 1
-      </th>
-
-      <th class="col-test2">
-        Test 2
-      </th>
-
-      <th class="col-exam">
-        Exam
-      </th>
-
-    </tr>
-
-  </thead>
-
-
-  <tbody id="tableBody">
-
-    <tr>
-
-      <td
-        colspan="5"
-        class="empty-msg">
-
-        🔐 Please login to continue...
-
-      </td>
-
-    </tr>
-
-  </tbody>
-
-</table>
-
-  </div>  <div class="save-footer"><button
-  id="saveBtnBottom"
-  class="btn-primary"
-  type="button">
-
-  💾 Save Marks for
-  <span id="saveTermLabel">
-    Term 1
-  </span>
-
-</button>
-
-  </div>  <div class="footer-note">⭐ Each school's scores go to its own
-"<em>&lt;slug&gt; student results &lt;year&gt;</em>"
-tab
-
-<br>
-
-📏 <strong>Validation:</strong>
-Test ≤ 15 | Exam ≤ 70 |
-Type <strong>ABS</strong> for absent
-
-  </div></div><script>
+<script>
 
 /* =========================================================
    API CONFIGURATION
@@ -809,7 +778,6 @@ function apiCall(action, data, callback) {
 
 /* =========================================================
    HTML ESCAPING
-   IMPORTANT: FIXED INVALID JAVASCRIPT HERE
 ========================================================= */
 
 function escapeHtml(value) {
@@ -831,7 +799,7 @@ function escapeHtml(value) {
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&#039;'
+        "'": '&#39;'
 
       };
 
@@ -2397,5 +2365,6 @@ if (
 
 }
 
-</script></body>
+</script>
+</body>
 </html>
