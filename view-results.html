@@ -7,6 +7,20 @@
 <title>ExamPlus Student Results</title>
 
 <style>
+/* EXAMPLUS THEME
+   navy base  #0a1f33 → #12324d → #2a4d6b
+   card dark  #06101c   inner #0b1a2b   border #1c2f44 / #26405a
+   gold       #f2b705   (pressed #d9a304)   text on gold #0a1420
+   text       #ffffff   muted #9fb3c8
+   alert red  #e5222e
+*/
+:root {
+  --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+  --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+  --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+  --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -17,12 +31,14 @@ body {
   padding: 0;
   min-height: 100%;
   font-family: Arial, Helvetica, sans-serif;
-  background: #f4f7fb;
-  color: #172033;
+  background: var(--navy-1);
+  color: var(--text);
 }
 
 body {
   min-height: 100vh;
+  background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+  background-attachment: fixed;
 }
 
 /* =========================================================
@@ -37,20 +53,21 @@ body {
   padding: 20px;
   background:
     linear-gradient(
-      135deg,
-      #0b5ed7 0%,
-      #1647a3 50%,
-      #092b68 100%
+      180deg,
+      var(--navy-1) 0%,
+      var(--navy-2) 55%,
+      var(--navy-3) 100%
     );
 }
 
 .login-box {
   width: 100%;
   max-width: 420px;
-  background: #ffffff;
+  background: var(--card);
+  border: 1px solid var(--line-2);
   border-radius: 20px;
   padding: 32px 25px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.20);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
 .logo-area {
@@ -63,8 +80,8 @@ body {
   height: 70px;
   margin: auto;
   border-radius: 18px;
-  background: #0b5ed7;
-  color: white;
+  background: var(--gold);
+  color: var(--on-gold);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -75,12 +92,12 @@ body {
 .logo-area h1 {
   margin: 14px 0 5px;
   font-size: 25px;
-  color: #13284c;
+  color: var(--text);
 }
 
 .logo-area p {
   margin: 0;
-  color: #6b7280;
+  color: var(--muted);
   font-size: 14px;
 }
 
@@ -93,7 +110,7 @@ body {
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 7px;
-  color: #334155;
+  color: var(--text);
 }
 
 .input-wrapper {
@@ -103,19 +120,23 @@ body {
 .input-wrapper input {
   width: 100%;
   height: 50px;
-  border: 1px solid #d6dce5;
+  border: 2px solid var(--line-2);
   border-radius: 10px;
   padding: 0 14px;
   font-size: 16px;
   outline: none;
-  background: #fff;
-  color: #111827;
+  background: var(--card-2);
+  color: var(--text);
   transition: border-color .2s, box-shadow .2s;
 }
 
+.input-wrapper input::placeholder {
+  color: #6f879e;
+}
+
 .input-wrapper input:focus {
-  border-color: #0b5ed7;
-  box-shadow: 0 0 0 3px rgba(11,94,215,.10);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(242,183,5,.18);
 }
 
 .login-button {
@@ -123,16 +144,16 @@ body {
   height: 52px;
   border: 0;
   border-radius: 10px;
-  background: #0b5ed7;
-  color: white;
+  background: var(--gold);
+  color: var(--on-gold);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   transition: .2s;
 }
 
 .login-button:hover {
-  background: #084cae;
+  background: var(--gold-dark);
 }
 
 .login-button:disabled {
@@ -149,11 +170,11 @@ body {
 }
 
 .error {
-  color: #dc2626;
+  color: #ff8a92;
 }
 
 .success {
-  color: #15803d;
+  color: #6ee7a0;
 }
 
 /* =========================================================
@@ -166,13 +187,14 @@ body {
 }
 
 .topbar {
-  background: #0b5ed7;
-  color: white;
+  background: var(--card);
+  color: var(--text);
   padding: 14px 18px;
   position: sticky;
   top: 0;
   z-index: 20;
-  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
 }
 
 .topbar-inner {
@@ -195,7 +217,7 @@ body {
 
 .brand-subtitle {
   font-size: 12px;
-  opacity: .9;
+  color: var(--muted);
   margin-top: 3px;
   white-space: nowrap;
   overflow: hidden;
@@ -203,9 +225,9 @@ body {
 }
 
 .logout-button {
-  border: 1px solid rgba(255,255,255,.5);
+  border: 1px solid rgba(229,34,46,.6);
   background: transparent;
-  color: white;
+  color: #ff6b75;
   border-radius: 8px;
   padding: 9px 14px;
   cursor: pointer;
@@ -213,7 +235,7 @@ body {
 }
 
 .logout-button:hover {
-  background: rgba(255,255,255,.12);
+  background: rgba(229,34,46,.18);
 }
 
 /* =========================================================
@@ -228,23 +250,25 @@ body {
 }
 
 .school-card {
-  background: white;
+  background: var(--card);
+  border: 1px solid var(--line-2);
   border-radius: 14px;
   padding: 18px;
-  box-shadow: 0 3px 15px rgba(15,23,42,.06);
+  box-shadow: 0 3px 15px rgba(0,0,0,.35);
   margin-bottom: 18px;
 }
 
 .school-card h2 {
   margin: 0;
   font-size: 22px;
-  color: #13284c;
+  color: var(--text);
 }
 
 .session {
   margin-top: 6px;
-  color: #64748b;
+  color: var(--gold);
   font-size: 14px;
+  font-weight: 600;
 }
 
 .controls {
@@ -260,17 +284,18 @@ body {
 }
 
 .control {
-  background: white;
+  background: var(--card);
+  border: 1px solid var(--line-2);
   border-radius: 11px;
   padding: 10px;
-  box-shadow: 0 3px 15px rgba(15,23,42,.05);
+  box-shadow: 0 3px 15px rgba(0,0,0,.25);
 }
 
 .control label {
   display: block;
   font-size: 12px;
   font-weight: 700;
-  color: #64748b;
+  color: var(--gold);
   margin-bottom: 5px;
 }
 
@@ -278,18 +303,27 @@ body {
 .control input {
   width: 100%;
   height: 40px;
-  border: 1px solid #d8dee8;
+  border: 2px solid var(--line-2);
   border-radius: 8px;
   padding: 0 10px;
-  background: white;
+  background: var(--card-2);
   font-size: 14px;
-  color: #172033;
+  color: var(--text);
   outline: none;
+}
+
+.control select option {
+  background: var(--card-2);
+  color: var(--text);
+}
+
+.control input::placeholder {
+  color: #6f879e;
 }
 
 .control select:focus,
 .control input:focus {
-  border-color: #0b5ed7;
+  border-color: var(--gold);
 }
 
 .action-button {
@@ -299,13 +333,19 @@ body {
   border-radius: 8px;
   padding: 0 15px;
   cursor: pointer;
-  background: #0b5ed7;
-  color: white;
-  font-weight: 700;
+  background: var(--gold);
+  color: var(--on-gold);
+  font-weight: 800;
+}
+
+.action-button:active {
+  background: var(--gold-dark);
 }
 
 .action-button.secondary {
-  background: #64748b;
+  background: transparent;
+  color: var(--gold);
+  border: 2px solid var(--gold);
 }
 
 /* =========================================================
@@ -314,22 +354,25 @@ body {
 
 .status {
   padding: 13px 15px;
-  background: white;
+  background: var(--card);
+  border: 1px solid var(--line-2);
   border-radius: 10px;
   margin-bottom: 16px;
-  color: #475569;
+  color: var(--muted);
   font-size: 14px;
-  box-shadow: 0 3px 12px rgba(15,23,42,.05);
+  box-shadow: 0 3px 12px rgba(0,0,0,.25);
 }
 
 .status.error {
-  color: #b91c1c;
-  background: #fff1f2;
+  color: #ff8a92;
+  background: rgba(229,34,46,.15);
+  border-color: rgba(229,34,46,.5);
 }
 
 .status.success {
-  color: #166534;
-  background: #f0fdf4;
+  color: #6ee7a0;
+  background: rgba(46,204,113,.12);
+  border-color: rgba(46,204,113,.4);
 }
 
 /* =========================================================
@@ -337,15 +380,16 @@ body {
    ========================================================= */
 
 .results-card {
-  background: white;
+  background: var(--card);
+  border: 1px solid var(--line-2);
   border-radius: 14px;
-  box-shadow: 0 3px 15px rgba(15,23,42,.06);
+  box-shadow: 0 3px 15px rgba(0,0,0,.35);
   overflow: hidden;
 }
 
 .results-header {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--line-2);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -355,12 +399,13 @@ body {
 .results-header h3 {
   margin: 0;
   font-size: 18px;
-  color: #172033;
+  color: var(--text);
 }
 
 .student-count {
   font-size: 13px;
-  color: #64748b;
+  color: var(--gold);
+  font-weight: 700;
 }
 
 .table-wrap {
@@ -373,47 +418,50 @@ body {
   width: 100%;
   min-width: 950px;
   border-collapse: collapse;
+  color: var(--text);
 }
 
 .results-table th,
 .results-table td {
-  border: 1px solid #dfe5ed;
+  border: 1px solid var(--line-2);
   padding: 9px 10px;
   text-align: center;
   font-size: 13px;
 }
 
 .results-table thead th {
-  background: #edf4ff;
-  color: #16345f;
+  background: var(--card-2);
+  color: var(--gold);
   font-weight: 800;
 }
 
 .results-table .student-info {
   text-align: left;
-  background: #fafcff;
+  background: var(--card-2);
+  color: var(--text);
   font-weight: 700;
   min-width: 120px;
 }
 
 .results-table .subject-name {
-  background: #dbeafe;
-  color: #123a72;
+  background: rgba(242,183,5,.15);
+  color: var(--gold);
 }
 
 .results-table .sub-head {
-  background: #f3f7fc;
+  background: var(--card-2);
+  color: var(--muted);
   font-size: 11px;
 }
 
 .results-table tbody tr:hover {
-  background: #fafcff;
+  background: var(--card-2);
 }
 
 .no-results {
   padding: 40px 20px;
   text-align: center;
-  color: #64748b;
+  color: var(--muted);
 }
 
 /* =========================================================
@@ -424,15 +472,15 @@ body {
   display: none;
   text-align: center;
   padding: 30px;
-  color: #64748b;
+  color: var(--muted);
 }
 
 .spinner {
   width: 35px;
   height: 35px;
   margin: auto auto 12px;
-  border: 4px solid #dbe5f5;
-  border-top-color: #0b5ed7;
+  border: 4px solid rgba(255,255,255,.15);
+  border-top-color: var(--gold);
   border-radius: 50%;
   animation: spin .8s linear infinite;
 }
