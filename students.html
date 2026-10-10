@@ -6,28 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Student Files · Admin Portal</title>
   <style>
+    /* EXAMPLUS THEME
+       navy base  #0a1f33 → #12324d → #2a4d6b
+       card dark  #06101c   border #1c2f44
+       gold       #f2b705   (hover/pressed #d9a304)
+       text       #ffffff   muted #9fb3c8
+       alert red  #e5222e
+    */
+    :root {
+      --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+      --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+      --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+      --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+    }
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html, body { width:100%; min-height:100vh; background:#f5f7fb; }
+    html, body { width:100%; min-height:100vh; background:var(--navy-1); }
     body { font-family:'Segoe UI', Roboto, 'Helvetica Neue', system-ui, -apple-system, Arial, sans-serif;
-           background:#f5f7fb; min-height:100vh; margin:0; padding:16px;
+           background:linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+           background-attachment:fixed; color:var(--text);
+           min-height:100vh; margin:0; padding:16px;
            display:flex; justify-content:center; align-items:center; flex-direction:column; }
 
     /* VIBRATING ICON */
     .icon-wrapper { display:flex; justify-content:center; align-items:center;
       width:100%; min-height:80vh; }
     .vibrating-icon { width:190px; height:190px; border-radius:50%;
-      background: radial-gradient(circle at 35% 30%, #7ec8e3, #4a9fc7);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(255,255,255,0.08),
-        inset 0 -4px 8px rgba(0,0,0,0.3), inset 0 4px 8px rgba(255,255,255,0.15);
+      background: radial-gradient(circle at 35% 30%, #ffd54a, var(--gold));
+      box-shadow: 0 12px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(242,183,5,0.15),
+        inset 0 -4px 8px rgba(0,0,0,0.25), inset 0 4px 8px rgba(255,255,255,0.25);
       display:flex; justify-content:center; align-items:center; cursor:pointer;
       touch-action:manipulation; transition: transform 0.15s ease, box-shadow 0.2s ease;
       animation: vibrate 2.4s infinite ease-in-out, glowPulse 3.2s infinite alternate;
-      color:#ffffff; font-weight:800; font-size:1.2rem; letter-spacing:0.03em;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5); text-align:center; line-height:1.2;
+      color:var(--on-gold); font-weight:800; font-size:1.2rem; letter-spacing:0.03em;
+      text-shadow: none; text-align:center; line-height:1.2;
       padding:16px; user-select:none; -webkit-tap-highlight-color:transparent;
       position:relative; }
     .vibrating-icon .ripple { position:absolute; border-radius:50%;
-      border:3px solid rgba(74,159,199,0.4); animation: rippleEffect 2s ease-out infinite;
+      border:3px solid rgba(242,183,5,0.45); animation: rippleEffect 2s ease-out infinite;
       width:100%; height:100%; pointer-events:none; }
     .vibrating-icon .ripple:nth-child(2) { animation-delay:0.7s; }
     @keyframes rippleEffect { 0%{transform:scale(1);opacity:1;} 100%{transform:scale(1.4);opacity:0;} }
@@ -38,146 +53,156 @@
       80%{transform:translate(1px,1px) rotate(0.3deg);} 90%{transform:translate(-1px,1px) rotate(-0.2deg);}
       100%{transform:translate(0,0) rotate(0);} }
     @keyframes glowPulse {
-      0%{box-shadow:0 12px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(255,255,255,0.06),
-         inset 0 -4px 8px rgba(0,0,0,0.3), inset 0 4px 8px rgba(255,255,255,0.12);}
-      100%{box-shadow:0 16px 40px rgba(0,0,0,0.8), 0 0 0 6px rgba(255,255,255,0.12),
-         inset 0 -4px 8px rgba(0,0,0,0.4), inset 0 4px 8px rgba(255,255,255,0.18);}
+      0%{box-shadow:0 12px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(242,183,5,0.10),
+         inset 0 -4px 8px rgba(0,0,0,0.25), inset 0 4px 8px rgba(255,255,255,0.2);}
+      100%{box-shadow:0 16px 40px rgba(0,0,0,0.8), 0 0 0 8px rgba(242,183,5,0.22),
+         inset 0 -4px 8px rgba(0,0,0,0.3), inset 0 4px 8px rgba(255,255,255,0.3);}
     }
     .vibrating-icon:active { transform:scale(0.92);
-      box-shadow:0 6px 16px rgba(0,0,0,0.8), 0 0 0 4px rgba(255,255,255,0.15);
+      box-shadow:0 6px 16px rgba(0,0,0,0.8), 0 0 0 4px rgba(242,183,5,0.3);
       animation:none; transition: transform 0.06s; }
     @media (max-width: 480px) { .vibrating-icon { width:160px; height:160px; font-size:1rem; padding:12px; } }
     @media (max-width: 360px) { .vibrating-icon { width:140px; height:140px; font-size:0.85rem; padding:10px; } }
 
     /* LOGIN OVERLAY */
     .login-overlay { position:fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+      background: rgba(3,10,18,0.78); backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px); display:none; justify-content:center;
       align-items:center; z-index:2000; padding:20px; animation:fadeIn 0.35s ease; }
     .login-overlay.active { display:flex; }
     @keyframes fadeIn { 0%{opacity:0;transform:scale(0.95);} 100%{opacity:1;transform:scale(1);} }
-    .login-box { background:#ffffff; padding:32px 24px 44px; border-radius:48px;
+    .login-box { background:var(--card); padding:32px 24px 44px; border-radius:48px;
       width:100%; max-width:500px; text-align:center;
-      box-shadow:0 20px 40px rgba(0,0,0,0.2); border:1px solid #eef2f8;
+      box-shadow:0 20px 40px rgba(0,0,0,0.5); border:1px solid var(--line-2);
       animation:floatIn 0.4s ease; }
     @keyframes floatIn { 0%{opacity:0;transform:translateY(30px) scale(0.96);} 100%{opacity:1;transform:translateY(0) scale(1);} }
-    .login-box h2 { color:#1e3c2c; margin-bottom:8px; font-weight:800;
+    .login-box h2 { color:var(--text); margin-bottom:8px; font-weight:800;
       font-size:2rem; letter-spacing:-0.5px; }
-    .login-box .admin-badge { display:inline-block; background:#1e5a48; color:white;
-      font-size:0.65rem; font-weight:700; padding:4px 16px; border-radius:40px;
+    .login-box .admin-badge { display:inline-block; background:var(--gold); color:var(--on-gold);
+      font-size:0.65rem; font-weight:800; padding:4px 16px; border-radius:40px;
       margin-bottom:16px; letter-spacing:0.5px; }
-    .login-box .sub { color:#5588a7; font-size:0.85rem; margin-bottom:24px; }
+    .login-box .sub { color:var(--muted); font-size:0.85rem; margin-bottom:24px; }
     .input-icon { position:relative; margin:20px 0; width:100%; }
     .input-icon span { position:absolute; left:20px; top:50%; transform:translateY(-50%);
-      font-size:1.3rem; opacity:0.65; pointer-events:none; z-index:2; }
+      font-size:1.3rem; opacity:0.8; pointer-events:none; z-index:2; }
     .login-box input { width:100%; padding:16px 20px 16px 56px;
-      border:2px solid #e2e8f0; border-radius:60px; font-size:1rem; font-weight:500;
-      background:#ffffff; transition:all 0.2s ease; font-family:inherit;
-      outline:none; color:#1e2a3a; }
-    .login-box input:focus { border-color:#0f9d58; box-shadow:0 0 0 4px rgba(15,157,88,0.12); }
-    .login-box input::placeholder { color:#9aaec2; font-weight:450; font-size:0.9rem; }
+      border:2px solid var(--line-2); border-radius:60px; font-size:1rem; font-weight:500;
+      background:var(--card-2); transition:all 0.2s ease; font-family:inherit;
+      outline:none; color:var(--text); }
+    .login-box input:focus { border-color:var(--gold); box-shadow:0 0 0 4px rgba(242,183,5,0.18); }
+    .login-box input::placeholder { color:#6f879e; font-weight:450; font-size:0.9rem; }
     .login-box button { width:100%; padding:16px 20px; margin-top:20px;
-      background:#0f9d58; color:white; border:none; border-radius:60px;
-      font-size:1.1rem; font-weight:700; cursor:pointer; transition:all 0.25s ease;
-      box-shadow:0 4px 8px rgba(15,157,88,0.2); }
-    .login-box button:active { transform:scale(0.97); background:#0b7e48; }
+      background:var(--gold); color:var(--on-gold); border:none; border-radius:60px;
+      font-size:1.1rem; font-weight:800; cursor:pointer; transition:all 0.25s ease;
+      box-shadow:0 4px 12px rgba(242,183,5,0.25); }
+    .login-box button:active { transform:scale(0.97); background:var(--gold-dark); }
     .login-box button:disabled { opacity:0.6; cursor:not-allowed; }
     .login-box .error { margin-top:20px; font-weight:600; font-size:0.85rem;
-      background:#fef2f2; padding:12px 20px; border-radius:60px;
-      color:#dc3545; display:none; width:100%; }
+      background:rgba(229,34,46,0.15); border:1px solid rgba(229,34,46,0.5);
+      padding:12px 20px; border-radius:60px;
+      color:#ff8a92; display:none; width:100%; }
     .login-box .error.show { display:inline-block; }
     .close-login { position:absolute; top:20px; right:24px; color:white; font-size:32px;
       font-weight:300; cursor:pointer; transition: color 0.2s ease;
-      background: rgba(255,255,255,0.1); width:44px; height:44px; border-radius:50%;
+      background: rgba(255,255,255,0.08); width:44px; height:44px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
       border: 1px solid rgba(255,255,255,0.2); }
-    .close-login:hover { background: rgba(255,255,255,0.2); }
+    .close-login:hover { background: rgba(255,255,255,0.18); }
     .close-login:active { transform:scale(0.92); }
 
     /* MAIN APP */
-    .container { max-width:1400px; width:100%; margin:0 auto; background:white;
-      border-radius:32px; box-shadow:0 12px 28px rgba(0,0,0,0.06);
-      overflow:hidden; border:1px solid #eef2f8; display:none; }
-    .header { background:#f8fafc; padding:14px 20px; text-align:center;
-      border-bottom:1px solid #eef2f8; position:relative;
+    .container { max-width:1400px; width:100%; margin:0 auto; background:var(--card);
+      border-radius:32px; box-shadow:0 12px 28px rgba(0,0,0,0.45);
+      overflow:hidden; border:1px solid var(--line); display:none; color:var(--text); }
+    .header { background:var(--card-2); padding:14px 20px; text-align:center;
+      border-bottom:1px solid var(--line); position:relative;
       display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-    .header h1 { margin:0; font-size:1.2rem; font-weight:800; color:#1e3c2c; }
-    .logout-btn { background:#f8fafc; color:#dc3545; border:1px solid #e2e8f0;
+    .header h1 { margin:0; font-size:1.2rem; font-weight:800; color:var(--text); }
+    .logout-btn { background:transparent; color:#ff6b75; border:1px solid rgba(229,34,46,0.6);
       padding:6px 16px; border-radius:40px; cursor:pointer; font-weight:700;
       font-size:0.75rem; transition:0.2s; }
-    .logout-btn:hover { background:#ffe5e5; }
-    .tab-buttons { display:flex; border-bottom:1px solid #eef2f8; background:#f8fafc; }
+    .logout-btn:hover { background:rgba(229,34,46,0.18); }
+    .tab-buttons { display:flex; border-bottom:1px solid var(--line); background:var(--card-2); }
     .tab-btn { flex:1; padding:14px 12px; background:none; border:none; cursor:pointer;
-      font-size:0.9rem; font-weight:700; transition:all 0.2s; color:#5a6874; }
-    .tab-btn.active { background:white; color:#0f9d58; border-bottom:3px solid #0f9d58; }
+      font-size:0.9rem; font-weight:700; transition:all 0.2s; color:var(--muted); }
+    .tab-btn.active { background:var(--card); color:var(--gold); border-bottom:3px solid var(--gold); }
     .tab-content { display:none; padding:20px 18px; }
     .tab-content.active { display:block; }
     .form-group { margin-bottom:18px; }
-    label { display:block; font-weight:700; margin-bottom:6px; color:#1e3c2c; font-size:0.8rem; }
-    label .required { color:#dc3545; }
-    input, select, textarea { width:100%; padding:12px 16px; border:2px solid #e2e8f0;
+    label { display:block; font-weight:700; margin-bottom:6px; color:var(--text); font-size:0.8rem; }
+    label .required { color:#ff6b75; }
+    input, select, textarea { width:100%; padding:12px 16px; border:2px solid var(--line-2);
       border-radius:32px; font-size:0.9rem; font-family:inherit;
-      transition:all 0.2s ease; background:#ffffff; }
+      transition:all 0.2s ease; background:var(--card-2); color:var(--text); }
+    input::placeholder, textarea::placeholder { color:#6f879e; }
+    select option { background:var(--card-2); color:var(--text); }
     textarea { border-radius:20px; resize:vertical; }
-    input:focus, select:focus, textarea:focus { outline:none; border-color:#0f9d58;
-      box-shadow:0 0 0 3px rgba(15,157,88,0.1); }
+    input:focus, select:focus, textarea:focus { outline:none; border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(242,183,5,0.18); }
+    input[readonly] { background:#0d1d30 !important; color:var(--muted); }
     .row-2cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .camera-section { background:#f8fafc; border-radius:28px; padding:16px;
+    .camera-section { background:var(--card-2); border:1px solid var(--line); border-radius:28px; padding:16px;
       margin-bottom:18px; text-align:center; }
     .camera-buttons { display:flex; gap:10px; justify-content:center;
       flex-wrap:wrap; margin:12px 0; }
-    .btn-camera { background:#0f9d58; color:white; border:none;
+    .btn-camera { background:var(--gold); color:var(--on-gold); border:none;
       padding:10px 18px; border-radius:50px; cursor:pointer; font-size:0.8rem;
-      font-weight:600; transition:0.2s; flex:1 0 auto; min-width:90px; }
+      font-weight:700; transition:0.2s; flex:1 0 auto; min-width:90px; }
     .btn-camera:active { transform:scale(0.96); }
-    .btn-capture { background:#2196F3; }
-    .btn-retake { background:#FF9800; }
-    .btn-upload { background:#9C27B0; }
-    .btn-submit { width:100%; padding:14px 20px; background:#0f9d58; color:white;
-      border:none; border-radius:50px; font-size:1rem; font-weight:700;
-      cursor:pointer; margin-top:16px; transition:0.2s; }
-    .btn-submit:active { transform:scale(0.97); }
+    .btn-capture { background:var(--gold); }
+    .btn-retake { background:transparent; color:var(--gold); border:2px solid var(--gold); }
+    .btn-upload { background:transparent; color:var(--gold); border:2px solid var(--gold); }
+    .btn-submit { width:100%; padding:14px 20px; background:var(--gold); color:var(--on-gold);
+      border:none; border-radius:50px; font-size:1rem; font-weight:800;
+      cursor:pointer; margin-top:16px; transition:0.2s;
+      box-shadow:0 4px 12px rgba(242,183,5,0.25); }
+    .btn-submit:active { transform:scale(0.97); background:var(--gold-dark); }
+    .btn-submit:disabled { opacity:0.6; }
     video { width:100%; max-width:280px; border-radius:20px; margin:12px auto;
-      display:block; background:#1a1a2e; transform:scaleX(-1); }
+      display:block; background:#02080f; transform:scaleX(-1); }
     .image-preview { margin-top:12px; text-align:center; }
     .image-preview img { width:90px; height:110px; border-radius:14px;
-      border:3px solid #0f9d58; object-fit:cover; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+      border:3px solid var(--gold); object-fit:cover; box-shadow:0 4px 8px rgba(0,0,0,0.4); }
     .students-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
       gap:16px; margin-top:18px; max-height:60vh; overflow-y:auto; padding:4px; }
-    .student-card { background:white; border-radius:24px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow:hidden;
-      transition:transform 0.2s; border:1px solid #eef2f8; }
+    .student-card { background:var(--card-2); border-radius:24px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.35); overflow:hidden;
+      transition:transform 0.2s; border:1px solid var(--line-2); color:var(--text); }
     .student-card:active { transform:scale(0.99); }
-    .student-image { width:100%; height:170px; object-fit:cover; background:#f0f0f0; }
+    .student-image { width:100%; height:170px; object-fit:cover; background:#0d1d30; }
     .student-info { padding:14px; }
-    .student-info h3 { margin:0 0 6px; font-size:1rem; }
-    .admission-number { display:inline-block; background:#e8f5e9; color:#0f9d58;
+    .student-info h3 { margin:0 0 6px; font-size:1rem; color:var(--text); }
+    .student-info p { color:var(--muted); font-size:0.85rem; margin-bottom:2px; }
+    .student-info p strong { color:var(--text); }
+    .admission-number { display:inline-block; background:rgba(242,183,5,0.15); color:var(--gold);
       padding:2px 12px; border-radius:20px; font-size:0.7rem; font-weight:700;
-      margin-bottom:6px; }
+      margin-bottom:6px; border:1px solid rgba(242,183,5,0.4); }
     .card-buttons { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
     .edit-btn, .delete-btn, .print-card-btn, .download-btn {
       padding:6px 12px; border:none; border-radius:30px; cursor:pointer;
-      font-size:0.7rem; font-weight:600; }
-    .edit-btn { background:#FF9800; color:white; }
-    .delete-btn { background:#f44336; color:white; }
-    .download-btn { background:#0f9d58; color:white; }
+      font-size:0.7rem; font-weight:700; }
+    .edit-btn { background:transparent; color:var(--gold); border:1.5px solid var(--gold); }
+    .delete-btn { background:var(--red); color:white; }
+    .download-btn { background:var(--gold); color:var(--on-gold); }
     .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.5); z-index:1000; justify-content:center;
+      background: rgba(3,10,18,0.75); z-index:1000; justify-content:center;
       align-items:center; padding:16px; }
-    .modal-content { background:white; padding:22px; border-radius:32px;
-      max-width:500px; width:100%; max-height:90%; overflow-y:auto; }
+    .modal-content { background:var(--card); padding:22px; border-radius:32px;
+      max-width:500px; width:100%; max-height:90%; overflow-y:auto;
+      border:1px solid var(--line-2); color:var(--text); }
+    .modal-content h2 { color:var(--text); }
     .close-modal { float:right; cursor:pointer; font-size:1.6rem;
-      font-weight:bold; color:#666; }
-    .passport-note, .info-note { background:#e3f2fd; padding:8px 12px;
+      font-weight:bold; color:var(--muted); }
+    .passport-note, .info-note { background:rgba(242,183,5,0.12); padding:8px 12px;
       border-radius:28px; margin-top:10px; font-size:0.7rem;
-      color:#1565c0; font-weight:500; }
-    .size-badge { background:#0f9d58; color:white; padding:2px 10px;
-      border-radius:30px; font-size:0.6rem; display:inline-block; margin-left:6px; }
+      color:var(--gold); font-weight:600; border:1px solid rgba(242,183,5,0.3); }
+    .size-badge { background:var(--gold); color:var(--on-gold); padding:2px 10px;
+      border-radius:30px; font-size:0.6rem; font-weight:800; display:inline-block; margin-left:6px; }
     .message { margin-top:14px; padding:10px 16px; border-radius:40px;
       display:none; font-weight:600; font-size:0.8rem; }
-    .message.success { background:#d4edda; color:#155724; display:block; }
-    .message.error { background:#ffe0e0; color:#c0392b; display:block; }
-    .message.warning { background:#fff3cd; color:#856404; display:block; }
+    .message.success { background:rgba(46,204,113,0.15); color:#6ee7a0; border:1px solid rgba(46,204,113,0.4); display:block; }
+    .message.error { background:rgba(229,34,46,0.15); color:#ff8a92; border:1px solid rgba(229,34,46,0.5); display:block; }
+    .message.warning { background:rgba(242,183,5,0.15); color:var(--gold); border:1px solid rgba(242,183,5,0.4); display:block; }
     @media (max-width: 480px) {
       body { padding:8px; }
       .login-box { padding:28px 20px 36px; border-radius:40px; }
@@ -192,21 +217,22 @@
       .students-grid { grid-template-columns:1fr; }
     }
     button, .tab-btn, .logout-btn, .btn-camera, .btn-submit, .refresh-btn { touch-action:manipulation; }
-    .loading { display:none; text-align:center; margin-top:15px; }
+    .loading { display:none; text-align:center; margin-top:15px; color:var(--muted); }
     .loading.active { display:block; }
-    .spinner { border:3px solid #f3f3f3; border-top:3px solid #0f9d58;
+    .spinner { border:3px solid rgba(255,255,255,0.15); border-top:3px solid var(--gold);
       border-radius:50%; width:36px; height:36px; animation:spin 0.8s linear infinite;
       margin:0 auto; }
     @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
-    .stats { margin-top:12px; padding:8px 14px; background:#e8f5e9;
+    .stats { margin-top:12px; padding:8px 14px; background:rgba(242,183,5,0.12);
+      border:1px solid rgba(242,183,5,0.3); color:var(--gold);
       border-radius:40px; text-align:center; font-size:0.8rem; font-weight:700; }
-    .class-selector { margin-bottom:18px; padding:12px; background:#f8fafc;
-      border-radius:28px; }
-    .refresh-btn { background:#0f9d58; color:white; border:none;
+    .class-selector { margin-bottom:18px; padding:12px; background:var(--card-2);
+      border:1px solid var(--line); border-radius:28px; }
+    .refresh-btn { background:var(--gold); color:var(--on-gold); border:none;
       padding:8px 16px; border-radius:40px; font-size:0.75rem;
-      font-weight:600; cursor:pointer; }
+      font-weight:700; cursor:pointer; }
     .refresh-btn:active { transform:scale(0.96); }
-    .test-btn { background:#6c757d; color:white; border:none;
+    .test-btn { background:transparent; color:var(--muted); border:1px solid var(--line-2);
       padding:6px 14px; border-radius:40px; font-size:0.7rem;
       font-weight:600; cursor:pointer; margin-left:10px; }
     .test-btn:active { transform:scale(0.96); }
@@ -282,7 +308,7 @@
           <div id="cameraPreview" style="display:none; text-align:center;"><video id="video" autoplay playsinline></video><canvas id="canvas" style="display:none;"></canvas></div>
           <div id="photoPreview" style="display:none;" class="image-preview"><img id="capturedImage" alt="Student Photo"><input type="hidden" id="imageDataUrl" value=""></div>
           <div class="passport-note">✅ Photos are automatically resized to passport size (413 x 531 pixels)</div>
-          <div id="cameraError" style="display:none; color: red; margin-top: 10px; font-size: 0.75rem;"></div>
+          <div id="cameraError" style="display:none; color: #ff8a92; margin-top: 10px; font-size: 0.75rem;"></div>
         </div>
 
         <div class="form-group"><label>PARENT PHONE <span class="required">*</span></label><input type="tel" id="parentPhone" placeholder="Enter parent/guardian phone number" inputmode="tel"></div>
@@ -319,7 +345,7 @@
       <h2 style="font-size: 1.3rem; margin-bottom: 20px;">✏️ Edit Student</h2>
       <input type="hidden" id="editRowNumber">
       <input type="hidden" id="editSerialNumber">
-      <div class="form-group"><label>ADMISSION NUMBER</label><input type="text" id="editAdmissionNumber" readonly style="background:#f5f5f5;"></div>
+      <div class="form-group"><label>ADMISSION NUMBER</label><input type="text" id="editAdmissionNumber" readonly></div>
       <div class="form-group"><label>STUDENT NAME</label><input type="text" id="editStudentName"></div>
       <div class="form-group"><label>CLASS</label><input type="text" id="editClassAdmitted"></div>
       <div class="camera-section">
@@ -515,8 +541,8 @@
         tabName: currentTabName,
         className: className
       }, function(students) {
-        if (!students) { document.getElementById("studentsList").innerHTML='<div class="stats" style="color:red;">❌ No response from server</div>'; return; }
-        if (students.error) { document.getElementById("studentsList").innerHTML='<div class="stats" style="color:red;">❌ ' + students.error + '</div>'; return; }
+        if (!students) { document.getElementById("studentsList").innerHTML='<div class="stats" style="color:#ff8a92;">❌ No response from server</div>'; return; }
+        if (students.error) { document.getElementById("studentsList").innerHTML='<div class="stats" style="color:#ff8a92;">❌ ' + students.error + '</div>'; return; }
         if (students.length === 0) { document.getElementById("studentsList").innerHTML='<div class="stats">📭 No students found' + (className !== "ALL" ? ' in this class.' : '.') + '</div>'; return; }
 
         let html=`<div class="stats">👥 Total Students: ${students.length}</div><div class="students-grid">`;
@@ -529,7 +555,7 @@
           const safePhone = escapeHtml(s.parentPhone) || 'Not set';
           const safeImage = s.imageDataUrl || '';
 
-          html += `<div class="student-card">${hasImage ? `<img class="student-image" src="${safeImage}" alt="${safeName}">` : '<div class="student-image" style="display:flex;align-items:center;justify-content:center;color:#999;font-size:0.8rem;">📷 No Photo</div>'}<div class="student-info"><span class="admission-number">🎓 ${escapeHtml(admissionNumber)}</span><h3>${safeName}</h3><p><strong>Class:</strong> ${safeClass}</p><p><strong>Parent:</strong> ${safeParent}</p><p><strong>Phone:</strong> ${safePhone}</p><div class="card-buttons"><button class="download-btn" onclick="downloadImage('${safeImage}','${safeName}')">📥 Photo</button><button class="edit-btn" onclick="openEditModal(${s.rowIndex || 0}, '${escapeHtml(admissionNumber)}', '${safeName}', '${safeClass}', '${escapeHtml(s.admissionYear) || ''}', '${escapeHtml(s.dob) || ''}', '${safeParent}', '${escapeHtml(s.parentAddress) || ''}', '${safePhone}', '${safeImage}')">✏️ Edit</button><button class="delete-btn" onclick="deleteStudent(${s.rowIndex || 0}, '${safeName}')">🗑️ Delete</button></div></div></div>`;
+          html += `<div class="student-card">${hasImage ? `<img class="student-image" src="${safeImage}" alt="${safeName}">` : '<div class="student-image" style="display:flex;align-items:center;justify-content:center;color:#6f879e;font-size:0.8rem;">📷 No Photo</div>'}<div class="student-info"><span class="admission-number">🎓 ${escapeHtml(admissionNumber)}</span><h3>${safeName}</h3><p><strong>Class:</strong> ${safeClass}</p><p><strong>Parent:</strong> ${safeParent}</p><p><strong>Phone:</strong> ${safePhone}</p><div class="card-buttons"><button class="download-btn" onclick="downloadImage('${safeImage}','${safeName}')">📥 Photo</button><button class="edit-btn" onclick="openEditModal(${s.rowIndex || 0}, '${escapeHtml(admissionNumber)}', '${safeName}', '${safeClass}', '${escapeHtml(s.admissionYear) || ''}', '${escapeHtml(s.dob) || ''}', '${safeParent}', '${escapeHtml(s.parentAddress) || ''}', '${safePhone}', '${safeImage}')">✏️ Edit</button><button class="delete-btn" onclick="deleteStudent(${s.rowIndex || 0}, '${safeName}')">🗑️ Delete</button></div></div></div>`;
         });
         html+='</div>';
         document.getElementById("studentsList").innerHTML=html;
