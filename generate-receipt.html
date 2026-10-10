@@ -7,137 +7,188 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* EXAMPLUS THEME
+           navy base  #0a1f33 → #12324d → #2a4d6b
+           card dark  #06101c   inner #0b1a2b   border #1c2f44 / #26405a
+           gold       #f2b705   (pressed #d9a304)   text on gold #0a1420
+           text       #ffffff   muted #9fb3c8
+           alert red  #e5222e
+        */
+        :root {
+            --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+            --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+            --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+            --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f0f2f5; min-height: 100vh;
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; color: var(--text);
+               background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+               background-attachment: fixed;
                display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
-        .container { max-width: 900px; width: 100%; background: white; border-radius: 20px;
-                     padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .container { max-width: 900px; width: 100%; background: var(--card); border-radius: 20px;
+                     padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+                     border: 1px solid var(--line); }
         .header { display: flex; justify-content: space-between; align-items: center;
-                  padding-bottom: 20px; border-bottom: 2px solid #f0f0f0;
+                  padding-bottom: 20px; border-bottom: 2px solid var(--line);
                   margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
-        .header h1 { font-size: 24px; color: #1a5dab; }
-        .header h1 span { font-size: 14px; color: #666; background: #f0f0f0;
-                          padding: 4px 12px; border-radius: 20px; font-weight: 500; }
-        .user-badge { background: #e8f0fe; padding: 8px 16px; border-radius: 30px;
-                      color: #1a5dab; font-weight: 600; font-size: 14px; }
+        .header h1 { font-size: 24px; color: var(--text); }
+        .header h1 span { font-size: 14px; color: var(--gold); background: rgba(242,183,5,0.12);
+                          border: 1px solid rgba(242,183,5,0.35);
+                          padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .user-badge { background: rgba(242,183,5,0.12); border: 1px solid rgba(242,183,5,0.35);
+                      padding: 8px 16px; border-radius: 30px;
+                      color: var(--gold); font-weight: 600; font-size: 14px; }
         .login-box { max-width: 400px; margin: 0 auto; padding: 20px 0; }
-        .login-box h2 { text-align: center; margin-bottom: 20px; color: #1e293b; }
+        .login-box h2 { text-align: center; margin-bottom: 20px; color: var(--text); }
         .login-box input { width: 100%; padding: 12px 16px; margin: 10px 0;
-                           border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; }
-        .login-box input:focus { border-color: #1a5dab; outline: none; }
-        .login-box button { width: 100%; padding: 14px; background: #1a5dab; color: white;
+                           border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+                           background: var(--card-2); color: var(--text); }
+        .login-box input::placeholder { color: #6f879e; }
+        .login-box input:focus { border-color: var(--gold); outline: none;
+                                 box-shadow: 0 0 0 3px rgba(242,183,5,0.18); }
+        .login-box button { width: 100%; padding: 14px; background: var(--gold); color: var(--on-gold);
                             border: none; border-radius: 10px; font-size: 16px;
-                            font-weight: 600; cursor: pointer; margin-top: 10px; }
-        .login-box button:hover:not(:disabled) { background: #124a8a; }
+                            font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .login-box button:hover:not(:disabled) { background: var(--gold-dark); }
         .login-box button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .error-msg { color: #ef4444; background: #fef2f2; padding: 10px;
+        .error-msg { color: #ff8a92; background: rgba(229,34,46,0.15);
+                     border: 1px solid rgba(229,34,46,0.5); padding: 10px;
                      border-radius: 8px; margin: 10px 0; display: none; }
         .error-msg.show { display: block; }
         .hidden { display: none !important; }
         .dashboard-header { display: flex; justify-content: space-between; align-items: flex-start;
                             flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .school-info h2 { font-size: 20px; color: #1e293b; }
-        .school-info p { color: #64748b; font-size: 13px; margin-top: 4px; }
-        .term-badge { background: #e8f0fe; padding: 6px 16px; border-radius: 30px;
-                      color: #1a5dab; font-weight: 600; font-size: 13px; }
-        .section-label { font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 14px; }
+        .school-info h2 { font-size: 20px; color: var(--text); }
+        .school-info p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+        .term-badge { background: rgba(242,183,5,0.12); border: 1px solid rgba(242,183,5,0.35);
+                      padding: 6px 16px; border-radius: 30px;
+                      color: var(--gold); font-weight: 600; font-size: 13px; }
+        .section-label { font-weight: 600; color: var(--text); margin-bottom: 8px; font-size: 14px; }
 
-        .tabs { display: flex; gap: 8px; background: #f1f5f9; padding: 6px;
+        .tabs { display: flex; gap: 8px; background: var(--card-2); padding: 6px;
+                border: 1px solid var(--line);
                 border-radius: 12px; margin-bottom: 22px; flex-wrap: wrap; }
         .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent;
-                   font-weight: 600; font-size: 14px; color: #475569; border-radius: 8px;
+                   font-weight: 600; font-size: 14px; color: var(--muted); border-radius: 8px;
                    cursor: pointer; min-width: 140px; transition: all 0.2s; }
-        .tab-btn:hover { background: #e2e8f0; }
-        .tab-btn.active { background: white; color: #1a5dab;
-                          box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .tab-btn:hover { background: var(--line); color: var(--text); }
+        .tab-btn.active { background: var(--card); color: var(--gold);
+                          box-shadow: inset 0 -3px 0 var(--gold); }
 
         select, input[type="number"], input[type="text"] { width: 100%; padding: 12px;
-                                       border: 2px solid #e2e8f0; border-radius: 10px;
-                                       font-size: 15px; background: white; margin: 5px 0; }
-        select:focus, input:focus { border-color: #1a5dab; outline: none; }
-        .student-list { border: 2px solid #e2e8f0; border-radius: 10px;
-                        max-height: 250px; overflow-y: auto; margin: 10px 0; }
-        .student-item { padding: 12px 16px; border-bottom: 1px solid #f0f0f0;
+                                       border: 2px solid var(--line-2); border-radius: 10px;
+                                       font-size: 15px; background: var(--card-2);
+                                       color: var(--text); margin: 5px 0; }
+        select option { background: var(--card-2); color: var(--text); }
+        select:focus, input:focus { border-color: var(--gold); outline: none; }
+        .student-list { border: 2px solid var(--line-2); border-radius: 10px;
+                        max-height: 250px; overflow-y: auto; margin: 10px 0;
+                        background: var(--card-2); }
+        .student-item { padding: 12px 16px; border-bottom: 1px solid var(--line);
                         cursor: pointer; display: flex; justify-content: space-between;
                         align-items: center; }
-        .student-item:hover { background: #f8fafc; }
-        .student-item.selected { background: #e8f0fe; border-left: 3px solid #1a5dab; }
-        .student-item .name { font-weight: 500; }
-        .student-item .class { background: #e2e8f0; padding: 2px 12px;
-                               border-radius: 20px; font-size: 12px; color: #475569; }
-        .empty-state { padding: 30px; text-align: center; color: #94a3b8; }
+        .student-item:hover { background: var(--line); }
+        .student-item.selected { background: rgba(242,183,5,0.15); border-left: 3px solid var(--gold); }
+        .student-item .name { font-weight: 500; color: var(--text); }
+        .student-item .class { background: var(--line-2); padding: 2px 12px;
+                               border-radius: 20px; font-size: 12px; color: var(--muted); }
+        .empty-state { padding: 30px; text-align: center; color: var(--muted); }
         .empty-state i { font-size: 30px; display: block; margin-bottom: 10px; }
-        .fee-panel { background: #f8fafc; border-radius: 12px; padding: 20px;
-                     margin: 15px 0; border: 2px solid #e2e8f0; }
+        .fee-panel { background: var(--card-2); border-radius: 12px; padding: 20px;
+                     margin: 15px 0; border: 2px solid var(--line-2); }
         .fee-row { display: flex; justify-content: space-between; padding: 8px 0;
-                   border-bottom: 1px solid #e2e8f0; }
+                   border-bottom: 1px solid var(--line); }
         .fee-row:last-child { border-bottom: none; }
-        .fee-row .label { color: #64748b; }
-        .fee-row .value { font-weight: 600; }
+        .fee-row .label { color: var(--muted); }
+        .fee-row .value { font-weight: 600; color: var(--text); }
         .amount-group { display: flex; align-items: center; gap: 12px; margin: 8px 0;
-                        padding: 10px 14px; background: white; border-radius: 8px;
-                        border: 2px solid #e2e8f0; flex-wrap: wrap; }
-        .amount-group label { font-weight: 600; font-size: 13px; min-width: 120px; }
-        .amount-group .currency { font-weight: 700; font-size: 16px; }
+                        padding: 10px 14px; background: var(--card); border-radius: 8px;
+                        border: 2px solid var(--line-2); flex-wrap: wrap; }
+        .amount-group label { font-weight: 600; font-size: 13px; min-width: 120px; color: var(--text); }
+        .amount-group .currency { font-weight: 700; font-size: 16px; color: var(--gold); }
         .amount-group input { flex: 1; min-width: 100px; padding: 8px 12px;
-                              border: 2px solid #e2e8f0; border-radius: 6px; font-size: 15px; }
-        .total-display { background: linear-gradient(135deg, #1a5dab, #124a8a);
-                         color: white; padding: 16px 20px; border-radius: 10px;
-                         display: flex; justify-content: space-between;
+                              border: 2px solid var(--line-2); border-radius: 6px; font-size: 15px;
+                              background: var(--card-2); color: var(--text); }
+        .total-display { background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+                         color: var(--on-gold); padding: 16px 20px; border-radius: 10px;
+                         display: flex; justify-content: space-between; font-weight: 700;
                          align-items: center; margin: 10px 0; }
         .total-display .amount { font-size: 24px; font-weight: 800; }
         .actions { display: flex; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
         .actions button { flex: 1; padding: 14px; border: none; border-radius: 10px;
                           font-weight: 600; cursor: pointer; font-size: 14px; min-width: 120px; }
-        .btn-generate { background: #0f7b3a; color: white; }
-        .btn-generate:hover:not(:disabled) { background: #0a622e; }
+        .btn-generate { background: var(--gold); color: var(--on-gold); font-weight: 800 !important; }
+        .btn-generate:hover:not(:disabled) { background: var(--gold-dark); }
         .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-logout { background: transparent; border: 2px solid #e2e8f0 !important; color: #475569; }
-        .btn-logout:hover { background: #f8fafc; }
-        .btn-fetch { background: #1a5dab; color: white; }
-        .btn-fetch:hover:not(:disabled) { background: #124a8a; }
-        #receiptOutput { margin-top: 15px; border: 2px solid #e2e8f0;
+        .btn-logout { background: transparent; border: 2px solid var(--line-2) !important; color: var(--muted); }
+        .btn-logout:hover { background: var(--line); color: var(--text); }
+        .btn-fetch { background: var(--gold); color: var(--on-gold); font-weight: 800 !important; }
+        .btn-fetch:hover:not(:disabled) { background: var(--gold-dark); }
+        #receiptOutput { margin-top: 15px; border: 2px solid var(--line-2);
                          border-radius: 10px; min-height: 80px;
-                         overflow: hidden; background: white; }
+                         overflow: hidden; background: var(--card-2); }
         #receiptOutput iframe { width: 100%; border: none; min-height: 550px; }
-        .receipt-placeholder { padding: 30px; text-align: center; color: #94a3b8; }
+        .receipt-placeholder { padding: 30px; text-align: center; color: var(--muted); }
         .receipt-placeholder i { font-size: 40px; display: block; margin-bottom: 10px; }
+        .receipt-placeholder strong, .receipt-placeholder b { color: var(--text); }
 
         .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
                           gap: 12px; margin: 15px 0; }
-        .report-card { background: linear-gradient(135deg, #1a5dab, #124a8a); color: white;
+        .report-card { background: var(--card-2); border: 1px solid var(--line-2); color: var(--text);
                        padding: 18px 20px; border-radius: 12px; }
-        .report-card.green { background: linear-gradient(135deg, #0f7b3a, #0a622e); }
+        .report-card.green { background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+                             border-color: var(--gold); color: var(--on-gold); }
         .report-card .label { font-size: 12px; opacity: 0.85; margin-bottom: 6px; }
         .report-card .value { font-size: 22px; font-weight: 800; }
-        .report-table-wrap { border: 2px solid #e2e8f0; border-radius: 12px;
+        .report-table-wrap { border: 2px solid var(--line-2); border-radius: 12px;
                              overflow: hidden; margin-top: 12px; }
-        .report-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .report-table thead { background: #1a5dab; color: white; }
+        .report-table { width: 100%; border-collapse: collapse; font-size: 14px; color: var(--text); }
+        .report-table thead { background: var(--gold); color: var(--on-gold); }
         .report-table th, .report-table td { padding: 12px 14px; text-align: left; }
-        .report-table th { font-weight: 600; font-size: 13px; }
-        .report-table tbody tr { border-bottom: 1px solid #f0f0f0; }
-        .report-table tbody tr:hover { background: #f8fafc; }
+        .report-table th { font-weight: 700; font-size: 13px; }
+        .report-table tbody tr { border-bottom: 1px solid var(--line); }
+        .report-table tbody tr:hover { background: var(--card-2); }
         .report-table tbody tr:last-child { border-bottom: none; }
-        .report-table .amount { font-weight: 700; color: #0f7b3a; }
-        .report-table .sn { width: 50px; color: #94a3b8; }
+        .report-table .amount { font-weight: 700; color: var(--gold); }
+        .report-table .sn { width: 50px; color: var(--muted); }
         .report-print { margin-top: 15px; display: flex; gap: 12px; flex-wrap: wrap; }
         .report-print button { padding: 12px 20px; border: none; border-radius: 10px;
                                font-weight: 600; cursor: pointer; font-size: 14px; }
-        .btn-print { background: #1a5dab; color: white; }
-        .btn-print:hover { background: #124a8a; }
+        .btn-print { background: var(--gold); color: var(--on-gold); font-weight: 800 !important; }
+        .btn-print:hover { background: var(--gold-dark); }
+
+        /* ---------- TRANSACTION HISTORY ---------- */
+        .history-header { display: flex; justify-content: space-between; align-items: center;
+                          flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        .history-filters { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0;
+                           align-items: center; }
+        .history-filters select { flex: 1; min-width: 150px; margin: 0; }
+        .history-table-wrap { border: 2px solid var(--line-2); border-radius: 12px;
+                              overflow: auto; max-height: 520px; margin-top: 10px; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text); }
+        .history-table thead { background: var(--gold); color: var(--on-gold);
+                               position: sticky; top: 0; z-index: 2; }
+        .history-table th, .history-table td { padding: 10px 12px; text-align: left;
+                                               white-space: nowrap; }
+        .history-table tbody tr { border-bottom: 1px solid var(--line); }
+        .history-table tbody tr:hover { background: var(--card-2); }
+        .history-table .amount { font-weight: 600; color: var(--gold); }
+        .history-table .sn { width: 45px; color: var(--muted); }
+        .history-summary { display: grid;
+                           grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                           gap: 12px; margin: 15px 0; }
 
         .toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 24px;
                  border-radius: 10px; color: white; font-weight: 500;
-                 box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                 box-shadow: 0 10px 30px rgba(0,0,0,0.4);
                  transform: translateY(100px); opacity: 0;
                  transition: all 0.4s; z-index: 1000; }
         .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.success { background: #0f7b3a; }
-        .toast.error { background: #ef4444; }
+        .toast.success { background: #1a8f52; }
+        .toast.error { background: var(--red); }
         .loading-spinner { display: inline-block; width: 20px; height: 20px;
-                           border: 3px solid rgba(255,255,255,0.3);
-                           border-top-color: white; border-radius: 50%;
+                           border: 3px solid rgba(10,20,32,0.25);
+                           border-top-color: var(--on-gold); border-radius: 50%;
                            animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
@@ -174,19 +225,21 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="payTab" id="tabPay">💳 Record Payment</button>
             <button class="tab-btn" data-tab="reportTab" id="tabReport">📊 Paid Students Report</button>
+            <button class="tab-btn" data-tab="historyTab" id="tabHistory">📜 Transaction History (A4)</button>
         </div>
 
+        <!-- PAYMENT TAB -->
         <div id="payTab">
             <div class="section-label">📚 Select Class</div>
             <select id="classSelect"><option value="">Loading classes...</option></select>
 
-            <div class="section-label" style="margin-top:15px;">👨‍🎓 Select Student <span id="studentCount" style="background:#e2e8f0;padding:2px 10px;border-radius:20px;font-size:12px;margin-left:8px;">0</span></div>
+            <div class="section-label" style="margin-top:15px;">👨‍🎓 Select Student <span id="studentCount" style="background:#0b1a2b;color:#f2b705;border:1px solid #26405a;padding:2px 10px;border-radius:20px;font-size:12px;margin-left:8px;">0</span></div>
             <div class="student-list" id="studentList">
                 <div class="empty-state"><i class="fas fa-users"></i>Select a class to see students</div>
             </div>
 
             <div class="fee-panel">
-                <div style="font-weight:600;color:#64748b;margin-bottom:10px;font-size:13px;">📋 Student Details</div>
+                <div style="font-weight:600;color:#9fb3c8;margin-bottom:10px;font-size:13px;">📋 Student Details</div>
                 <div class="fee-row"><span class="label">Student</span><span class="value" id="selectedName">—</span></div>
                 <div class="fee-row"><span class="label">Class</span><span class="value" id="selectedClass">—</span></div>
                 <div class="fee-row"><span class="label">Admission No</span><span class="value" id="selectedSerial">—</span></div>
@@ -210,7 +263,7 @@
 
                 <div class="total-display">
                     <span>💰 TOTAL</span>
-                    <span class="amount" id="totalAmount">₦6,000</span>
+                    <span class="amount" id="totalAmount">₦6,500</span>
                 </div>
             </div>
 
@@ -231,6 +284,7 @@
             </div>
         </div>
 
+        <!-- REPORT TAB -->
         <div id="reportTab" class="hidden">
             <div class="section-label">📚 Select Class</div>
             <select id="reportClassSelect"><option value="">Loading classes...</option></select>
@@ -259,6 +313,39 @@
             </div>
         </div>
 
+        <!-- TRANSACTION HISTORY TAB -->
+        <div id="historyTab" class="hidden">
+            <div class="history-header">
+                <div class="section-label" style="margin:0;">📜 Transaction History (A4 Print)</div>
+                <button class="btn-print" id="printHistoryBtn"
+                        style="padding:10px 20px; border-radius:10px; border:none;
+                               cursor:pointer; font-size:14px;">
+                    <i class="fas fa-print"></i> Print History (A4)
+                </button>
+            </div>
+
+            <div class="history-filters">
+                <select id="historyClassSelect"><option value="">All Classes</option></select>
+                <select id="historyTermSelect">
+                    <option value="">All Terms</option>
+                    <option value="First Term">First Term</option>
+                    <option value="Second Term">Second Term</option>
+                    <option value="Third Term">Third Term</option>
+                </select>
+                <button class="btn-fetch" id="fetchHistoryBtn"
+                        style="flex:0 0 auto; min-width:120px; padding:12px 18px; border:none; border-radius:10px; cursor:pointer;">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </div>
+
+            <div id="historySummaryWrap"></div>
+            <div class="history-table-wrap" id="historyTableWrap">
+                <div class="receipt-placeholder" style="padding:40px;">
+                    <i class="fas fa-receipt"></i> Loading transaction history...
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -266,11 +353,12 @@
 // ============================================================
 // PASTE YOUR SCRIPT URL BETWEEN THE QUOTES
 // ============================================================
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBZSpQSKOUc0_hxzJQ3dMyTdkQep0_xfYP3DjsbV5jEkjgy0UH8OO7wKEDgGG6TUgiiA/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwheK-r-Vpj2l-3rk7SA48c4Fd9H3D_sVxkLpAhp52wFxjJv-3UCR5xwJ9NB0MFHwytyw/exec';
 
 var currentUser = null;
 var students = [];
 var selectedStudent = null;
+var allTransactions = [];
 
 var $ = function(id) { return document.getElementById(id); };
 var loginSection = $('loginSection');
@@ -303,6 +391,13 @@ var reportClassSelect = $('reportClassSelect');
 var reportTermSelect  = $('reportTermSelect');
 var fetchReportBtn    = $('fetchReportBtn');
 var reportOutput      = $('reportOutput');
+
+var historyClassSelect = $('historyClassSelect');
+var historyTermSelect  = $('historyTermSelect');
+var fetchHistoryBtn    = $('fetchHistoryBtn');
+var historyTableWrap   = $('historyTableWrap');
+var historySummaryWrap = $('historySummaryWrap');
+var printHistoryBtn    = $('printHistoryBtn');
 
 function showToast(msg, type) {
     var toast = document.querySelector('.toast');
@@ -352,12 +447,17 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
         document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
         this.classList.add('active');
         var tab = this.dataset.tab;
+        $('payTab').classList.add('hidden');
+        $('reportTab').classList.add('hidden');
+        $('historyTab').classList.add('hidden');
+
         if (tab === 'payTab') {
             $('payTab').classList.remove('hidden');
-            $('reportTab').classList.add('hidden');
-        } else {
-            $('payTab').classList.add('hidden');
+        } else if (tab === 'reportTab') {
             $('reportTab').classList.remove('hidden');
+        } else if (tab === 'historyTab') {
+            $('historyTab').classList.remove('hidden');
+            loadTransactionHistory();
         }
     });
 });
@@ -438,6 +538,7 @@ function loadClasses(schoolTab) {
     if (!schoolTab) {
         classSelect.innerHTML = '<option value="">No school tab specified</option>';
         reportClassSelect.innerHTML = '<option value="">No school tab specified</option>';
+        historyClassSelect.innerHTML = '<option value="">All Classes</option>';
         return;
     }
     classSelect.innerHTML = '<option value="">Loading classes...</option>';
@@ -464,6 +565,11 @@ function loadClasses(schoolTab) {
         classes.forEach(function(c) { html += '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; });
         classSelect.innerHTML = html;
         reportClassSelect.innerHTML = html;
+
+        var histHtml = '<option value="">All Classes</option>';
+        classes.forEach(function(c) { histHtml += '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; });
+        historyClassSelect.innerHTML = histHtml;
+
         showToast('Loaded ' + classes.length + ' classes', 'success');
     });
 }
@@ -498,7 +604,7 @@ function generateReceipt() {
 
     generateBtn.disabled = true;
     generateBtn.innerHTML = '<span class="loading-spinner"></span> Generating...';
-    receiptOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-spinner fa-spin" style="font-size:30px;color:#1a5dab;"></i><br>Generating receipt...</div>';
+    receiptOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-spinner fa-spin" style="font-size:30px;color:#f2b705;"></i><br>Generating receipt...</div>';
 
     var payload = {
         student: selectedStudent,
@@ -581,7 +687,7 @@ function fetchPaidReport() {
 
     fetchReportBtn.disabled = true;
     fetchReportBtn.innerHTML = '<span class="loading-spinner"></span> Fetching...';
-    reportOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-spinner fa-spin" style="font-size:30px;color:#1a5dab;"></i><br>Fetching paid students...</div>';
+    reportOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-spinner fa-spin" style="font-size:30px;color:#f2b705;"></i><br>Fetching paid students...</div>';
 
     apiCall('getPaidStudentsReport', {
         schoolTab: currentUser.schoolTab,
@@ -633,7 +739,7 @@ function renderReport(data, className, term) {
             html += '</tr>';
         });
         html += '</tbody>';
-        html += '<tfoot><tr style="background:#f1f5f9;font-weight:700;">';
+        html += '<tfoot><tr style="background:#0b1a2b;font-weight:700;">';
         html += '<td colspan="4" style="text-align:right;">TOTAL</td>';
         html += '<td class="amount">₦' + Number(total).toLocaleString() + '</td>';
         html += '</tr></tfoot>';
@@ -705,28 +811,201 @@ function printReport(students, className, term, total) {
     else { showToast('Please allow popups to print', 'error'); }
 }
 
+/* ------------------ TRANSACTION HISTORY ------------------ */
+function loadTransactionHistory() {
+    if (!currentUser || !currentUser.schoolTab) {
+        historyTableWrap.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-exclamation-triangle"></i> Please login first.</div>';
+        return;
+    }
+    var className = historyClassSelect.value || '';
+    var term = historyTermSelect.value || '';
+
+    historyTableWrap.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-spinner fa-spin" style="font-size:30px;color:#f2b705;"></i><br>Loading transactions...</div>';
+    historySummaryWrap.innerHTML = '';
+
+    apiCall('getTransactionHistory', {
+        schoolTab: currentUser.schoolTab,
+        className: className,
+        term: term
+    }, function(result) {
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to fetch history';
+            historyTableWrap.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-exclamation-circle" style="color:#ef4444;"></i>' + escapeHtml(msg) + '</div>';
+            showToast('Error: ' + msg, 'error');
+            return;
+        }
+        allTransactions = result.transactions || [];
+        renderHistorySummary(result);
+        renderHistoryTable(allTransactions);
+    });
+}
+
+function renderHistorySummary(data) {
+    var html = '';
+    html += '<div class="history-summary">';
+    html +=   '<div class="report-card"><div class="label">School</div><div class="value" style="font-size:15px;">' + escapeHtml(data.school || '') + '</div></div>';
+    html +=   '<div class="report-card"><div class="label">Filter</div><div class="value" style="font-size:15px;">' + escapeHtml(data.className) + ' • ' + escapeHtml(data.term) + '</div></div>';
+    html +=   '<div class="report-card"><div class="label">Transactions</div><div class="value">' + (data.count || 0) + '</div></div>';
+    html +=   '<div class="report-card green"><div class="label">Total Collected</div><div class="value">₦' + Number(data.total || 0).toLocaleString() + '</div></div>';
+    html += '</div>';
+    historySummaryWrap.innerHTML = html;
+}
+
+function renderHistoryTable(transactions) {
+    if (!transactions || transactions.length === 0) {
+        historyTableWrap.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-inbox"></i>No transactions found for the selected filters.</div>';
+        return;
+    }
+
+    var html = '<table class="history-table">';
+    html += '<thead><tr>';
+    html += '<th class="sn">#</th>';
+    html += '<th>Date</th>';
+    html += '<th>Time</th>';
+    html += '<th>Receipt No</th>';
+    html += '<th>Admission No</th>';
+    html += '<th>Student Name</th>';
+    html += '<th>Class</th>';
+    html += '<th>Term</th>';
+    html += '<th>Amount (₦)</th>';
+    html += '</tr></thead><tbody>';
+
+    var total = 0;
+    transactions.forEach(function(t, i) {
+        var amt = Number(t.amount) || 0;
+        total += amt;
+        html += '<tr>';
+        html += '<td class="sn">' + (i + 1) + '</td>';
+        html += '<td>' + escapeHtml(t.date || '—') + '</td>';
+        html += '<td>' + escapeHtml(t.time || '—') + '</td>';
+        html += '<td>' + escapeHtml(t.receiptNo || '—') + '</td>';
+        html += '<td>' + escapeHtml(t.serial || '—') + '</td>';
+        html += '<td><strong>' + escapeHtml(t.name || '—') + '</strong></td>';
+        html += '<td>' + escapeHtml(t.class || '—') + '</td>';
+        html += '<td>' + escapeHtml(t.term || '—') + '</td>';
+        html += '<td class="amount">₦' + amt.toLocaleString() + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tbody>';
+    html += '<tfoot><tr style="background:#0b1a2b;font-weight:700;">';
+    html += '<td colspan="8" style="text-align:right;">TOTAL</td>';
+    html += '<td class="amount">₦' + total.toLocaleString() + '</td>';
+    html += '</tr></tfoot>';
+    html += '</table>';
+
+    historyTableWrap.innerHTML = html;
+}
+
+function printHistoryA4() {
+    if (!allTransactions || allTransactions.length === 0) {
+        showToast('No transactions to print. Please load history first.', 'error');
+        return;
+    }
+
+    var school = currentUser ? (currentUser.schoolName || '') : '';
+    var address = currentUser ? (currentUser.address || '') : '';
+    var contact = currentUser ? (currentUser.contact || '') : '';
+    var className = historyClassSelect.value || 'All Classes';
+    var term = historyTermSelect.value || 'All Terms';
+
+    var rowsHtml = '';
+    var total = 0;
+    allTransactions.forEach(function(t, i) {
+        var amt = Number(t.amount) || 0;
+        total += amt;
+        rowsHtml += '<tr>' +
+            '<td style="text-align:center;">' + (i + 1) + '</td>' +
+            '<td>' + escapeHtml(t.date || '') + '</td>' +
+            '<td>' + escapeHtml(t.time || '') + '</td>' +
+            '<td>' + escapeHtml(t.receiptNo || '') + '</td>' +
+            '<td>' + escapeHtml(t.serial || '') + '</td>' +
+            '<td>' + escapeHtml(t.name || '') + '</td>' +
+            '<td>' + escapeHtml(t.class || '') + '</td>' +
+            '<td>' + escapeHtml(t.term || '') + '</td>' +
+            '<td style="text-align:right;">₦' + amt.toLocaleString() + '</td>' +
+            '</tr>';
+    });
+
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+        '<title>Transaction History A4</title>' +
+        '<style>' +
+        '@page { size: A4 landscape; margin: 12mm 10mm; }' +
+        'body { font-family: "Inter", Arial, sans-serif; padding: 0; margin: 0; color: #111; }' +
+        '.header { text-align: center; margin-bottom: 14px; }' +
+        '.header h1 { margin: 0 0 4px 0; color: #1a5dab; font-size: 22px; }' +
+        '.header .sub { color: #555; font-size: 12px; }' +
+        '.header h2 { margin: 12px 0 4px 0; font-size: 17px; color: #1e293b; }' +
+        '.filters { text-align: center; font-size: 12px; color: #444; margin-bottom: 12px; }' +
+        'table { width: 100%; border-collapse: collapse; margin-top: 8px; }' +
+        'th, td { border: 1px solid #aaa; padding: 6px 7px; font-size: 11px; text-align: left; }' +
+        'th { background: #1a5dab; color: white; font-weight: 600; }' +
+        'tfoot td { font-weight: bold; background: #f0f4fa; }' +
+        '.footer { margin-top: 16px; font-size: 10px; text-align: right; color: #777; }' +
+        '@media print { .no-print { display: none !important; } }' +
+        '</style></head><body>' +
+        '<div class="header">' +
+            '<h1>' + escapeHtml(school) + '</h1>' +
+            (address ? '<div class="sub">' + escapeHtml(address) + '</div>' : '') +
+            (contact ? '<div class="sub">Tel: ' + escapeHtml(contact) + '</div>' : '') +
+            '<h2>Transaction History</h2>' +
+        '</div>' +
+        '<div class="filters">' +
+            (className ? 'Class: ' + escapeHtml(className) : 'All Classes') + '  |  ' +
+            (term ? 'Term: ' + escapeHtml(term) : 'All Terms') +
+        '</div>' +
+        '<table>' +
+            '<thead><tr>' +
+                '<th style="text-align:center;">#</th>' +
+                '<th>Date</th><th>Time</th><th>Receipt No</th>' +
+                '<th>Admission No</th><th>Student Name</th>' +
+                '<th>Class</th><th>Term</th>' +
+                '<th style="text-align:right;">Amount (₦)</th>' +
+            '</tr></thead>' +
+            '<tbody>' + rowsHtml + '</tbody>' +
+            '<tfoot><tr><td colspan="8" style="text-align:right;">TOTAL</td>' +
+            '<td style="text-align:right;">₦' + total.toLocaleString() + '</td></tr></tfoot>' +
+        '</table>' +
+        '<div class="footer">Printed on: ' + new Date().toLocaleString() + '</div>' +
+        '<div style="text-align:center; margin-top: 16px;">' +
+            '<button class="no-print" onclick="window.print()" style="padding:12px 30px; background:#1a5dab; color:white; border:none; border-radius:6px; font-size:15px; font-weight:600; cursor:pointer;">Print A4 (Landscape)</button>' +
+        '</div>' +
+        '<script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>' +
+        '</body></html>';
+
+    var w = window.open('', '_blank');
+    if (w) { w.document.write(html); w.document.close(); }
+    else { showToast('Please allow popups to print', 'error'); }
+}
+
 /* ------------------ LOGOUT ------------------ */
 function logout() {
-    currentUser = null; students = []; selectedStudent = null;
+    currentUser = null; students = []; selectedStudent = null; allTransactions = [];
     loginSection.classList.remove('hidden');
     dashboardSection.classList.add('hidden');
     userBadge.textContent = '👤 Guest';
     loginEmail.value = '';
     loginPassword.value = '';
-    schoolFees.value = '6000'; registrationFee.value = '0'; developmentLevy.value = '0';
+    schoolFees.value = '5000'; registrationFee.value = '0'; developmentLevy.value = '1500';
     classSelect.innerHTML = '<option value="">Loading classes...</option>';
     reportClassSelect.innerHTML = '<option value="">Loading classes...</option>';
+    historyClassSelect.innerHTML = '<option value="">All Classes</option>';
     studentList.innerHTML = '<div class="empty-state"><i class="fas fa-layer-group"></i>Select a class above</div>';
     studentCount.textContent = '0';
     receiptOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-receipt"></i>Select student, enter amounts, then generate receipt</div>';
     reportOutput.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-chart-bar"></i>Select a class and a term, then click <b>Fetch Paid Students</b></div>';
+    historyTableWrap.innerHTML = '<div class="receipt-placeholder"><i class="fas fa-receipt"></i>Loading transaction history...</div>';
+    historySummaryWrap.innerHTML = '';
     document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
     $('tabPay').classList.add('active');
     $('payTab').classList.remove('hidden');
     $('reportTab').classList.add('hidden');
+    $('historyTab').classList.add('hidden');
+    updateTotal();
     showToast('Logged out', 'success');
 }
 
+/* ------------------ EVENT LISTENERS ------------------ */
 loginBtn.addEventListener('click', login);
 logoutBtn.addEventListener('click', logout);
 logoutBtn2.addEventListener('click', logout);
@@ -739,6 +1018,11 @@ registrationFee.addEventListener('input', updateTotal);
 developmentLevy.addEventListener('input', updateTotal);
 generateBtn.addEventListener('click', generateReceipt);
 fetchReportBtn.addEventListener('click', fetchPaidReport);
+fetchHistoryBtn.addEventListener('click', loadTransactionHistory);
+printHistoryBtn.addEventListener('click', printHistoryA4);
+historyClassSelect.addEventListener('change', loadTransactionHistory);
+historyTermSelect.addEventListener('change', loadTransactionHistory);
+
 updateTotal();
 </script>
 </body>
