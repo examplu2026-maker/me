@@ -2,311 +2,613 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#102b45">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EXAMPLUS — School Management</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     :root {
-      --navy: #071426;
-      --navy-2: #102b45;
-      --navy-3: #183d59;
-      --gold: #f3b600;
-      --gold-deep: #d99b00;
-      --white: #f7f9fc;
-      --muted: #c2d0dc;
-      --panel: rgba(3, 11, 25, .88);
-      --line: rgba(255,255,255,.13);
+      --ink: #1B2A4A;
+      --ink-soft: #5C6A85;
+      --paper: #F9F7F4;
+      --card: #FFFFFF;
+      --line: #EAE6DE;
+      --gold: #B8863B;
+      --gold-light: #F5EDDE;
+      --gold-soft: #F1E4C9;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 12px 28px -8px rgba(27, 42, 74, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+      --shadow-lg: 0 24px 48px -12px rgba(27, 42, 74, 0.15);
+      --transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
     }
-    * { box-sizing: border-box; }
-    html { min-height: 100%; background: var(--navy-2); }
+
     body {
-      margin: 0; min-height: 100vh; color: var(--white);
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,.95) 50%, transparent 100%),
-        radial-gradient(2px 2px at 25% 23%, rgba(91,189,255,.8) 50%, transparent 100%),
-        radial-gradient(1px 1px at 48% 9%, rgba(255,255,255,.8) 50%, transparent 100%),
-        radial-gradient(1px 1px at 73% 17%, rgba(255,255,255,.8) 50%, transparent 100%),
-        radial-gradient(2px 2px at 90% 32%, rgba(66,171,235,.8) 50%, transparent 100%),
-        radial-gradient(1px 1px at 17% 61%, rgba(255,255,255,.8) 50%, transparent 100%),
-        radial-gradient(1px 1px at 83% 73%, rgba(255,255,255,.7) 50%, transparent 100%),
-        radial-gradient(ellipse at 50% 0%, #123958 0%, #0a2139 46%, #355a73 100%);
-      background-attachment: fixed;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Public Sans', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    .app-shell { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 18px 36px; }
-    header { position: relative; padding: 34px 0 26px; text-align: center; }
-    .notification {
-      position: absolute; right: 3px; top: 42px; border: 0; background: transparent;
-      color: white; font-size: 27px; padding: 8px; cursor: pointer;
+
+    h1, h2, h3, .brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
     }
-    .notification .badge {
-      position: absolute; top: 0; right: -2px; display: grid; place-items: center;
-      min-width: 24px; height: 24px; padding: 0 5px; border-radius: 50%;
-      color: white; background: #e52532; font-size: 12px; font-weight: 700;
-      border: 2px solid #12314b;
+
+    /* ---------- HEADER ---------- */
+    header {
+      padding: 36px 24px 28px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      position: relative;
+      z-index: 2;
     }
-    .brand-row { display: flex; align-items: center; justify-content: center; gap: 12px; }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
     .brand-mark {
-      width: 58px; height: 58px; display: grid; place-items: center;
-      background: var(--gold); color: #10283e; font-size: 24px; font-weight: 900;
-      transform: skew(-7deg); box-shadow: 0 5px 18px rgba(0,0,0,.25);
-    }
-    .brand-mark span { transform: skew(7deg); }
-    .brand { font-size: clamp(30px, 7vw, 42px); line-height: 1; font-weight: 800; letter-spacing: -1.7px; }
-    .brand .exam { color: #fff; }
-    .brand .plus { color: var(--gold); }
-    .tagline { font-size: 13px; color: #d5e0e8; margin-top: 6px; letter-spacing: .6px; }
-    .welcome { margin-top: 28px; }
-    .welcome h1 { font-size: clamp(22px, 5vw, 29px); margin: 0 0 7px; font-weight: 600; }
-    .welcome p { margin: 0; color: #d5e0e8; font-size: 15px; }
-    .section-label {
-      display: flex; align-items: center; gap: 10px; margin: 20px 0 13px;
-      color: #fff; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: var(--gold-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
       font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 6px 14px rgba(27, 42, 74, 0.15);
+      transition: var(--transition);
     }
-    .section-label:after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,.2); }
-    .role-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+
+    .brand-mark:hover { transform: scale(1.02); }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .brand span { color: var(--gold); font-weight: 700; }
+
+    #greeting {
+      margin: 0 0 6px;
+      font-size: clamp(28px, 6vw, 36px);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .subline {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- MAIN ---------- */
+    main {
+      flex: 1;
+      padding: 28px 24px 64px;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ---------- HOME VIEW ---------- */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 36px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
     .role-card {
-      min-height: 145px; padding: 20px 8px 16px; border: 1px solid rgba(255,255,255,.05);
-      border-radius: 12px; background: var(--panel); color: #fff; cursor: pointer;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      gap: 17px; text-align: center; font: inherit; box-shadow: 0 7px 18px rgba(0,0,0,.14);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
-    }
-    .role-card:hover, .role-card:focus-visible {
-      border-color: rgba(243,182,0,.75); background: rgba(3,11,25,.96); outline: none;
-    }
-    .role-card:active { transform: scale(.975); }
-    .role-icon { color: var(--gold); font-size: 34px; line-height: 1; }
-    .role-title { font-size: clamp(12px, 2.8vw, 16px); line-height: 1.3; font-weight: 500; text-transform: uppercase; }
-    .account-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-    .account-link {
-      display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 62px;
-      padding: 14px 10px; color: white; text-decoration: none; background: var(--panel);
-      border: 1px solid var(--line); border-radius: 10px; font-size: 14px; font-weight: 600;
-      transition: border-color .18s ease, background .18s ease;
-    }
-    .account-link i { color: var(--gold); font-size: 19px; }
-    .account-link:hover, .account-link:focus-visible { border-color: var(--gold); background: #0b1b30; outline: none; }
-    #detailView { display: none; animation: fadeIn .22s ease both; }
-    .back-btn {
-      display: inline-flex; align-items: center; gap: 9px; padding: 10px 0 18px;
-      border: 0; color: white; background: transparent; font: inherit; font-size: 15px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
       cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      opacity: 1;
+      animation: rise 0.6s cubic-bezier(0.2, 0, 0, 1) both;
+      position: relative;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
-    .back-btn i { color: var(--gold); }
+
+    .role-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--c, var(--gold));
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .role-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: transparent;
+    }
+
+    .role-card:hover::before { opacity: 1; }
+    .role-card:active { transform: translateY(-2px) scale(0.99); }
+
+    .role-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: var(--c-bg, var(--paper));
+      color: var(--c, var(--ink));
+      transition: var(--transition);
+    }
+
+    .role-card:hover .role-icon { transform: scale(1.05); }
+
+    .role-title {
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- ACCOUNT ROW ---------- */
+    .account-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .account-link {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .account-link i { color: var(--gold); font-size: 18px; transition: var(--transition); }
+
+    .account-link:hover {
+      background: var(--gold-light);
+      border-color: var(--gold-soft);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .account-link:hover i { transform: scale(1.1); }
+
+    /* ---------- DETAIL VIEW ---------- */
+    #detailView {
+      display: none;
+      animation: fadeIn 0.4s ease both;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--ink-soft);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 0 0 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      opacity: 0.9;
+    }
+
+    .back-btn:hover { color: var(--ink); opacity: 1; gap: 10px; }
+    .back-btn i { font-size: 14px; transition: var(--transition); }
+
     .detail-head {
-      display: flex; align-items: center; gap: 16px; padding: 20px; margin-bottom: 18px;
-      border: 1px solid var(--line); border-radius: 12px; background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      margin-bottom: 32px;
+      padding: 28px 20px;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) both;
     }
-    #detailIcon { color: var(--gold); font-size: 36px; width: 54px; text-align: center; }
-    #detailTitle { font-size: 22px; margin: 0; font-weight: 700; }
-    .detail-subtitle { margin: 5px 0 0; font-size: 13px; color: var(--muted); }
-    .sub-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+
+    #detailIcon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: var(--c-bg, var(--ink));
+      color: var(--c, #fff);
+      box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.15);
+    }
+
+    #detailTitle {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .sub-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
     .sub-card {
-      min-height: 125px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 14px; padding: 15px 7px; text-align: center; text-decoration: none; color: white;
-      border: 1px solid rgba(255,255,255,.05); border-radius: 12px; background: var(--panel);
-      box-shadow: 0 7px 18px rgba(0,0,0,.12); transition: border-color .18s ease, transform .18s ease;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      opacity: 1;
+      animation: rise 0.5s cubic-bezier(0.2, 0, 0, 1) both;
+      position: relative;
+      overflow: hidden;
     }
-    .sub-card:hover, .sub-card:focus-visible { border-color: var(--gold); outline: none; }
-    .sub-card:active { transform: scale(.975); }
-    .sub-card .icon { color: var(--gold); font-size: 29px; }
-    .sub-card .label { font-size: 12px; line-height: 1.35; font-weight: 600; text-transform: uppercase; }
-    footer { text-align: center; padding: 26px 0 10px; color: #d5e0e8; font-size: 12px; }
-    footer a { color: var(--gold); text-decoration: none; }
-    .privacy-link {
-      display: inline-block; margin-top: 14px; padding: 11px 22px; border-radius: 8px;
-      background: rgba(230,238,245,.75); color: #304b62; font-weight: 700; font-size: 14px;
+
+    .sub-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--c, var(--gold));
+      opacity: 0;
+      transition: var(--transition);
     }
-    .notice { display:none; margin: 14px 0 0; padding: 12px 14px; border-radius: 8px; background: rgba(243,182,0,.12); border: 1px solid rgba(243,182,0,.4); color: #fff2c6; font-size: 13px; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 390px) {
-      .app-shell { padding-left: 12px; padding-right: 12px; }
-      header { padding-top: 28px; }
-      .role-grid, .sub-grid { gap: 9px; }
-      .role-card { min-height: 128px; padding: 15px 5px; gap: 14px; }
-      .role-icon { font-size: 29px; }
-      .role-title { font-size: 11px; }
-      .sub-card { min-height: 112px; }
-      .sub-card .label { font-size: 11px; }
-      .notification { top: 32px; }
+
+    .sub-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: transparent;
     }
-    @media (min-width: 650px) {
-      .app-shell { padding-left: 28px; padding-right: 28px; }
-      .role-card { min-height: 160px; }
-      .role-icon { font-size: 38px; }
-      .role-title { font-size: 15px; }
-      .sub-card .label { font-size: 13px; }
+
+    .sub-card:hover::after { opacity: 1; }
+
+    .sub-card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--c-bg, var(--paper));
+      color: var(--c, var(--ink));
+      font-size: 18px;
+      transition: var(--transition);
     }
+
+    .sub-card:hover .icon { transform: scale(1.05); }
+
+    .sub-card .label {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--line);
+      background: var(--card);
+      margin-top: auto;
+    }
+
+    footer a { color: var(--gold); text-decoration: none; font-weight: 500; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ---------- ANIMATIONS ---------- */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+      .role-card, .sub-card, #detailView {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+      .role-card:hover, .sub-card:hover, .account-link:hover {
+        transform: none;
+      }
     }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 480px) {
+      main { padding: 20px 16px 48px; }
+      header { padding: 28px 16px 22px; }
+      .role-grid, .sub-grid, .account-row { gap: 12px; }
+      .role-card, .sub-card { padding: 18px 14px; }
+      .role-icon, .sub-card .icon { width: 40px; height: 40px; font-size: 16px; }
+      .role-title, .sub-card .label { font-size: 14px; }
+      #detailIcon { width: 56px; height: 56px; font-size: 24px; }
+      #detailTitle { font-size: 22px; }
+    }
+
+    @media (min-width: 700px) {
+      .role-grid { grid-template-columns: repeat(4, 1fr); }
+      .sub-grid { grid-template-columns: repeat(3, 1fr); }
+      .account-row { grid-template-columns: repeat(2, 1fr); max-width: 480px; margin: 0 auto; }
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--paper); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--ink-soft); }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header>
-      <button class="notification" id="helpNotice" type="button" aria-label="Help and notifications" title="Help">
-        <i class="fa-regular fa-bell"></i><span class="badge">!</span>
-      </button>
-      <div class="brand-row">
-        <div class="brand-mark" aria-hidden="true"><span>E+</span></div>
-        <div>
-          <div class="brand"><span class="exam">EXAM</span><span class="plus">PLUS</span></div>
-          <div class="tagline">SCHOOL MANAGEMENT SYSTEM</div>
-        </div>
-      </div>
-      <div class="welcome">
-        <h1 id="greeting">Welcome to EXAMPLUS</h1>
-        <p>Choose your portal to continue</p>
-      </div>
-    </header>
 
-    <main>
-      <div id="homeView">
-        <div class="section-label">Choose your portal</div>
-        <div class="role-grid" id="grid-home" aria-label="ExamPlus portals"></div>
-
-        <div class="section-label">Account access</div>
-        <div class="account-row">
-          <a class="account-link" href="signup.html"><i class="fa-solid fa-user-plus"></i><span>School Sign Up</span></a>
-          <a class="account-link" href="activate.html"><i class="fa-solid fa-circle-check"></i><span>Activate School</span></a>
-        </div>
-        <div class="notice" id="helpMessage" role="status">For help with your ExamPlus account, please contact your system administrator.</div>
-      </div>
-
-      <div id="detailView">
-        <button class="back-btn" id="backBtn" type="button"><i class="fa-solid fa-arrow-left"></i> Back to portals</button>
-        <div class="detail-head">
-          <div id="detailIcon" aria-hidden="true"></div>
-          <div>
-            <h2 id="detailTitle"></h2>
-            <p class="detail-subtitle">Choose an option below</p>
-          </div>
-        </div>
-        <div class="sub-grid" id="subGrid"></div>
-      </div>
-    </main>
-
-    <footer>
-      <div>© <span id="year"></span> <a href="#">EXAMPLUS</a> — School Management System</div>
-      <a class="privacy-link" href="privacy.html">Privacy Policy</a>
-    </footer>
+<header>
+  <div class="brand-row">
+    <div class="brand-mark">E+</div>
+    <div class="brand">EXAM<span>PLUS</span></div>
   </div>
+  <h1 id="greeting">Good day</h1>
+  <p class="subline">What would you like to do today?</p>
+</header>
+
+<main>
+
+  <div id="homeView">
+    <div class="section-label">Choose your role</div>
+    <div class="role-grid" id="grid-home"></div>
+
+    <div class="section-label">New to EXAMPLUS?</div>
+    <div class="account-row">
+      <a class="account-link" href="signup.html">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Sign Up</span>
+      </a>
+      <a class="account-link" href="activate.html">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Activate</span>
+      </a>
+    </div>
+  </div>
+
+  <div id="detailView">
+    <button class="back-btn" id="backBtn">
+      <i class="fa-solid fa-arrow-left"></i> Back to roles
+    </button>
+    <div class="detail-head">
+      <div id="detailIcon"></div>
+      <h2 id="detailTitle"></h2>
+    </div>
+    <div class="sub-grid" id="subGrid"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 <a href="#">EXAMPLUS</a> — School Management System. All rights reserved.</p>
+</footer>
 
 <script>
 (function () {
   'use strict';
 
-  /*
-   * Keep these destination filenames aligned with the pages in your GitHub
-   * repository. This homepage changes the design only; it does not replace
-   * the login or backend logic contained in those pages.
-   */
+  // ---- Data ----
   var GROUPS = {
     superadmin: {
-      title: "Super Admin", icon: "fa-solid fa-user-shield",
+      title: "Super Admin",
+      icon: "fa-solid fa-user-shield",
+      c: "#4F46E5", bg: "#EEF0FE",
       pages: [
-        { file: "create-school.html", title: "Create School", icon: "fa-solid fa-school" },
-        { file: "view-schools.html", title: "View Schools", icon: "fa-solid fa-building-columns" },
-        { file: "settings.html", title: "System Settings", icon: "fa-solid fa-gear" }
+        { file: "create-school.html", title: "Create School",    icon: "fa-solid fa-school-circle-check", c: "#4F46E5", bg: "#EEF0FE" },
+        { file: "view-schools.html",  title: "View Schools",     icon: "fa-solid fa-building-columns",    c: "#0891B2", bg: "#E3F5FA" },
+        { file: "settings.html",      title: "System Settings",  icon: "fa-solid fa-gear",                c: "#4B5563", bg: "#F0F2F5" }
       ]
     },
     schooladmin: {
-      title: "School Admin", icon: "fa-solid fa-school",
+      title: "School Admin",
+      icon: "fa-solid fa-building-user",
+      c: "#0E9F6E", bg: "#E6F9F0",
       pages: [
-        { file: "school.html", title: "School Details", icon: "fa-solid fa-building" },
-        { file: "students.html", title: "Students", icon: "fa-solid fa-user-graduate" },
-        { file: "staff-settings.html", title: "Staff Login Details", icon: "fa-solid fa-user-gear" },
-        { file: "subjects.html", title: "Subjects", icon: "fa-solid fa-book-open" },
-        { file: "students-bulk.html", title: "Bulk Students", icon: "fa-solid fa-users" },
-        { file: "report.html", title: "Report Card", icon: "fa-solid fa-file-lines" },
-        { file: "ca-sheet.html", title: "C.A Sheet", icon: "fa-solid fa-file-circle-check" }
+        { file: "school.html",        title: "School Details",  icon: "fa-solid fa-school",            c: "#0E9F6E", bg: "#E6F9F0" },
+        { file: "students.html",      title: "Students",        icon: "fa-solid fa-user-graduate",     c: "#3B5BDB", bg: "#EBEFFF" },
+        { file: "classes.html",       title: "Classes",         icon: "fa-solid fa-layer-group",       c: "#7C3AED", bg: "#F1E9FE" },
+        { file: "subjects.html",      title: "Subjects",        icon: "fa-solid fa-book",              c: "#D97706", bg: "#FEF3E2" },
+        { file: "students-bulk.html", title: "Bulk Students",   icon: "fa-solid fa-users",             c: "#0891B2", bg: "#E3F5FA" },
+        { file: "report.html",        title: "Report Card",     icon: "fa-solid fa-file-lines",        c: "#DC2626", bg: "#FEE9E9" },
+        { file: "accessment.html",      title: "Contact Us",      icon: "fa-solid fa-address-book",      c: "#65A30D", bg: "#F0F9E6" }
       ]
     },
     teacher: {
-      title: "Teacher", icon: "fa-solid fa-chalkboard-user",
+      title: "Teacher",
+      icon: "fa-solid fa-chalkboard-user",
+      c: "#D97706", bg: "#FEF3E2",
       pages: [
-        { file: "teacher.htm", title: "Staff Dashboard", icon: "fa-solid fa-id-badge" },
-        { file: "upload-result.html", title: "Upload Result", icon: "fa-solid fa-upload" },
-        { file: "view-results.html", title: "View Results", icon: "fa-solid fa-eye" }
+        { file: "teacher.htm",        title: "Staff Dashboard", icon: "fa-solid fa-id-badge", c: "#B8863B", bg: "#F5EDDE" },
+        { file: "upload-result.html", title: "Upload Result",   icon: "fa-solid fa-upload",   c: "#D97706", bg: "#FEF3E2" },
+        { file: "view-results.html",  title: "View Results",    icon: "fa-solid fa-eye",      c: "#0E9F6E", bg: "#E6F9F0" }
       ]
     },
     bursar: {
-      title: "Bursar", icon: "fa-solid fa-money-check-dollar",
+      title: "Bursar",
+      icon: "fa-solid fa-money-check-dollar",
+      c: "#DB2777", bg: "#FDE8F1",
       pages: [
-        { file: "bursar.htm", title: "Staff Dashboard", icon: "fa-solid fa-id-badge" },
-        { file: "generate-receipt.html", title: "Generate Receipt", icon: "fa-solid fa-receipt" },
-        { file: "receipt-history.html", title: "Receipt History", icon: "fa-solid fa-clock-rotate-left" }
+        { file: "bursar.htm",           title: "Staff Dashboard",   icon: "fa-solid fa-id-badge",             c: "#B8863B", bg: "#F5EDDE" },
+        { file: "generate-receipt.html",title: "Generate Receipt",  icon: "fa-solid fa-receipt",              c: "#DB2777", bg: "#FDE8F1" },
+        { file: "receipt-history.html", title: "Receipt History",   icon: "fa-solid fa-clock-rotate-left",    c: "#7C3AED", bg: "#F1E9FE" }
       ]
     }
   };
 
-  var homeView = document.getElementById('homeView');
-  var detailView = document.getElementById('detailView');
-  var detailIcon = document.getElementById('detailIcon');
-  var detailTitle = document.getElementById('detailTitle');
-  var subGrid = document.getElementById('subGrid');
-  var backBtn = document.getElementById('backBtn');
-  var homeGrid = document.getElementById('grid-home');
-  var helpMessage = document.getElementById('helpMessage');
+  // ---- Boot ----
+  function boot() {
+    var homeView    = document.getElementById('homeView');
+    var detailView  = document.getElementById('detailView');
+    var detailIcon  = document.getElementById('detailIcon');
+    var detailTitle = document.getElementById('detailTitle');
+    var subGrid     = document.getElementById('subGrid');
+    var backBtn     = document.getElementById('backBtn');
+    var homeGrid    = document.getElementById('grid-home');
+    var greetingEl  = document.getElementById('greeting');
 
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, function (ch) {
-      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+    if (!homeGrid || !detailView || !subGrid || !backBtn) {
+      // Fail loudly instead of silently
+      console.error('EXAMPLUS home: required DOM nodes missing.', {
+        homeGrid: !!homeGrid, detailView: !!detailView,
+        subGrid: !!subGrid, backBtn: !!backBtn
+      });
+      return;
+    }
+
+    // Populate home role cards
+    homeGrid.innerHTML = Object.keys(GROUPS).map(function (key, i) {
+      var g = GROUPS[key];
+      return '<button type="button" class="role-card" data-role="' + key + '" ' +
+             'style="--c:' + g.c + '; --c-bg:' + g.bg + '; animation-delay:' + (i * 0.07).toFixed(2) + 's">' +
+               '<div class="role-icon" style="--c:' + g.c + '; --c-bg:' + g.bg + '">' +
+                 '<i class="' + g.icon + '"></i>' +
+               '</div>' +
+               '<span class="role-title">' + g.title + '</span>' +
+             '</button>';
+    }).join('');
+
+    // Event delegation: one listener handles all role cards
+    homeGrid.addEventListener('click', function (e) {
+      var btn = e.target.closest('.role-card');
+      if (!btn) return;
+      openGroup(btn.getAttribute('data-role'));
     });
-  }
 
-  function renderHome() {
-    homeGrid.innerHTML = Object.keys(GROUPS).map(function (key) {
+    function openGroup(key) {
       var group = GROUPS[key];
-      return '<button type="button" class="role-card" data-role="' + escapeHtml(key) + '">' +
-        '<span class="role-icon"><i class="' + escapeHtml(group.icon) + '" aria-hidden="true"></i></span>' +
-        '<span class="role-title">' + escapeHtml(group.title) + '</span></button>';
-    }).join('');
+      if (!group) return;
+
+      detailIcon.style.setProperty('--c', group.c);
+      detailIcon.style.setProperty('--c-bg', group.bg);
+      detailIcon.innerHTML = '<i class="' + group.icon + '"></i>';
+      detailTitle.textContent = group.title;
+
+      subGrid.innerHTML = group.pages.map(function (p, i) {
+        return '<a class="sub-card" href="' + p.file + '" ' +
+               'style="--c:' + p.c + '; --c-bg:' + p.bg + '; animation-delay:' + (i * 0.06).toFixed(2) + 's">' +
+                 '<div class="icon" style="--c:' + p.c + '; --c-bg:' + p.bg + '">' +
+                   '<i class="' + p.icon + '"></i>' +
+                 '</div>' +
+                 '<span class="label">' + p.title + '</span>' +
+               '</a>';
+      }).join('');
+
+      homeView.style.display = 'none';
+      detailView.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    backBtn.addEventListener('click', function () {
+      detailView.style.display = 'none';
+      homeView.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Time-based greeting
+    var hour = new Date().getHours();
+    if (hour < 12) greetingEl.textContent = 'Good morning ☀️';
+    else if (hour < 17) greetingEl.textContent = 'Good afternoon 🌤️';
+    else greetingEl.textContent = 'Good evening 🌙';
   }
 
-  function openGroup(key) {
-    var group = GROUPS[key];
-    if (!group) return;
-
-    detailIcon.innerHTML = '<i class="' + escapeHtml(group.icon) + '"></i>';
-    detailTitle.textContent = group.title;
-    subGrid.innerHTML = group.pages.map(function (page) {
-      return '<a class="sub-card" href="' + escapeHtml(page.file) + '">' +
-        '<span class="icon"><i class="' + escapeHtml(page.icon) + '" aria-hidden="true"></i></span>' +
-        '<span class="label">' + escapeHtml(page.title) + '</span></a>';
-    }).join('');
-
-    homeView.style.display = 'none';
-    detailView.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Run after DOM is ready — works on GitHub Pages, local files, anywhere
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
   }
-
-  homeGrid.addEventListener('click', function (event) {
-    var button = event.target.closest('button[data-role]');
-    if (!button || !homeGrid.contains(button)) return;
-    openGroup(button.getAttribute('data-role'));
-  });
-
-  backBtn.addEventListener('click', function () {
-    detailView.style.display = 'none';
-    homeView.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  document.getElementById('helpNotice').addEventListener('click', function () {
-    var isVisible = helpMessage.style.display === 'block';
-    helpMessage.style.display = isVisible ? 'none' : 'block';
-  });
-
-  document.getElementById('year').textContent = new Date().getFullYear();
-  renderHome();
 })();
 </script>
+
 </body>
 </html>
