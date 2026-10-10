@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
   <title>Bulk Student Registration · Admin</title>
   <style>
+    /* EXAMPLUS THEME
+       navy base  #0a1f33 → #12324d → #2a4d6b
+       card dark  #06101c   border #1c2f44
+       gold       #f2b705   (pressed #d9a304)
+       text       #ffffff   muted #9fb3c8
+       alert red  #e5222e
+    */
+    :root {
+      --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+      --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+      --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+      --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+    }
+
     /* ===== RESET & GLOBAL ===== */
     * {
       margin: 0;
@@ -16,12 +30,14 @@
     html, body {
       width: 100%;
       min-height: 100vh;
-      background: #f5f7fb;
+      background: var(--navy-1);
     }
 
     body {
       font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
-      background: #f5f7fb;
+      background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+      background-attachment: fixed;
+      color: var(--text);
       min-height: 100vh;
       margin: 0;
       padding: 16px;
@@ -44,12 +60,12 @@
       width: 200px;
       height: 200px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #2a8f6e, #0f4a34);
+      background: radial-gradient(circle at 35% 30%, #ffd54a, var(--gold));
       box-shadow: 
         0 12px 28px rgba(0, 0, 0, 0.6),
-        0 0 0 4px rgba(255, 255, 255, 0.08),
-        inset 0 -4px 8px rgba(0, 0, 0, 0.3),
-        inset 0 4px 8px rgba(255, 255, 255, 0.15);
+        0 0 0 4px rgba(242, 183, 5, 0.15),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.25),
+        inset 0 4px 8px rgba(255, 255, 255, 0.25);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -57,11 +73,11 @@
       touch-action: manipulation;
       transition: transform 0.15s ease, box-shadow 0.2s ease;
       animation: vibrate 2.4s infinite ease-in-out, glowPulse 3.2s infinite alternate;
-      color: white;
+      color: var(--on-gold);
       font-weight: 800;
       font-size: 1.3rem;
       letter-spacing: 0.03em;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      text-shadow: none;
       text-align: center;
       line-height: 1.2;
       padding: 20px;
@@ -71,7 +87,7 @@
 
     .vibrating-icon:active {
       transform: scale(0.92);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(242, 183, 5, 0.3);
       animation: none;
       transition: transform 0.06s;
     }
@@ -91,8 +107,8 @@
     }
 
     @keyframes glowPulse {
-      0% { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(255, 255, 255, 0.06), inset 0 -4px 8px rgba(0, 0, 0, 0.3), inset 0 4px 8px rgba(255, 255, 255, 0.12); }
-      100% { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 0 6px rgba(255, 255, 255, 0.12), inset 0 -4px 8px rgba(0, 0, 0, 0.4), inset 0 4px 8px rgba(255, 255, 255, 0.18); }
+      0% { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(242, 183, 5, 0.10), inset 0 -4px 8px rgba(0, 0, 0, 0.25), inset 0 4px 8px rgba(255, 255, 255, 0.2); }
+      100% { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 0 8px rgba(242, 183, 5, 0.22), inset 0 -4px 8px rgba(0, 0, 0, 0.3), inset 0 4px 8px rgba(255, 255, 255, 0.3); }
     }
 
     @media (max-width: 480px) {
@@ -119,7 +135,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(3, 10, 18, 0.78);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
       display: none;
@@ -140,14 +156,14 @@
     }
 
     .login-box {
-      background: #ffffff;
+      background: var(--card);
       padding: 32px 24px 44px;
       border-radius: 48px;
       width: 100%;
       max-width: 420px;
       text-align: center;
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
-      border: 1px solid #eef2f8;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--line-2);
       animation: floatIn 0.4s ease;
     }
 
@@ -162,10 +178,10 @@
 
     .login-box .admin-badge {
       display: inline-block;
-      background: #1e5a48;
-      color: white;
+      background: var(--gold);
+      color: var(--on-gold);
       font-size: 0.65rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 6px 20px;
       border-radius: 40px;
       margin-bottom: 16px;
@@ -173,7 +189,7 @@
     }
 
     .login-box h2 {
-      color: #1e3c2c;
+      color: var(--text);
       margin-bottom: 28px;
       font-weight: 800;
       font-size: 1.8rem;
@@ -184,24 +200,24 @@
       width: 100%;
       padding: 16px 20px;
       margin: 14px 0;
-      border: 2px solid #e2e8f0;
+      border: 2px solid var(--line-2);
       border-radius: 60px;
       font-size: 1rem;
       font-weight: 500;
-      background: #ffffff;
+      background: var(--card-2);
       transition: all 0.2s ease;
       font-family: inherit;
       outline: none;
-      color: #1e2a3a;
+      color: var(--text);
     }
 
     .login-box input:focus {
-      border-color: #0f9d58;
-      box-shadow: 0 0 0 4px rgba(15, 157, 88, 0.12);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(242, 183, 5, 0.18);
     }
 
     .login-box input::placeholder {
-      color: #9aaec2;
+      color: #6f879e;
       font-weight: 450;
       font-size: 0.9rem;
     }
@@ -210,30 +226,33 @@
       width: 100%;
       padding: 16px 20px;
       margin-top: 20px;
-      background: #0f9d58;
-      color: white;
+      background: var(--gold);
+      color: var(--on-gold);
       border: none;
       border-radius: 60px;
       font-size: 1.1rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       transition: all 0.25s ease;
-      box-shadow: 0 3px 8px rgba(15, 157, 88, 0.2);
+      box-shadow: 0 4px 12px rgba(242, 183, 5, 0.25);
     }
 
     .login-box button:active {
       transform: scale(0.97);
-      background: #0b7e48;
+      background: var(--gold-dark);
     }
+
+    .login-box button:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .login-box .error {
       margin-top: 20px;
       font-weight: 600;
       font-size: 0.8rem;
-      background: #fef2f2;
+      background: rgba(229, 34, 46, 0.15);
+      border: 1px solid rgba(229, 34, 46, 0.5);
       padding: 10px 18px;
       border-radius: 60px;
-      color: #dc3545;
+      color: #ff8a92;
       display: none;
       width: 100%;
     }
@@ -251,7 +270,7 @@
       font-weight: 300;
       cursor: pointer;
       transition: color 0.2s ease;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -261,7 +280,7 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .close-login:hover { background: rgba(255,255,255,0.2); }
+    .close-login:hover { background: rgba(255,255,255,0.18); }
     .close-login:active { transform: scale(0.92); }
 
     /* ===== MAIN APP (hidden until admin login) ===== */
@@ -269,19 +288,20 @@
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
-      background: white;
+      background: var(--card);
+      color: var(--text);
       border-radius: 32px;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
       overflow: hidden;
-      border: 1px solid #eef2f8;
+      border: 1px solid var(--line);
       display: none;
     }
 
     .header {
-      background: #f8fafc;
+      background: var(--card-2);
       padding: 16px 20px;
       text-align: center;
-      border-bottom: 1px solid #eef2f8;
+      border-bottom: 1px solid var(--line);
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -291,24 +311,25 @@
       margin: 0;
       font-size: 1.4rem;
       font-weight: 800;
-      color: #1e3c2c;
+      color: var(--text);
     }
 
     .school-badge {
-      background: #e8f5e9;
+      background: rgba(242, 183, 5, 0.12);
+      border: 1px solid rgba(242, 183, 5, 0.35);
       padding: 8px 16px;
       border-radius: 40px;
       display: inline-block;
       margin: 0 auto;
       font-size: 0.75rem;
-      font-weight: 600;
-      color: #2e7d32;
+      font-weight: 700;
+      color: var(--gold);
     }
 
     .logout-btn {
-      background: #f8fafc;
-      color: #dc3545;
-      border: 1px solid #e2e8f0;
+      background: transparent;
+      color: #ff6b75;
+      border: 1px solid rgba(229, 34, 46, 0.6);
       padding: 8px 20px;
       border-radius: 40px;
       cursor: pointer;
@@ -334,40 +355,44 @@
       display: block;
       font-weight: 700;
       margin-bottom: 8px;
-      color: #1e3c2c;
+      color: var(--text);
       font-size: 0.85rem;
     }
 
     label .required {
-      color: #dc3545;
+      color: #ff6b75;
     }
 
     select, input, textarea {
       width: 100%;
       padding: 12px 16px;
-      border: 2px solid #e2e8f0;
+      border: 2px solid var(--line-2);
       border-radius: 32px;
       font-size: 0.9rem;
       font-family: inherit;
       transition: all 0.2s ease;
-      background: #ffffff;
+      background: var(--card-2);
+      color: var(--text);
     }
+
+    select option { background: var(--card-2); color: var(--text); }
+    input::placeholder, textarea::placeholder { color: #6f879e; }
 
     select:focus, input:focus, textarea:focus {
       outline: none;
-      border-color: #0f9d58;
-      box-shadow: 0 0 0 3px rgba(15, 157, 88, 0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(242, 183, 5, 0.18);
     }
 
     .student-input-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      background: #f8fafc;
+      background: var(--card-2);
       padding: 16px;
       border-radius: 24px;
       margin-bottom: 12px;
-      border: 1px solid #eef2f8;
+      border: 1px solid var(--line-2);
     }
 
     .student-input-row .field-group {
@@ -378,7 +403,7 @@
       font-size: 0.7rem;
       font-weight: 600;
       margin-bottom: 4px;
-      color: #4a5568;
+      color: var(--muted);
     }
 
     .student-input-row .field-group input {
@@ -401,12 +426,12 @@
       transform: scale(0.96);
     }
 
-    .btn-primary { background: #0f9d58; color: white; }
-    .btn-danger { background: #dc3545; color: white; }
-    .btn-success { background: #28a745; color: white; }
-    .btn-secondary { background: #6c757d; color: white; }
-    .btn-outline { background: transparent; color: #0f9d58; border: 2px solid #0f9d58; }
-    .btn-warning { background: #ffc107; color: #212529; }
+    .btn-primary { background: var(--gold); color: var(--on-gold); }
+    .btn-danger { background: var(--red); color: white; }
+    .btn-success { background: var(--gold); color: var(--on-gold); font-weight: 800; }
+    .btn-secondary { background: transparent; color: var(--text); border: 2px solid var(--line-2); }
+    .btn-outline { background: transparent; color: var(--gold); border: 2px solid var(--gold); }
+    .btn-warning { background: transparent; color: var(--gold); border: 2px solid var(--gold); }
     .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
 
     .btn-group {
@@ -426,21 +451,22 @@
       font-size: 0.85rem;
     }
 
-    .message.success { background: #d4edda; color: #155724; display: block; }
-    .message.error { background: #f8d7da; color: #721c24; display: block; }
-    .message.info { background: #d1ecf1; color: #0c5460; display: block; }
+    .message.success { background: rgba(46, 204, 113, 0.15); color: #6ee7a0; border: 1px solid rgba(46, 204, 113, 0.4); display: block; }
+    .message.error { background: rgba(229, 34, 46, 0.15); color: #ff8a92; border: 1px solid rgba(229, 34, 46, 0.5); display: block; }
+    .message.info { background: rgba(242, 183, 5, 0.15); color: var(--gold); border: 1px solid rgba(242, 183, 5, 0.4); display: block; }
 
     .loading {
       display: none;
       text-align: center;
       margin-top: 20px;
+      color: var(--muted);
     }
 
     .loading.active { display: block; }
 
     .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #0f9d58;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top: 3px solid var(--gold);
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -460,7 +486,7 @@
     .students-list h3 {
       font-size: 1rem;
       margin-bottom: 12px;
-      color: #1e3c2c;
+      color: var(--text);
     }
 
     .student-item {
@@ -468,10 +494,10 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 14px;
-      background: #f8fafc;
+      background: var(--card-2);
       border-radius: 16px;
       margin-bottom: 8px;
-      border: 1px solid #eef2f8;
+      border: 1px solid var(--line-2);
     }
 
     .student-item .info {
@@ -482,42 +508,45 @@
 
     .student-item .info span {
       font-size: 0.85rem;
+      color: var(--muted);
     }
 
     .student-item .info .adm {
       font-weight: 700;
-      color: #0f9d58;
+      color: var(--gold);
     }
 
     .student-item .info .name {
       font-weight: 600;
+      color: var(--text);
     }
 
     .stats {
-      background: #e8f5e9;
+      background: rgba(242, 183, 5, 0.12);
+      border: 1px solid rgba(242, 183, 5, 0.3);
       padding: 8px 16px;
       border-radius: 40px;
       display: inline-block;
       font-size: 0.8rem;
       font-weight: 700;
-      color: #2e7d32;
+      color: var(--gold);
       margin-bottom: 16px;
     }
 
     .preview-section {
-      background: #f8fafc;
+      background: var(--card-2);
       border-radius: 24px;
       padding: 20px;
       margin-top: 20px;
-      border: 2px dashed #c8d6e5;
+      border: 2px dashed var(--line-2);
     }
 
-    .preview-section h4 { margin-bottom: 12px; color: #1e3c2c; }
+    .preview-section h4 { margin-bottom: 12px; color: var(--text); }
 
     .add-row-btn {
-      background: #e8f5e9;
-      color: #0f9d58;
-      border: 2px dashed #0f9d58;
+      background: rgba(242, 183, 5, 0.12);
+      color: var(--gold);
+      border: 2px dashed var(--gold);
       padding: 12px;
       border-radius: 24px;
       width: 100%;
@@ -530,35 +559,38 @@
     .add-row-btn:active { transform: scale(0.98); }
 
     .info-note {
-      background: #e3f2fd;
+      background: rgba(242, 183, 5, 0.12);
+      border: 1px solid rgba(242, 183, 5, 0.3);
       padding: 10px 16px;
       border-radius: 28px;
       margin-bottom: 16px;
       font-size: 0.75rem;
-      color: #1565c0;
-      font-weight: 500;
+      color: var(--gold);
+      font-weight: 600;
       text-align: center;
     }
 
     .bulk-textarea {
       width: 100%;
       padding: 14px 16px;
-      border: 2px solid #e2e8f0;
+      border: 2px solid var(--line-2);
       border-radius: 20px;
       font-size: 0.9rem;
       font-family: inherit;
       resize: vertical;
       min-height: 120px;
       transition: 0.2s;
+      background: var(--card-2);
+      color: var(--text);
     }
 
     .bulk-textarea:focus {
       outline: none;
-      border-color: #0f9d58;
-      box-shadow: 0 0 0 3px rgba(15, 157, 88, 0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(242, 183, 5, 0.18);
     }
 
-    .bulk-textarea::placeholder { color: #9aaec2; }
+    .bulk-textarea::placeholder { color: #6f879e; }
 
     .tab-buttons {
       display: flex;
@@ -569,9 +601,10 @@
 
     .tab-btn {
       padding: 10px 20px;
-      border: 2px solid #e2e8f0;
+      border: 2px solid var(--line-2);
       border-radius: 40px;
-      background: white;
+      background: transparent;
+      color: var(--muted);
       cursor: pointer;
       font-weight: 600;
       transition: 0.2s;
@@ -580,9 +613,9 @@
     }
 
     .tab-btn.active {
-      border-color: #0f9d58;
-      background: #e8f5e9;
-      color: #0f9d58;
+      border-color: var(--gold);
+      background: rgba(242, 183, 5, 0.15);
+      color: var(--gold);
     }
 
     .tab-btn:active { transform: scale(0.96); }
@@ -698,7 +731,7 @@ Example:
 Alice Johnson
 Bob Smith
 Carol Davis"></textarea>
-          <div style="margin-top: 8px; font-size: 0.7rem; color: #7c8b9c;">
+          <div style="margin-top: 8px; font-size: 0.7rem; color: #9fb3c8;">
             💡 Enter one student name per line. Optional: Add extra info after a comma (e.g., "Alice Johnson, 1234567890, Mr. John")
           </div>
         </div>
