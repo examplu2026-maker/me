@@ -581,6 +581,32 @@
       font-weight: 600;
     }
     
+    /* Sync notice box */
+    .sync-notice {
+      background: rgba(46, 204, 113, 0.1);
+      border: 1px solid rgba(46, 204, 113, 0.35);
+      padding: 12px 16px;
+      border-radius: 20px;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: #6ee7a0;
+      font-weight: 600;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.4;
+    }
+    
+    .sync-notice .sync-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    
+    .sync-notice strong {
+      color: #a8f0c6;
+    }
+    
     @media (max-width: 480px) {
       body {
         padding: 10px;
@@ -743,6 +769,10 @@
     <div class="form-group">
       <label>📅 TERM / SESSION <span class="required">*</span></label>
       <input type="text" id="term" placeholder="e.g., First Term 2024">
+      <div class="sync-notice">
+        <span class="sync-icon">🔄</span>
+        <span>Changing this field will <strong>sync the new Term/Session to all schools</strong> registered under your email address.</span>
+      </div>
     </div>
     
     <div class="loading" id="loading">
@@ -767,11 +797,13 @@
 
 <script>
   // ==================== CONFIGURATION ====================
-  const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzUtnrt8WRAXeOFpoR_LJjNcpm3TPRTpnSWBXSSKidwZv9DBb-HFoOQiTLxl9Vio4c58A/exec';
+  const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxiMnkz4Zp_ppNj0vUcFhpy_9JTFTjAdsm4-YOfg_7HSxG0IHzBTasD8fIXZPoRY4VlCg/exec';
   
   // ==================== STATE ====================
   let currentTabName = null;
   let currentRowIndex = null;
+  let currentUserEmail = null;   // NEW: stores logged-in email for cross-school sync
+  let originalTermValue = null;  // NEW: tracks original term value to detect changes
   const LOGO_SIZE = 200;
   
   // ==================== ICON LOGIC ====================
@@ -888,6 +920,7 @@
         if (role === 'ADMIN') {
           currentTabName = result.tabName;
           currentRowIndex = result.rowIndex;
+          currentUserEmail = email;  // NEW: store logged-in email for sync
           
           document.getElementById("loginOverlay").classList.remove('active');
           document.getElementById("iconWrapper").style.display = "none";
@@ -914,6 +947,8 @@
   function doLogout() {
     currentTabName = null;
     currentRowIndex = null;
+    currentUserEmail = null;   // NEW: clear email on logout
+    originalTermValue = null;  // NEW: clear term tracker
     document.getElementById("appSection").style.display = "none";
     document.getElementById("iconWrapper").style.display = "flex";
     document.getElementById("loginOverlay").classList.remove('active');
@@ -961,6 +996,9 @@
         if (data.term) {
           document.getElementById("term").value = data.term;
           document.getElementById("previewTerm").innerText = data.term;
+          originalTermValue = data.term;  // NEW: store original term for change detection
+        } else {
+          originalTermValue = null;
         }
       }
     });
@@ -1031,6 +1069,10 @@
     if (!contact) { showMessage("Please enter school contact", "error"); return; }
     if (!term) { showMessage("Please enter term/session", "error"); return; }
     
+    // NEW: Detect if term has changed from original value
+    const termChanged = (originalTermValue !== null && originalTermValue !== term) || 
+                       (originalTermValue === null && term !== "");
+    
     document.getElementById("loading").classList.add("active");
     const btn = document.querySelector(".btn-submit");
     btn.disabled = true;
@@ -1045,14 +1087,14 @@
         canvas.height = 100;
         ctx.drawImage(img, 0, 0, 100, 100);
         finalLogo = canvas.toDataURL('image/jpeg', 0.5);
-        doSave(finalLogo);
+        doSave(finalLogo, termChanged);
       };
       img.src = logo;
     } else {
-      doSave(finalLogo);
+      doSave(finalLogo, termChanged);
     }
     
-    function doSave(compressedLogo) {
+    function doSave(compressedLogo, termChanged) {
       const schoolData = {
         logo: compressedLogo || "",
         name: name,
@@ -1063,11 +1105,15 @@
       
       console.log("Saving to row:", currentRowIndex);
       console.log("Data size:", JSON.stringify(schoolData).length);
+      console.log("Term changed:", termChanged);
       
+      // NEW: Add syncTerm flag and email when term changes
       apiCall('saveSchoolDetails', {
         tabName: currentTabName,
         rowIndex: currentRowIndex,
-        schoolData: schoolData
+        schoolData: schoolData,
+        syncTerm: termChanged,           // tells backend to sync term across all schools
+        userEmail: currentUserEmail      // email used to identify which schools to update
       }, function(result) {
         document.getElementById("loading").classList.remove("active");
         btn.disabled = false;
@@ -1075,7 +1121,14 @@
         console.log("Save result:", result);
         
         if (result && result.success) {
-          showMessage(result.message || "✅ School details saved successfully!", "success");
+          let successMsg = result.message || "✅ School details saved successfully!";
+          
+          // NEW: Show how many schools were synced
+          if (result.syncedCount !== undefined && result.syncedCount > 0) {
+            successMsg += " Term/Session synced to " + result.syncedCount + " other school(s).";
+          }
+          
+          showMessage(successMsg, "success");
           document.getElementById("previewName").innerText = name;
           document.getElementById("previewAddress").innerText = address;
           document.getElementById("previewContact").innerText = contact;
@@ -1084,6 +1137,10 @@
             document.getElementById("previewLogo").src = compressedLogo;
             document.getElementById("previewLogo").style.display = "block";
           }
+          
+          // Update the original term value so next save doesn't trigger sync again
+          originalTermValue = term;
+          
           setTimeout(loadSchoolDetails, 1500);
         } else {
           showMessage("Save failed: " + (result?.message || "Unknown error"), "error");
@@ -1104,6 +1161,7 @@
     document.getElementById("previewTerm").innerText = "Term / Session";
     document.getElementById("message").className = "message";
     document.getElementById("message").style.display = "none";
+    originalTermValue = null;
   }
 
   // ==================== EVENT LISTENERS ====================
