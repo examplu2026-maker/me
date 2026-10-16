@@ -27,43 +27,6 @@
            min-height:100vh; margin:0; padding:16px;
            display:flex; justify-content:center; align-items:center; flex-direction:column; }
 
-    /* VIBRATING ICON */
-    .icon-wrapper { display:flex; justify-content:center; align-items:center;
-      width:100%; min-height:80vh; }
-    .vibrating-icon { width:190px; height:190px; border-radius:50%;
-      background: radial-gradient(circle at 35% 30%, #ffd54a, var(--gold));
-      box-shadow: 0 12px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(242,183,5,0.15),
-        inset 0 -4px 8px rgba(0,0,0,0.25), inset 0 4px 8px rgba(255,255,255,0.25);
-      display:flex; justify-content:center; align-items:center; cursor:pointer;
-      touch-action:manipulation; transition: transform 0.15s ease, box-shadow 0.2s ease;
-      animation: vibrate 2.4s infinite ease-in-out, glowPulse 3.2s infinite alternate;
-      color:var(--on-gold); font-weight:800; font-size:1.2rem; letter-spacing:0.03em;
-      text-shadow: none; text-align:center; line-height:1.2;
-      padding:16px; user-select:none; -webkit-tap-highlight-color:transparent;
-      position:relative; }
-    .vibrating-icon .ripple { position:absolute; border-radius:50%;
-      border:3px solid rgba(242,183,5,0.45); animation: rippleEffect 2s ease-out infinite;
-      width:100%; height:100%; pointer-events:none; }
-    .vibrating-icon .ripple:nth-child(2) { animation-delay:0.7s; }
-    @keyframes rippleEffect { 0%{transform:scale(1);opacity:1;} 100%{transform:scale(1.4);opacity:0;} }
-    @keyframes vibrate { 0%{transform:translate(0,0) rotate(0);} 10%{transform:translate(-2px,-2px) rotate(-0.6deg);}
-      20%{transform:translate(2px,-1px) rotate(0.8deg);} 30%{transform:translate(-1px,2px) rotate(-0.4deg);}
-      40%{transform:translate(1px,-2px) rotate(0.6deg);} 50%{transform:translate(-2px,1px) rotate(-0.8deg);}
-      60%{transform:translate(2px,2px) rotate(0.4deg);} 70%{transform:translate(-1px,-1px) rotate(-0.3deg);}
-      80%{transform:translate(1px,1px) rotate(0.3deg);} 90%{transform:translate(-1px,1px) rotate(-0.2deg);}
-      100%{transform:translate(0,0) rotate(0);} }
-    @keyframes glowPulse {
-      0%{box-shadow:0 12px 28px rgba(0,0,0,0.6), 0 0 0 4px rgba(242,183,5,0.10),
-         inset 0 -4px 8px rgba(0,0,0,0.25), inset 0 4px 8px rgba(255,255,255,0.2);}
-      100%{box-shadow:0 16px 40px rgba(0,0,0,0.8), 0 0 0 8px rgba(242,183,5,0.22),
-         inset 0 -4px 8px rgba(0,0,0,0.3), inset 0 4px 8px rgba(255,255,255,0.3);}
-    }
-    .vibrating-icon:active { transform:scale(0.92);
-      box-shadow:0 6px 16px rgba(0,0,0,0.8), 0 0 0 4px rgba(242,183,5,0.3);
-      animation:none; transition: transform 0.06s; }
-    @media (max-width: 480px) { .vibrating-icon { width:160px; height:160px; font-size:1rem; padding:12px; } }
-    @media (max-width: 360px) { .vibrating-icon { width:140px; height:140px; font-size:0.85rem; padding:10px; } }
-
     /* LOGIN OVERLAY */
     .login-overlay { position:fixed; top:0; left:0; width:100%; height:100%;
       background: rgba(3,10,18,0.78); backdrop-filter: blur(6px);
@@ -240,17 +203,8 @@
 </head>
 <body>
 
-  <!-- VIBRATING ICON -->
-  <div class="icon-wrapper" id="iconWrapper">
-    <div class="vibrating-icon" id="launcherIcon" role="button" aria-label="Student Files">
-      <span class="ripple"></span>
-      <span class="ripple"></span>
-      Student<br />Files
-    </div>
-  </div>
-
   <!-- LOGIN OVERLAY -->
-  <div class="login-overlay" id="loginOverlay">
+  <div class="login-overlay active" id="loginOverlay">
     <span class="close-login" id="closeLoginBtn">✕</span>
     <div class="login-box">
       <div class="admin-badge">🔐 ADMIN ONLY</div>
@@ -378,11 +332,6 @@
     let currentClassName = null;
     const PASSPORT_WIDTH = 413, PASSPORT_HEIGHT = 531;
 
-    function showLoginOverlay() {
-      document.getElementById('loginOverlay').classList.add('active');
-      if (navigator.vibrate) navigator.vibrate(10);
-      setTimeout(() => document.getElementById('email').focus(), 300);
-    }
     function hideLoginOverlay() {
       document.getElementById('loginOverlay').classList.remove('active');
       document.getElementById('loginError').classList.remove('show');
@@ -476,7 +425,6 @@
           if (role === 'ADMIN') {
             currentTabName = result.tabName || 'Students';
             document.getElementById("loginOverlay").classList.remove('active');
-            document.getElementById("iconWrapper").style.display = "none";
             document.getElementById("appSection").style.display = "block";
             loadClassesFromColumnA();
             loadClassesForView();
@@ -496,8 +444,7 @@
       stopCamera();
       currentTabName = null;
       document.getElementById("appSection").style.display = "none";
-      document.getElementById("iconWrapper").style.display = "flex";
-      document.getElementById("loginOverlay").classList.remove("active");
+      document.getElementById("loginOverlay").classList.add("active");
       resetForm();
     }
 
@@ -865,7 +812,6 @@
       showMessage(`📥 Downloading ${name} photo`,"success");
     }
 
-    document.getElementById("launcherIcon").addEventListener("click", showLoginOverlay);
     document.getElementById("closeLoginBtn").addEventListener("click", hideLoginOverlay);
     document.getElementById("loginOverlay").addEventListener("click", function(e) {
       if (e.target === this) hideLoginOverlay();
@@ -875,9 +821,8 @@
     });
 
     window.addEventListener('load', function() {
-      document.getElementById('iconWrapper').style.display = 'flex';
       document.getElementById('appSection').style.display = 'none';
-      document.getElementById('loginOverlay').classList.remove('active');
+      document.getElementById('loginOverlay').classList.add('active');
     });
   </script>
 </body>
