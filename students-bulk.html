@@ -47,87 +47,6 @@
       flex-direction: column;
     }
 
-    /* ===== VIBRATING ICON (entry point) ===== */
-    .icon-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      min-height: 80vh;
-    }
-
-    .vibrating-icon {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #ffd54a, var(--gold));
-      box-shadow: 
-        0 12px 28px rgba(0, 0, 0, 0.6),
-        0 0 0 4px rgba(242, 183, 5, 0.15),
-        inset 0 -4px 8px rgba(0, 0, 0, 0.25),
-        inset 0 4px 8px rgba(255, 255, 255, 0.25);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      touch-action: manipulation;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-      animation: vibrate 2.4s infinite ease-in-out, glowPulse 3.2s infinite alternate;
-      color: var(--on-gold);
-      font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: 0.03em;
-      text-shadow: none;
-      text-align: center;
-      line-height: 1.2;
-      padding: 20px;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .vibrating-icon:active {
-      transform: scale(0.92);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(242, 183, 5, 0.3);
-      animation: none;
-      transition: transform 0.06s;
-    }
-
-    @keyframes vibrate {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      10% { transform: translate(-2px, -2px) rotate(-0.6deg); }
-      20% { transform: translate(2px, -1px) rotate(0.8deg); }
-      30% { transform: translate(-1px, 2px) rotate(-0.4deg); }
-      40% { transform: translate(1px, -2px) rotate(0.6deg); }
-      50% { transform: translate(-2px, 1px) rotate(-0.8deg); }
-      60% { transform: translate(2px, 2px) rotate(0.4deg); }
-      70% { transform: translate(-1px, -1px) rotate(-0.3deg); }
-      80% { transform: translate(1px, 1px) rotate(0.3deg); }
-      90% { transform: translate(-1px, 1px) rotate(-0.2deg); }
-      100% { transform: translate(0, 0) rotate(0deg); }
-    }
-
-    @keyframes glowPulse {
-      0% { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(242, 183, 5, 0.10), inset 0 -4px 8px rgba(0, 0, 0, 0.25), inset 0 4px 8px rgba(255, 255, 255, 0.2); }
-      100% { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 0 8px rgba(242, 183, 5, 0.22), inset 0 -4px 8px rgba(0, 0, 0, 0.3), inset 0 4px 8px rgba(255, 255, 255, 0.3); }
-    }
-
-    @media (max-width: 480px) {
-      .vibrating-icon {
-        width: 160px;
-        height: 160px;
-        font-size: 1.1rem;
-        padding: 16px;
-      }
-    }
-    @media (max-width: 360px) {
-      .vibrating-icon {
-        width: 140px;
-        height: 140px;
-        font-size: 0.95rem;
-        padding: 12px;
-      }
-    }
-
     /* ===== LOGIN OVERLAY (admin only) ===== */
     .login-overlay {
       position: fixed;
@@ -260,28 +179,6 @@
     .login-box .error.show {
       display: inline-block;
     }
-
-    .close-login {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      color: white;
-      font-size: 32px;
-      font-weight: 300;
-      cursor: pointer;
-      transition: color 0.2s ease;
-      background: rgba(255,255,255,0.08);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .close-login:hover { background: rgba(255,255,255,0.18); }
-    .close-login:active { transform: scale(0.92); }
 
     /* ===== MAIN APP (hidden until admin login) ===== */
     .container {
@@ -645,16 +542,8 @@
 </head>
 <body>
 
-  <!-- ===== VIBRATING ICON (entry point) ===== -->
-  <div class="icon-wrapper" id="iconWrapper">
-    <div class="vibrating-icon" id="launcherIcon" role="button" aria-label="Bulk Student Registration">
-      Bulk<br />Student<br />Registration
-    </div>
-  </div>
-
   <!-- ===== LOGIN OVERLAY (checks Users sheet) ===== -->
-  <div class="login-overlay" id="loginOverlay">
-    <span class="close-login" id="closeLoginBtn">✕</span>
+  <div class="login-overlay active" id="loginOverlay">
     <div class="login-box">
       <div class="admin-badge">🔐 ADMIN ONLY</div>
       <h2>📚 Bulk Student Registration</h2>
@@ -776,18 +665,6 @@ Carol Davis"></textarea>
     let currentUserRole = null;
     let isAdmin = false;
 
-    // ==================== ICON LOGIC ====================
-    function showLoginOverlay() {
-      document.getElementById('loginOverlay').classList.add('active');
-      if (navigator.vibrate) navigator.vibrate(10);
-      setTimeout(() => document.getElementById('email').focus(), 300);
-    }
-
-    function hideLoginOverlay() {
-      document.getElementById('loginOverlay').classList.remove('active');
-      document.getElementById('loginError').classList.remove('show');
-    }
-
     // ==================== API CALLS ====================
     function apiCall(action, data, callback) {
       const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
@@ -869,7 +746,6 @@ Carol Davis"></textarea>
 
             // Hide login and show app
             document.getElementById('loginOverlay').classList.remove('active');
-            document.getElementById('iconWrapper').style.display = 'none';
             document.getElementById('appSection').style.display = 'block';
             document.getElementById('schoolTabBadge').innerHTML = "🏫 Admin: " + tabName;
 
@@ -896,8 +772,7 @@ Carol Davis"></textarea>
       currentUserRole = null;
 
       document.getElementById('appSection').style.display = 'none';
-      document.getElementById('iconWrapper').style.display = 'flex';
-      document.getElementById('loginOverlay').classList.remove('active');
+      document.getElementById('loginOverlay').classList.add('active');
 
       document.getElementById("email").value = "";
       document.getElementById("password").value = "";
@@ -1178,21 +1053,14 @@ Carol Davis"></textarea>
     }
 
     // ==================== EVENT LISTENERS ====================
-    document.getElementById("launcherIcon").addEventListener("click", showLoginOverlay);
-    document.getElementById("closeLoginBtn").addEventListener("click", hideLoginOverlay);
-
-    document.getElementById("loginOverlay").addEventListener("click", function(e) {
-      if (e.target === this) hideLoginOverlay();
-    });
-
     document.getElementById("password").addEventListener("keypress", function(e) {
       if (e.key === "Enter") doLogin();
     });
 
     window.addEventListener('load', function() {
-      document.getElementById('iconWrapper').style.display = 'flex';
       document.getElementById('appSection').style.display = 'none';
-      document.getElementById('loginOverlay').classList.remove('active');
+      document.getElementById('loginOverlay').classList.add('active');
+      document.getElementById('email').focus();
     });
   </script>
 
