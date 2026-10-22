@@ -58,6 +58,10 @@ body {
   text-align: center;
   box-shadow: 0 30px 50px rgba(0,0,0,0.5);
   animation: floatIn 0.5s ease;
+  /* ✅ PATCH: make sure the card is hit-testable */
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 @keyframes floatIn {
@@ -133,6 +137,14 @@ body {
   cursor: pointer;
   margin-top: 8px;
   box-shadow: 0 4px 12px rgba(242,183,5,0.25);
+  /* ✅ PATCH: force hit-testing on the button itself */
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: rgba(242,183,5,0.35);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .login-btn:active {
@@ -166,6 +178,8 @@ body {
   animation: spin 0.6s linear infinite;
   margin-left: 8px;
   vertical-align: middle;
+  /* ✅ PATCH: spinner can never intercept the click */
+  pointer-events: none;
 }
 
 @keyframes spin {
@@ -534,10 +548,12 @@ button:disabled {
         autocomplete="current-password">
     </div>
 
+    <!-- ✅ PATCH: onclick attribute works even if bindUI() fails to run -->
     <button
       class="login-btn"
       id="loginBtn"
-      type="button">
+      type="button"
+      onclick="handleLogin()">
       ➡️ SIGN IN
     </button>
 
@@ -557,7 +573,7 @@ button:disabled {
 
   <div class="user-info-bar">
     <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn" type="button">
+    <button id="logoutBtn" class="logout-btn" type="button" onclick="handleLogout()">
       🚪 Logout
     </button>
   </div>
@@ -588,7 +604,7 @@ button:disabled {
     </div>
 
     <div class="action-group">
-      <button id="refreshBtn" class="btn-outline" type="button">
+      <button id="refreshBtn" class="btn-outline" type="button" onclick="loadInitialData()">
         🔄 Reload
       </button>
     </div>
@@ -626,7 +642,7 @@ button:disabled {
   </div>
 
   <div class="save-footer">
-    <button id="saveBtnBottom" class="btn-primary" type="button">
+    <button id="saveBtnBottom" class="btn-primary" type="button" onclick="saveMarks()">
       💾 Save Marks for <span id="saveTermLabel">Term 1</span>
     </button>
   </div>
@@ -645,11 +661,23 @@ button:disabled {
 <script>
 
 /* =========================================================
+   ✅ PATCH: EARLY ERROR TRACER
+   Any syntax/runtime error that would have silently prevented
+   bindUI() from running now gets logged to the console so you
+   can see exactly what's wrong.
+========================================================= */
+
+window.addEventListener('error', function (event) {
+  console.error('[MarksManager] Script error:', event.message, '@', event.filename + ':' + event.lineno);
+});
+
+
+/* =========================================================
    API CONFIGURATION
 ========================================================= */
 
 const API_BASE_URL =
-  'https://script.google.com/macros/s/AKfycby7RtGT3M9UzmPpqm2i5WGL0dFVFWqZXk3zYvTRivGvwfjncSV3-LkZFX8eLL0a-nla6g/exec';
+  'https://script.google.com/macros/s/AKfycbzA-LMq2-N5yIIIw-XwIjU4kGKdSzwYqdqAyD4wePGNe3rTVJYxFjFPXxDwAhxdY44/exec';
 
 
 /* =========================================================
@@ -669,6 +697,43 @@ let marksCache = {};
 let currentClass = '';
 let currentSubject = '';
 let currentTerm = 'Term 1';
+
+
+/* =========================================================
+   ✅ AMENDED: CLASS RESOLVER
+========================================================= */
+
+function resolveStudentClass(student) {
+
+  if (!student || typeof student !== 'object') {
+    return '';
+  }
+
+  const candidates = [
+    student.className,
+    student.class,
+    student.cls,
+    student.columnA,
+    student.classA,
+    student.class_name,
+    student.section
+  ];
+
+  for (let i = 0; i < candidates.length; i++) {
+
+    const value = candidates[i];
+
+    if (
+      value !== null &&
+      value !== undefined &&
+      String(value).trim() !== ''
+    ) {
+      return String(value).trim();
+    }
+  }
+
+  return '';
+}
 
 
 /* =========================================================
@@ -1213,6 +1278,23 @@ function loadInitialData() {
           : [];
 
 
+      studentMaster = studentMaster.map(function(student) {
+
+        if (!student || typeof student !== 'object') {
+          return student;
+        }
+
+        const resolved = resolveStudentClass(student);
+
+        if (resolved) {
+          student.className = resolved;
+        }
+
+        return student;
+
+      });
+
+
       apiCall(
         'getSubjects',
         {
@@ -1310,9 +1392,11 @@ function populateClassDropdown() {
     new Set(
       studentMaster
         .map(function(student) {
-          return student.className;
+          return resolveStudentClass(student);
         })
-        .filter(Boolean)
+        .filter(function(value) {
+          return value && value.trim() !== '';
+        })
     );
 
 
@@ -1342,6 +1426,18 @@ function populateClassDropdown() {
     element.appendChild(option);
 
   });
+
+
+  if (!classes.length) {
+
+    setStatus(
+      '⚠️ No classes found in column A of the "' +
+      (userMasterTab || 'school') +
+      '" tab. Check that column A contains class names.',
+      'warning'
+    );
+
+  }
 
 }
 
@@ -1473,7 +1569,7 @@ function renderTable() {
     studentMaster.filter(
       function(student) {
         return (
-          student.className ===
+          resolveStudentClass(student) ===
           className
         );
       }
@@ -2057,289 +2153,291 @@ function saveMarks() {
 
 /* =========================================================
    BIND USER INTERFACE
+   ✅ PATCH: wrapped in try/catch + called from multiple
+   lifecycle points so it always runs even if something else
+   throws first.
 ========================================================= */
 
 function bindUI() {
 
-  const loginButton =
-    document.getElementById(
-      'loginBtn'
-    );
+  try {
 
-  const logoutButton =
-    document.getElementById(
-      'logoutBtn'
-    );
+    const loginButton =
+      document.getElementById(
+        'loginBtn'
+      );
 
-  const passwordInput =
-    document.getElementById(
-      'loginPassword'
-    );
+    const logoutButton =
+      document.getElementById(
+        'logoutBtn'
+      );
 
-  const emailInput =
-    document.getElementById(
-      'loginEmail'
-    );
+    const passwordInput =
+      document.getElementById(
+        'loginPassword'
+      );
 
-  const refreshButton =
-    document.getElementById(
-      'refreshBtn'
-    );
+    const emailInput =
+      document.getElementById(
+        'loginEmail'
+      );
 
-  const classSelect =
-    document.getElementById(
-      'classSelect'
-    );
+    const refreshButton =
+      document.getElementById(
+        'refreshBtn'
+      );
 
-  const subjectSelect =
-    document.getElementById(
-      'subjectSelect'
-    );
+    const classSelect =
+      document.getElementById(
+        'classSelect'
+      );
 
-  const termSelect =
-    document.getElementById(
-      'termSelect'
-    );
+    const subjectSelect =
+      document.getElementById(
+        'subjectSelect'
+      );
 
-  const saveButton =
-    document.getElementById(
-      'saveBtnBottom'
-    );
+    const termSelect =
+      document.getElementById(
+        'termSelect'
+      );
 
-  const tableBody =
-    document.getElementById(
-      'tableBody'
-    );
+    const saveButton =
+      document.getElementById(
+        'saveBtnBottom'
+      );
 
-
-  /* LOGIN */
-
-  if (loginButton) {
-
-    loginButton.addEventListener(
-      'click',
-      handleLogin
-    );
-
-  }
+    const tableBody =
+      document.getElementById(
+        'tableBody'
+      );
 
 
-  /* LOGOUT */
+    /* LOGIN */
 
-  if (logoutButton) {
-
-    logoutButton.addEventListener(
-      'click',
-      handleLogout
-    );
-
-  }
-
-
-  /* ENTER KEY - PASSWORD */
-
-  if (passwordInput) {
-
-    passwordInput.addEventListener(
-      'keydown',
-      function(event) {
-
-        if (event.key === 'Enter') {
-
-          event.preventDefault();
-
-          handleLogin();
-
-        }
-
-      }
-    );
-
-  }
+    if (loginButton && !loginButton.__mmBound) {
+      loginButton.__mmBound = true;
+      loginButton.addEventListener(
+        'click',
+        handleLogin
+      );
+    }
 
 
-  /* ENTER KEY - EMAIL */
+    /* LOGOUT */
 
-  if (emailInput) {
+    if (logoutButton && !logoutButton.__mmBound) {
+      logoutButton.__mmBound = true;
+      logoutButton.addEventListener(
+        'click',
+        handleLogout
+      );
+    }
 
-    emailInput.addEventListener(
-      'keydown',
-      function(event) {
 
-        if (event.key === 'Enter') {
+    /* ENTER KEY - PASSWORD */
 
-          event.preventDefault();
+    if (passwordInput && !passwordInput.__mmBound) {
+      passwordInput.__mmBound = true;
+      passwordInput.addEventListener(
+        'keydown',
+        function(event) {
 
-          handleLogin();
+          if (event.key === 'Enter') {
+
+            event.preventDefault();
+
+            handleLogin();
+
+          }
 
         }
-
-      }
-    );
-
-  }
+      );
+    }
 
 
-  /* REFRESH */
+    /* ENTER KEY - EMAIL */
 
-  if (refreshButton) {
+    if (emailInput && !emailInput.__mmBound) {
+      emailInput.__mmBound = true;
+      emailInput.addEventListener(
+        'keydown',
+        function(event) {
 
-    refreshButton.addEventListener(
-      'click',
-      loadInitialData
-    );
+          if (event.key === 'Enter') {
 
-  }
+            event.preventDefault();
 
+            handleLogin();
 
-  /* CLASS */
-
-  if (classSelect) {
-
-    classSelect.addEventListener(
-      'change',
-      renderTable
-    );
-
-  }
-
-
-  /* SUBJECT */
-
-  if (subjectSelect) {
-
-    subjectSelect.addEventListener(
-      'change',
-      renderTable
-    );
-
-  }
-
-
-  /* TERM */
-
-  if (termSelect) {
-
-    termSelect.addEventListener(
-      'change',
-      renderTable
-    );
-
-  }
-
-
-  /* SAVE */
-
-  if (saveButton) {
-
-    saveButton.addEventListener(
-      'click',
-      saveMarks
-    );
-
-  }
-
-
-  /* MARK INPUTS */
-
-  if (tableBody) {
-
-    tableBody.addEventListener(
-      'input',
-      function(event) {
-
-        const element =
-          event.target;
-
-
-        if (
-          !element.classList ||
-          !element.classList.contains(
-            'marks-input'
-          )
-        ) {
-
-          return;
+          }
 
         }
+      );
+    }
 
 
-        const upper =
-          element.value
-            .trim()
-            .toUpperCase();
+    /* REFRESH */
+
+    if (refreshButton && !refreshButton.__mmBound) {
+      refreshButton.__mmBound = true;
+      refreshButton.addEventListener(
+        'click',
+        loadInitialData
+      );
+    }
 
 
-        if (
-          upper === 'ABS' ||
-          upper === 'A' ||
-          upper === 'AB'
-        ) {
+    /* CLASS */
 
-          element.classList.add(
-            'abs'
-          );
+    if (classSelect && !classSelect.__mmBound) {
+      classSelect.__mmBound = true;
+      classSelect.addEventListener(
+        'change',
+        renderTable
+      );
+    }
 
-          element.classList.remove(
-            'invalid'
-          );
 
-        } else {
+    /* SUBJECT */
 
-          element.classList.remove(
-            'abs'
-          );
+    if (subjectSelect && !subjectSelect.__mmBound) {
+      subjectSelect.__mmBound = true;
+      subjectSelect.addEventListener(
+        'change',
+        renderTable
+      );
+    }
+
+
+    /* TERM */
+
+    if (termSelect && !termSelect.__mmBound) {
+      termSelect.__mmBound = true;
+      termSelect.addEventListener(
+        'change',
+        renderTable
+      );
+    }
+
+
+    /* SAVE */
+
+    if (saveButton && !saveButton.__mmBound) {
+      saveButton.__mmBound = true;
+      saveButton.addEventListener(
+        'click',
+        saveMarks
+      );
+    }
+
+
+    /* MARK INPUTS */
+
+    if (tableBody) {
+
+      tableBody.addEventListener(
+        'input',
+        function(event) {
+
+          const element =
+            event.target;
+
+
+          if (
+            !element.classList ||
+            !element.classList.contains(
+              'marks-input'
+            )
+          ) {
+
+            return;
+
+          }
+
+
+          const upper =
+            element.value
+              .trim()
+              .toUpperCase();
+
+
+          if (
+            upper === 'ABS' ||
+            upper === 'A' ||
+            upper === 'AB'
+          ) {
+
+            element.classList.add(
+              'abs'
+            );
+
+            element.classList.remove(
+              'invalid'
+            );
+
+          } else {
+
+            element.classList.remove(
+              'abs'
+            );
+
+          }
 
         }
-
-      }
-    );
+      );
 
 
-    tableBody.addEventListener(
-      'blur',
-      function(event) {
+      tableBody.addEventListener(
+        'blur',
+        function(event) {
 
-        const element =
-          event.target;
-
-
-        if (
-          !element.classList ||
-          !element.classList.contains(
-            'marks-input'
-          )
-        ) {
-
-          return;
-
-        }
+          const element =
+            event.target;
 
 
-        const upper =
-          element.value
-            .trim()
-            .toUpperCase();
+          if (
+            !element.classList ||
+            !element.classList.contains(
+              'marks-input'
+            )
+          ) {
+
+            return;
+
+          }
 
 
-        if (
-          upper === 'ABS' ||
-          upper === 'A' ||
-          upper === 'AB'
-        ) {
+          const upper =
+            element.value
+              .trim()
+              .toUpperCase();
 
-          element.value =
-            'ABS';
 
-          element.classList.add(
-            'abs'
-          );
+          if (
+            upper === 'ABS' ||
+            upper === 'A' ||
+            upper === 'AB'
+          ) {
 
-        }
+            element.value =
+              'ABS';
 
-      },
-      true
-    );
+            element.classList.add(
+              'abs'
+            );
+
+          }
+
+        },
+        true
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error('[MarksManager] bindUI failed:', error);
 
   }
 
@@ -2347,23 +2445,25 @@ function bindUI() {
 
 
 /* =========================================================
-   START APPLICATION
+   ✅ PATCH: START APPLICATION — always run bindUI()
 ========================================================= */
 
-if (
-  document.readyState === 'loading'
-) {
-
-  document.addEventListener(
-    'DOMContentLoaded',
-    bindUI
-  );
-
-} else {
-
-  bindUI();
-
+function __mmBoot() {
+  try {
+    bindUI();
+    console.log('[MarksManager] UI bound successfully.');
+  } catch (e) {
+    console.error('[MarksManager] Boot failed:', e);
+  }
 }
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', __mmBoot);
+} else {
+  __mmBoot();
+}
+
+window.addEventListener('load', __mmBoot);
 
 </script>
 </body>
