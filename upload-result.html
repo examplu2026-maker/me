@@ -266,14 +266,14 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
     <h1>🏫 School Marks Manager</h1>
     <div class="sub">Sign in to access your school's marks dashboard</div>
     <div class="input-group">
-      <label>📧 EMAIL ADDRESS</label>
+      <label for="loginEmail">📧 EMAIL ADDRESS</label>
       <input type="email" id="loginEmail" placeholder="teacher@school.edu" autocomplete="off" inputmode="email">
     </div>
     <div class="input-group">
-      <label>🔒 PASSWORD</label>
+      <label for="loginPassword">🔒 PASSWORD</label>
       <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
     </div>
-    <button class="login-btn" id="loginBtn" type="button" onclick="handleLogin()">
+    <button class="login-btn" id="loginBtn" type="button">
       ➡️ SIGN IN
     </button>
     <div id="loginError" class="error-msg"></div>
@@ -289,7 +289,7 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 
   <div class="user-info-bar">
     <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn" type="button" onclick="handleLogout()">
+    <button id="logoutBtn" class="logout-btn" type="button">
       🚪 Logout
     </button>
   </div>
@@ -300,22 +300,22 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
       ⚠️ The results tab <strong id="missingTabName">"…"</strong> doesn't exist yet.
       <small>Click below to create it. Your class and student data will load right after.</small>
     </div>
-    <button id="createTabBtn" class="btn-create-tab" type="button" onclick="createResultsTabNow()">
+    <button id="createTabBtn" class="btn-create-tab" type="button">
       ➕ Create Results Tab
     </button>
   </div>
 
   <div class="card-control">
     <div class="field-group">
-      <label>🏫 SELECT CLASS</label>
+      <label for="classSelect">🏫 SELECT CLASS</label>
       <select id="classSelect"><option value="">-- Loading classes... --</option></select>
     </div>
     <div class="field-group">
-      <label>📖 SELECT SUBJECT</label>
+      <label for="subjectSelect">📖 SELECT SUBJECT</label>
       <select id="subjectSelect"><option value="">-- Loading subjects... --</option></select>
     </div>
     <div class="field-group">
-      <label>📅 SELECT TERM</label>
+      <label for="termSelect">📅 SELECT TERM</label>
       <select id="termSelect">
         <option value="Term 1">Term 1</option>
         <option value="Term 2">Term 2</option>
@@ -323,7 +323,7 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
       </select>
     </div>
     <div class="action-group">
-      <button id="refreshBtn" class="btn-outline" type="button" onclick="loadInitialData()">
+      <button id="refreshBtn" class="btn-outline" type="button">
         🔄 Reload
       </button>
     </div>
@@ -352,7 +352,7 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   </div>
 
   <div class="save-footer">
-    <button id="saveBtnBottom" class="btn-primary" type="button" onclick="saveMarks()">
+    <button id="saveBtnBottom" class="btn-primary" type="button">
       💾 Save Marks for <span id="saveTermLabel">Term 1</span>
     </button>
   </div>
@@ -375,30 +375,30 @@ window.addEventListener('error', function (event) {
 /* =========================================================
    API CONFIGURATION
 ========================================================= */
-const API_BASE_URL =
+var API_BASE_URL =
   'https://script.google.com/macros/s/AKfycbxQyduNfOSXsWh-5UxOd3DdJjN7FDsswlR0A7NkSRzrihvaJ7DrENEoHmOaVRW91O0/exec';
 
 /* =========================================================
    STATE
 ========================================================= */
-let sessionToken = null;
-let userMasterTab = null;
-let userSchoolName = null;
-let userResultsTabName = null;
-let userYear = null;
+var sessionToken = null;
+var userMasterTab = null;
+var userSchoolName = null;
+var userResultsTabName = null;
+var userYear = null;
 
-let studentMaster = [];
-let subjectsCatalog = [];
-let marksCache = {};
+var studentMaster = [];
+var subjectsCatalog = [];
+var marksCache = {};
 
-let currentClass = '';
-let currentSubject = '';
-let currentTerm = 'Term 1';
+var currentClass = '';
+var currentSubject = '';
+var currentTerm = 'Term 1';
 
 /* =========================================================
    HELPERS
-   - dropdownLabel()  → Column A value (class picker label)
-   - studentClassOf() → Column D value (actual class for filtering)
+   - dropdownLabel()  -> Column A value (class picker label)
+   - studentClassOf() -> Column D value (actual class for filtering)
 ========================================================= */
 function dropdownLabel(student) {
   if (!student || typeof student !== 'object') return '';
@@ -413,10 +413,10 @@ function studentClassOf(student) {
    API CALL
 ========================================================= */
 function apiCall(action, data, callback) {
-  const parts = ['action=' + encodeURIComponent(action)];
-  for (const k in data) {
+  var parts = ['action=' + encodeURIComponent(action)];
+  for (var k in data) {
     if (Object.prototype.hasOwnProperty.call(data, k) && data[k] !== null && data[k] !== undefined) {
-      const value = typeof data[k] === 'object' ? JSON.stringify(data[k]) : String(data[k]);
+      var value = typeof data[k] === 'object' ? JSON.stringify(data[k]) : String(data[k]);
       parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(value));
     }
   }
@@ -433,7 +433,7 @@ function apiCall(action, data, callback) {
     return response.text();
   })
   .then(function (text) {
-    let response;
+    var response;
     try { response = JSON.parse(text); }
     catch (e) {
       callback({ error: 'Invalid response from server: ' + text.slice(0, 200) });
@@ -447,13 +447,20 @@ function apiCall(action, data, callback) {
 }
 
 /* =========================================================
-   HTML ESCAPING
+   HTML ESCAPING  (FIXED: previously had an unterminated
+   string literal that broke the entire script)
 ========================================================= */
 function escapeHtml(value) {
   if (value === null || value === undefined) return '';
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  };
   return String(value).replace(/[&<>"']/g, function (c) {
-    const e = { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' };
-    return e[c];
+    return map[c];
   });
 }
 
@@ -461,10 +468,10 @@ function escapeHtml(value) {
    STATUS
 ========================================================= */
 function setStatus(message, type) {
-  const element = document.getElementById('statusMsg');
+  var element = document.getElementById('statusMsg');
   if (!element) return;
   element.className = 'status-bar ' + (type || '');
-  const span = element.querySelector('span:not(#syncStatus)');
+  var span = element.querySelector('span:not(#syncStatus)');
   if (span) span.textContent = message;
 }
 
@@ -473,13 +480,13 @@ function setStatus(message, type) {
 ========================================================= */
 function naturalSort(array) {
   return array.sort(function (a, b) {
-    const m = /^([A-Za-z\s-]+?)(\d*)$/;
-    const ma = String(a).match(m);
-    const mb = String(b).match(m);
-    const ta = ma ? ma[1].trim() : String(a);
-    const tb = mb ? mb[1].trim() : String(b);
-    const na = ma && ma[2] ? parseInt(ma[2], 10) : -1;
-    const nb = mb && mb[2] ? parseInt(mb[2], 10) : -1;
+    var m = /^([A-Za-z\s-]+?)(\d*)$/;
+    var ma = String(a).match(m);
+    var mb = String(b).match(m);
+    var ta = ma ? ma[1].trim() : String(a);
+    var tb = mb ? mb[1].trim() : String(b);
+    var na = ma && ma[2] ? parseInt(ma[2], 10) : -1;
+    var nb = mb && mb[2] ? parseInt(mb[2], 10) : -1;
     if (ta === tb) return na - nb;
     return ta.localeCompare(tb);
   });
@@ -490,7 +497,7 @@ function naturalSort(array) {
 ========================================================= */
 function detectAbs(value) {
   if (value === null || value === undefined) return null;
-  const text = String(value).trim().toUpperCase();
+  var text = String(value).trim().toUpperCase();
   if (text === 'ABS' || text === 'A' || text === 'AB') return 'ABS';
   return null;
 }
@@ -507,9 +514,9 @@ function displayValue(value) {
    LOGIN
 ========================================================= */
 function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const errorElement = document.getElementById('loginError');
+  var email = document.getElementById('loginEmail').value.trim();
+  var password = document.getElementById('loginPassword').value.trim();
+  var errorElement = document.getElementById('loginError');
 
   if (!email || !password) {
     errorElement.textContent = 'Please enter both email and password.';
@@ -517,7 +524,7 @@ function handleLogin() {
     return;
   }
 
-  const button = document.getElementById('loginBtn');
+  var button = document.getElementById('loginBtn');
   button.disabled = true;
   button.innerHTML = 'Authenticating... <span class="spinner"></span>';
   errorElement.style.display = 'none';
@@ -533,7 +540,7 @@ function handleLogin() {
       userYear = response.year;
 
       if (response.term) {
-        const termSelect = document.getElementById('termSelect');
+        var termSelect = document.getElementById('termSelect');
         termSelect.value = response.term;
         currentTerm = response.term;
         document.getElementById('saveTermLabel').textContent = response.term;
@@ -581,7 +588,7 @@ function handleLogin() {
    MISSING-TAB BANNER
 ========================================================= */
 function showMissingTabBanner(name) {
-  const banner = document.getElementById('missingTabBanner');
+  var banner = document.getElementById('missingTabBanner');
   document.getElementById('missingTabName').textContent = '"' + name + '"';
   banner.classList.add('show');
 }
@@ -602,7 +609,7 @@ function clearWorkspace(message) {
    CREATE RESULTS TAB (button handler)
 ========================================================= */
 function createResultsTabNow() {
-  const btn = document.getElementById('createTabBtn');
+  var btn = document.getElementById('createTabBtn');
   btn.disabled = true;
   btn.innerHTML = 'Creating... <span class="spinner" style="border-color:#0a1420;border-top-color:transparent;"></span>';
 
@@ -713,20 +720,19 @@ function loadInitialData() {
    CLASS DROPDOWN — from COLUMN A only
 ========================================================= */
 function populateClassDropdown() {
-  const element = document.getElementById('classSelect');
+  var element = document.getElementById('classSelect');
 
-  // ✅ Column A only — dropdown labels
-  const classSet = new Set(
+  var classSet = new Set(
     studentMaster
       .map(function (s) { return dropdownLabel(s); })
       .filter(function (v) { return v && v.trim() !== ''; })
   );
 
-  const classes = naturalSort(Array.from(classSet));
+  var classes = naturalSort(Array.from(classSet));
   element.innerHTML = '<option value="">-- Select Class --</option>';
 
   classes.forEach(function (className) {
-    const option = document.createElement('option');
+    var option = document.createElement('option');
     option.value = className;
     option.textContent = className;
     element.appendChild(option);
@@ -741,14 +747,14 @@ function populateClassDropdown() {
   }
 
   // Sanity check: does column D contain classes A doesn't list?
-  const dClasses = new Set();
+  var dClasses = new Set();
   studentMaster.forEach(function (s) {
-    const c = studentClassOf(s);
+    var c = studentClassOf(s);
     if (c) dClasses.add(c);
   });
-  const unlisted = [];
+  var unlisted = [];
   dClasses.forEach(function (c) {
-    if (!classes.includes(c)) unlisted.push(c);
+    if (classes.indexOf(c) === -1) unlisted.push(c);
   });
   if (unlisted.length) {
     setStatus(
@@ -764,7 +770,7 @@ function populateClassDropdown() {
    SUBJECT DROPDOWN
 ========================================================= */
 function populateSubjectDropdown() {
-  const element = document.getElementById('subjectSelect');
+  var element = document.getElementById('subjectSelect');
   if (!subjectsCatalog.length) {
     element.innerHTML = '<option value="">-- No subjects found --</option>';
     currentSubject = '';
@@ -773,7 +779,7 @@ function populateSubjectDropdown() {
 
   element.innerHTML = '<option value="">-- Select Subject --</option>';
   subjectsCatalog.forEach(function (subject) {
-    const option = document.createElement('option');
+    var option = document.createElement('option');
     option.value = subject.id;
     option.textContent = subject.display;
     element.appendChild(option);
@@ -787,10 +793,10 @@ function populateSubjectDropdown() {
    RENDER TABLE — filter by COLUMN D
 ========================================================= */
 function renderTable() {
-  const tbody = document.getElementById('tableBody');
-  const className = document.getElementById('classSelect').value;
-  const subjectId = document.getElementById('subjectSelect').value;
-  const term = document.getElementById('termSelect').value;
+  var tbody = document.getElementById('tableBody');
+  var className = document.getElementById('classSelect').value;
+  var subjectId = document.getElementById('subjectSelect').value;
+  var term = document.getElementById('termSelect').value;
 
   currentClass = className;
   currentSubject = subjectId;
@@ -806,8 +812,7 @@ function renderTable() {
     return;
   }
 
-  // ✅ Filter strictly by column D
-  const filteredStudents = studentMaster.filter(function (s) {
+  var filteredStudents = studentMaster.filter(function (s) {
     return studentClassOf(s) === className;
   });
 
@@ -819,7 +824,7 @@ function renderTable() {
   tbody.innerHTML = '';
 
   filteredStudents.forEach(function (student) {
-    let marks = { test1: 0, test2: 0, exam: 0 };
+    var marks = { test1: 0, test2: 0, exam: 0 };
     if (
       marksCache[subjectId] &&
       marksCache[subjectId][className] &&
@@ -829,7 +834,7 @@ function renderTable() {
       marks = marksCache[subjectId][className][student.roll][term];
     }
 
-    const row = document.createElement('tr');
+    var row = document.createElement('tr');
     row.setAttribute('data-roll', student.roll);
 
     row.innerHTML =
@@ -854,19 +859,19 @@ function renderTable() {
    VALIDATION
 ========================================================= */
 function validateAll() {
-  const rows = document.querySelectorAll('#tableBody tr');
-  let valid = true;
-  let firstError = '';
+  var rows = document.querySelectorAll('#tableBody tr');
+  var valid = true;
+  var firstError = '';
 
   Array.prototype.forEach.call(rows, function (row) {
-    const test1 = row.querySelector('.t1-input');
-    const test2 = row.querySelector('.t2-input');
-    const exam = row.querySelector('.exam-input');
+    var test1 = row.querySelector('.t1-input');
+    var test2 = row.querySelector('.t2-input');
+    var exam = row.querySelector('.exam-input');
     if (!test1 || !test2 || !exam) return;
 
     function check(input, maximum) {
-      const raw = input.value.trim();
-      const upper = raw.toUpperCase();
+      var raw = input.value.trim();
+      var upper = raw.toUpperCase();
       if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
         input.classList.remove('invalid');
         input.classList.add('abs');
@@ -876,15 +881,18 @@ function validateAll() {
         input.classList.remove('invalid', 'abs');
         return true;
       }
-      const value = parseFloat(raw);
-      const bad = isNaN(value) || value < 0 || value > maximum;
+      var value = parseFloat(raw);
+      var bad = isNaN(value) || value < 0 || value > maximum;
       input.classList.toggle('invalid', bad);
       input.classList.remove('abs');
       if (bad && !firstError) firstError = 'Value must be 0–' + maximum + ' or "ABS"';
       return !bad;
     }
 
-    if (!check(test1, 15) || !check(test2, 15) || !check(exam, 70)) valid = false;
+    var ok1 = check(test1, 15);
+    var ok2 = check(test2, 15);
+    var ok3 = check(exam, 70);
+    if (!ok1 || !ok2 || !ok3) valid = false;
   });
 
   if (!valid) setStatus('❌ ' + firstError, 'error');
@@ -895,24 +903,24 @@ function validateAll() {
    SAVE MARKS
 ========================================================= */
 function saveMarks() {
-  const className = document.getElementById('classSelect').value;
-  const subjectId = document.getElementById('subjectSelect').value;
-  const term = document.getElementById('termSelect').value;
+  var className = document.getElementById('classSelect').value;
+  var subjectId = document.getElementById('subjectSelect').value;
+  var term = document.getElementById('termSelect').value;
 
   if (!className) { setStatus('⚠️ Select a class.', 'warning'); return; }
   if (!subjectId) { setStatus('⚠️ Select a subject.', 'warning'); return; }
   if (!validateAll()) return;
 
-  const updates = [];
+  var updates = [];
   Array.prototype.forEach.call(document.querySelectorAll('#tableBody tr'), function (row) {
-    const roll = row.getAttribute('data-roll');
+    var roll = row.getAttribute('data-roll');
     if (!roll) return;
 
     function parseCell(element, maximum) {
-      const raw = element.value.trim();
+      var raw = element.value.trim();
       if (detectAbs(raw)) return 'ABS';
       if (raw === '') return 0;
-      const value = parseFloat(raw);
+      var value = parseFloat(raw);
       if (isNaN(value)) return 0;
       return Math.min(maximum, Math.max(0, value));
     }
@@ -925,7 +933,7 @@ function saveMarks() {
     });
   });
 
-  const button = document.getElementById('saveBtnBottom');
+  var button = document.getElementById('saveBtnBottom');
   button.disabled = true;
   button.innerHTML = 'Saving... <span class="spinner"></span>';
 
@@ -941,7 +949,7 @@ function saveMarks() {
       if (!marksCache[subjectId][className]) marksCache[subjectId][className] = {};
 
       updates.forEach(function (update) {
-        const hasScore = isAbs(update.test1) || isAbs(update.test2) || isAbs(update.exam) ||
+        var hasScore = isAbs(update.test1) || isAbs(update.test2) || isAbs(update.exam) ||
           update.test1 !== 0 || update.test2 !== 0 || update.exam !== 0;
         if (!hasScore) return;
         if (!marksCache[subjectId][className][update.roll]) {
@@ -952,10 +960,10 @@ function saveMarks() {
         };
       });
 
-      const saved = response.saved || 0;
-      const added = response.addedNew || 0;
-      const skipped = response.skippedZero || 0;
-      let message = '✅ Saved ' + saved + ' student(s) for ' + term;
+      var saved = response.saved || 0;
+      var added = response.addedNew || 0;
+      var skipped = response.skippedZero || 0;
+      var message = '✅ Saved ' + saved + ' student(s) for ' + term;
       if (added > 0) message += ' — ' + added + ' newly added';
       if (skipped > 0) message += ' • Skipped ' + skipped + ' with no scores';
       setStatus(message + '.', 'success');
@@ -966,46 +974,52 @@ function saveMarks() {
 }
 
 /* =========================================================
-   BIND UI
+   BIND UI  (all handlers attached in code, once)
 ========================================================= */
+function bindOnce(el, event, handler, capture) {
+  if (!el) return;
+  var flag = '__mmBound_' + event;
+  if (el[flag]) return;
+  el[flag] = true;
+  el.addEventListener(event, handler, !!capture);
+}
+
 function bindUI() {
   try {
-    const passwordInput = document.getElementById('loginPassword');
-    const emailInput = document.getElementById('loginEmail');
-    const classSelect = document.getElementById('classSelect');
-    const subjectSelect = document.getElementById('subjectSelect');
-    const termSelect = document.getElementById('termSelect');
-    const tableBody = document.getElementById('tableBody');
+    var loginBtn = document.getElementById('loginBtn');
+    var passwordInput = document.getElementById('loginPassword');
+    var emailInput = document.getElementById('loginEmail');
+    var logoutBtn = document.getElementById('logoutBtn');
+    var createTabBtn = document.getElementById('createTabBtn');
+    var refreshBtn = document.getElementById('refreshBtn');
+    var saveBtn = document.getElementById('saveBtnBottom');
+    var classSelect = document.getElementById('classSelect');
+    var subjectSelect = document.getElementById('subjectSelect');
+    var termSelect = document.getElementById('termSelect');
+    var tableBody = document.getElementById('tableBody');
 
-    if (passwordInput && !passwordInput.__mmBound) {
-      passwordInput.__mmBound = true;
-      passwordInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { event.preventDefault(); handleLogin(); }
-      });
+    bindOnce(loginBtn, 'click', function (e) { e.preventDefault(); handleLogin(); });
+    bindOnce(logoutBtn, 'click', function (e) { e.preventDefault(); handleLogout(); });
+    bindOnce(createTabBtn, 'click', function (e) { e.preventDefault(); createResultsTabNow(); });
+    bindOnce(refreshBtn, 'click', function (e) { e.preventDefault(); loadInitialData(); });
+    bindOnce(saveBtn, 'click', function (e) { e.preventDefault(); saveMarks(); });
+
+    function onEnter(event) {
+      if (event.key === 'Enter') { event.preventDefault(); handleLogin(); }
     }
-    if (emailInput && !emailInput.__mmBound) {
-      emailInput.__mmBound = true;
-      emailInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { event.preventDefault(); handleLogin(); }
-      });
-    }
-    if (classSelect && !classSelect.__mmBound) {
-      classSelect.__mmBound = true;
-      classSelect.addEventListener('change', renderTable);
-    }
-    if (subjectSelect && !subjectSelect.__mmBound) {
-      subjectSelect.__mmBound = true;
-      subjectSelect.addEventListener('change', renderTable);
-    }
-    if (termSelect && !termSelect.__mmBound) {
-      termSelect.__mmBound = true;
-      termSelect.addEventListener('change', renderTable);
-    }
-    if (tableBody) {
+    bindOnce(passwordInput, 'keydown', onEnter);
+    bindOnce(emailInput, 'keydown', onEnter);
+
+    bindOnce(classSelect, 'change', renderTable);
+    bindOnce(subjectSelect, 'change', renderTable);
+    bindOnce(termSelect, 'change', renderTable);
+
+    if (tableBody && !tableBody.__mmBoundTable) {
+      tableBody.__mmBoundTable = true;
       tableBody.addEventListener('input', function (event) {
-        const element = event.target;
+        var element = event.target;
         if (!element.classList || !element.classList.contains('marks-input')) return;
-        const upper = element.value.trim().toUpperCase();
+        var upper = element.value.trim().toUpperCase();
         if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
           element.classList.add('abs');
           element.classList.remove('invalid');
@@ -1014,9 +1028,9 @@ function bindUI() {
         }
       });
       tableBody.addEventListener('blur', function (event) {
-        const element = event.target;
+        var element = event.target;
         if (!element.classList || !element.classList.contains('marks-input')) return;
-        const upper = element.value.trim().toUpperCase();
+        var upper = element.value.trim().toUpperCase();
         if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
           element.value = 'ABS';
           element.classList.add('abs');
