@@ -6,355 +6,252 @@
 <title>Student Marks Manager - School Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
-/* EXAMPLUS THEME
-   navy base  #0a1f33 → #12324d → #2a4d6b
-   card dark  #06101c   inner #0b1a2b   border #1c2f44 / #26405a
-   gold       #f2b705   (pressed #d9a304)   text on gold #0a1420
-   text       #ffffff   muted #9fb3c8
-   alert red  #e5222e
-*/
 :root {
   --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
   --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
   --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
   --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
 body {
   background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
-  background-attachment: fixed;
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
+  background-attachment: fixed; color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
 }
-
-/* ================= LOGIN ================= */
-
 .login-fullscreen {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: radial-gradient(circle at 20% 20%, var(--navy-2), var(--navy-1) 70%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  padding: 20px;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 2000; padding: 20px;
 }
-
 .login-card {
-  background: var(--card);
-  border: 1px solid var(--line-2);
-  border-radius: 48px;
-  padding: 40px 32px;
-  width: 100%;
-  max-width: 460px;
-  text-align: center;
-  box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+  background: var(--card); border: 1px solid var(--line-2);
+  border-radius: 48px; padding: 40px 32px; width: 100%; max-width: 460px;
+  text-align: center; box-shadow: 0 30px 50px rgba(0,0,0,0.5);
   animation: floatIn 0.5s ease;
-  position: relative;
-  z-index: 10;
-  pointer-events: auto;
+  position: relative; z-index: 10; pointer-events: auto;
 }
-
 @keyframes floatIn {
   0% { opacity: 0; transform: scale(0.96) translateY(20px); }
   100% { opacity: 1; transform: none; }
 }
-
-.login-card h1 { font-size: 1.8rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.login-card h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
 .login-card .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
-
 .input-group { margin-bottom: 20px; text-align: left; }
-
 .input-group label {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 6px;
-  letter-spacing: 0.5px;
+  display: block; font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 6px; letter-spacing: 0.5px;
 }
-
 .input-group input {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid var(--line-2);
-  border-radius: 60px;
-  font-size: 0.95rem;
-  background: var(--card-2);
-  color: var(--text);
+  width: 100%; padding: 14px 18px;
+  border: 2px solid var(--line-2); border-radius: 60px;
+  font-size: 0.95rem; background: var(--card-2); color: var(--text);
   transition: all 0.2s ease;
 }
-
 .input-group input::placeholder { color: #6f879e; }
-
 .input-group input:focus {
-  outline: none;
-  border-color: var(--gold);
+  outline: none; border-color: var(--gold);
   box-shadow: 0 0 0 4px rgba(242,183,5,0.18);
 }
-
 .login-btn {
-  width: 100%;
-  padding: 14px 20px;
-  background: var(--gold);
-  color: var(--on-gold);
-  border: none;
-  border-radius: 60px;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
+  width: 100%; padding: 14px 20px;
+  background: var(--gold); color: var(--on-gold);
+  border: none; border-radius: 60px;
+  font-size: 1rem; font-weight: 800; cursor: pointer;
   margin-top: 8px;
   box-shadow: 0 4px 12px rgba(242,183,5,0.25);
-  position: relative;
-  z-index: 20;
-  pointer-events: auto;
+  position: relative; z-index: 20; pointer-events: auto;
   -webkit-tap-highlight-color: rgba(242,183,5,0.35);
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
+  touch-action: manipulation; user-select: none; -webkit-user-select: none;
 }
-
 .login-btn:active { transform: scale(0.97); background: var(--gold-dark); }
 .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
 .error-msg {
-  color: #ff8a92;
-  font-size: 0.8rem;
-  margin-top: 16px;
+  color: #ff8a92; font-size: 0.8rem; margin-top: 16px;
   background: rgba(229,34,46,0.15);
   border: 1px solid rgba(229,34,46,0.5);
-  border-radius: 40px;
-  padding: 10px 16px;
-  display: none;
+  border-radius: 40px; padding: 10px 16px; display: none;
 }
-
 .spinner {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--on-gold);
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-left: 8px;
-  vertical-align: middle;
-  pointer-events: none;
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--on-gold); border-top-color: transparent;
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+  margin-left: 8px; vertical-align: middle; pointer-events: none;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ================= APP ================= */
-
-.app-container { max-width: 1600px; width: 100%; margin: 0 auto; padding: 16px; display: none; }
+.app-container {
+  max-width: 1600px; width: 100%;
+  margin: 0 auto; padding: 16px; display: none;
+}
 .header-area { margin-bottom: 20px; }
-.header-area h1 { font-size: 1.3rem; font-weight: 800; color: var(--text); }
-
+.header-area h1 { font-size: 1.3rem; font-weight: 800; }
 .school-badge {
-  background: var(--gold);
-  color: var(--on-gold);
-  font-weight: 700;
-  padding: 6px 16px;
-  border-radius: 30px;
-  font-size: 0.7rem;
-  display: inline-block;
-  margin-top: 8px;
+  background: var(--gold); color: var(--on-gold);
+  font-weight: 700; padding: 6px 16px; border-radius: 30px;
+  font-size: 0.7rem; display: inline-block; margin-top: 8px;
 }
-
 .user-info-bar {
-  background: var(--card);
-  border-radius: 48px;
-  padding: 12px 20px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  border: 1px solid var(--line-2);
+  background: var(--card); border-radius: 48px;
+  padding: 12px 20px; margin-bottom: 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px; border: 1px solid var(--line-2);
 }
-
-.user-details { font-size: 0.75rem; font-weight: 500; color: var(--muted); word-break: break-word; }
-
+.user-details {
+  font-size: 0.75rem; font-weight: 500; color: var(--muted);
+  word-break: break-word;
+}
 .logout-btn {
-  background: var(--red);
-  padding: 8px 24px;
-  font-size: 0.8rem;
-  border-radius: 40px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  color: white;
+  background: var(--red); padding: 8px 24px; font-size: 0.8rem;
+  border-radius: 40px; font-weight: 600; cursor: pointer;
+  border: none; color: white;
 }
-
 .card-control {
-  background: var(--card);
-  border-radius: 36px;
-  padding: 20px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: flex-end;
-  border: 1px solid var(--line-2);
+  background: var(--card); border-radius: 36px; padding: 20px;
+  margin-bottom: 24px; display: flex; flex-wrap: wrap;
+  gap: 16px; align-items: flex-end; border: 1px solid var(--line-2);
 }
-
-.field-group { display: flex; flex-direction: column; gap: 8px; min-width: 150px; flex: 1; }
-
+.field-group {
+  display: flex; flex-direction: column; gap: 8px;
+  min-width: 150px; flex: 1;
+}
 .field-group label {
-  font-size: 0.6rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--gold);
+  font-size: 0.6rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--gold);
 }
-
 select, button {
-  padding: 11px 16px;
-  border-radius: 32px;
-  font-weight: 600;
-  background: var(--card-2);
-  color: var(--text);
-  border: 1px solid var(--line-2);
-  font-size: 0.8rem;
-  cursor: pointer;
-  font-family: inherit;
+  padding: 11px 16px; border-radius: 32px; font-weight: 600;
+  background: var(--card-2); color: var(--text);
+  border: 1px solid var(--line-2); font-size: 0.8rem;
+  cursor: pointer; font-family: inherit;
 }
-
 select option { background: var(--card-2); color: var(--text); }
 select:focus { outline: none; border-color: var(--gold); }
-
 button { background: var(--gold); color: var(--on-gold); border: none; font-weight: 700; }
 button:disabled { opacity: 0.6; cursor: not-allowed; }
-
 .btn-outline { background: transparent; color: var(--gold); border: 2px solid var(--gold); }
-
 .action-group { display: flex; gap: 10px; flex-wrap: wrap; }
-
 .status-bar {
   background: rgba(242,183,5,0.12);
   border: 1px solid rgba(242,183,5,0.3);
-  border-radius: 60px;
-  padding: 10px 18px;
-  margin-bottom: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--gold);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  border-radius: 60px; padding: 10px 18px; margin-bottom: 20px;
+  font-size: 0.75rem; font-weight: 500; color: var(--gold);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px;
 }
-
-.status-bar.error { background: rgba(229,34,46,0.15); border-color: rgba(229,34,46,0.5); color: #ff8a92; }
-.status-bar.success { background: rgba(46,204,113,0.15); border-color: rgba(46,204,113,0.4); color: #6ee7a0; }
-.status-bar.warning { background: rgba(242,183,5,0.18); border-color: rgba(242,183,5,0.5); color: var(--gold); }
-
+.status-bar.error {
+  background: rgba(229,34,46,0.15);
+  border-color: rgba(229,34,46,0.5); color: #ff8a92;
+}
+.status-bar.success {
+  background: rgba(46,204,113,0.15);
+  border-color: rgba(46,204,113,0.4); color: #6ee7a0;
+}
+.status-bar.warning {
+  background: rgba(242,183,5,0.18);
+  border-color: rgba(242,183,5,0.5); color: var(--gold);
+}
 .sync-indicator {
-  font-size: 0.65rem;
-  background: rgba(255,255,255,0.08);
-  padding: 4px 12px;
-  border-radius: 20px;
-  white-space: nowrap;
+  font-size: 0.65rem; background: rgba(255,255,255,0.08);
+  padding: 4px 12px; border-radius: 20px; white-space: nowrap;
 }
+
+/* Missing-tab banner */
+.missing-tab-banner {
+  background: rgba(242,183,5,0.14);
+  border: 2px dashed rgba(242,183,5,0.6);
+  border-radius: 24px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.missing-tab-banner.show { display: flex; }
+.missing-tab-banner .text {
+  font-size: 0.85rem; color: var(--gold); font-weight: 600;
+  line-height: 1.5; flex: 1; min-width: 220px;
+}
+.missing-tab-banner .text small {
+  display: block; color: var(--muted);
+  font-weight: 400; font-size: 0.7rem; margin-top: 4px;
+}
+.btn-create-tab {
+  background: var(--gold); color: var(--on-gold);
+  border: none; padding: 12px 24px; border-radius: 40px;
+  font-weight: 800; font-size: 0.85rem; cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(242,183,5,0.3);
+}
+.btn-create-tab:active { transform: scale(0.97); background: var(--gold-dark); }
+.btn-create-tab:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .table-wrapper {
-  background: var(--card);
-  border-radius: 28px;
-  overflow-x: auto;
-  border: 1px solid var(--line-2);
-  margin-bottom: 20px;
-  padding: 8px 6px;
+  background: var(--card); border-radius: 28px;
+  overflow-x: auto; border: 1px solid var(--line-2);
+  margin-bottom: 20px; padding: 8px 6px;
 }
-
 .marks-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.78rem;
-  min-width: 420px;
-  table-layout: fixed;
-  color: var(--text);
+  width: 100%; border-collapse: collapse; font-size: 0.78rem;
+  min-width: 420px; table-layout: fixed; color: var(--text);
 }
-
 .marks-table th {
-  background: var(--card-2);
-  padding: 10px 8px;
-  font-weight: 700;
-  font-size: 0.7rem;
-  color: var(--gold);
-  border-bottom: 2px solid var(--line-2);
-  text-align: center;
+  background: var(--card-2); padding: 10px 8px;
+  font-weight: 700; font-size: 0.7rem; color: var(--gold);
+  border-bottom: 2px solid var(--line-2); text-align: center;
 }
-
 .marks-table td {
-  padding: 8px 6px;
-  border-bottom: 1px solid var(--line);
-  text-align: center;
-  vertical-align: middle;
+  padding: 8px 6px; border-bottom: 1px solid var(--line);
+  text-align: center; vertical-align: middle;
 }
-
 .col-roll { width: 12%; }
 .col-name { width: 40%; }
 .col-test1, .col-test2 { width: 15%; }
 .col-exam { width: 18%; }
-
 .student-name {
-  text-align: left;
-  font-weight: 500;
-  font-size: 0.78rem;
-  padding-left: 6px;
-  white-space: nowrap;
-  overflow: hidden;
+  text-align: left; font-weight: 500; font-size: 0.78rem;
+  padding-left: 6px; white-space: nowrap; overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .marks-input {
-  width: 100%;
-  max-width: 75px;
-  padding: 7px 4px;
-  border-radius: 20px;
-  border: 1px solid var(--line-2);
-  text-align: center;
-  font-weight: 500;
-  font-size: 0.78rem;
-  background: var(--card-2);
-  color: var(--text);
-  text-transform: uppercase;
+  width: 100%; max-width: 75px; padding: 7px 4px;
+  border-radius: 20px; border: 1px solid var(--line-2);
+  text-align: center; font-weight: 500; font-size: 0.78rem;
+  background: var(--card-2); color: var(--text); text-transform: uppercase;
 }
-
 .marks-input:focus {
-  border-color: var(--gold);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(242,183,5,0.18);
-  background: var(--card);
+  border-color: var(--gold); outline: none;
+  box-shadow: 0 0 0 3px rgba(242,183,5,0.18); background: var(--card);
 }
-
-.marks-input.invalid { border-color: var(--red); background: rgba(229,34,46,0.15); color: #ff8a92; }
-.marks-input.abs { border-color: var(--gold); background: rgba(242,183,5,0.15); color: var(--gold); font-weight: 700; }
-
-.empty-msg { text-align: center; padding: 30px 10px !important; color: var(--muted); font-size: 0.85rem; }
-
+.marks-input.invalid {
+  border-color: var(--red); background: rgba(229,34,46,0.15); color: #ff8a92;
+}
+.marks-input.abs {
+  border-color: var(--gold); background: rgba(242,183,5,0.15);
+  color: var(--gold); font-weight: 700;
+}
+.empty-msg {
+  text-align: center; padding: 30px 10px !important;
+  color: var(--muted); font-size: 0.85rem;
+}
 .footer-note {
-  margin-top: 20px;
-  text-align: right;
-  font-size: 0.6rem;
-  color: var(--muted);
-  background: var(--card);
-  border: 1px solid var(--line);
-  padding: 8px 16px;
-  border-radius: 60px;
+  margin-top: 20px; text-align: right; font-size: 0.6rem;
+  color: var(--muted); background: var(--card);
+  border: 1px solid var(--line); padding: 8px 16px; border-radius: 60px;
 }
-
 .footer-note strong { color: var(--text); }
-
-.save-footer { display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.save-footer button { padding: 10px 20px; font-size: 0.8rem; border-radius: 60px; font-weight: 800; }
+.save-footer {
+  display: flex; justify-content: flex-end; gap: 12px;
+  margin-top: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.save-footer button {
+  padding: 10px 20px; font-size: 0.8rem;
+  border-radius: 60px; font-weight: 800;
+}
 .save-footer .btn-primary { background: var(--gold); color: var(--on-gold); }
-
 @media (max-width: 640px) {
   .save-footer button { width: 100%; }
   .login-card { border-radius: 36px; padding: 32px 24px; }
@@ -367,28 +264,24 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 <div id="loginFullscreen" class="login-fullscreen">
   <div class="login-card">
     <h1>🏫 School Marks Manager</h1>
-
     <div class="sub">Sign in to access your school's marks dashboard</div>
-
     <div class="input-group">
       <label>📧 EMAIL ADDRESS</label>
       <input type="email" id="loginEmail" placeholder="teacher@school.edu" autocomplete="off" inputmode="email">
     </div>
-
     <div class="input-group">
       <label>🔒 PASSWORD</label>
       <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
     </div>
-
-    <button class="login-btn" id="loginBtn" type="button" onclick="handleLogin()">➡️ SIGN IN</button>
-
+    <button class="login-btn" id="loginBtn" type="button" onclick="handleLogin()">
+      ➡️ SIGN IN
+    </button>
     <div id="loginError" class="error-msg"></div>
   </div>
 </div>
 
 <!-- ================= APPLICATION ================= -->
 <div id="appContainer" class="app-container">
-
   <div class="header-area">
     <h1>📋 School Marks Manager</h1>
     <div class="school-badge" id="schoolBadge">🏫 Loading school data...</div>
@@ -396,25 +289,31 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 
   <div class="user-info-bar">
     <div class="user-details" id="userInfoDisplay"></div>
-    <button id="logoutBtn" class="logout-btn" type="button" onclick="handleLogout()">🚪 Logout</button>
+    <button id="logoutBtn" class="logout-btn" type="button" onclick="handleLogout()">
+      🚪 Logout
+    </button>
+  </div>
+
+  <!-- Missing-tab banner with explicit Create button -->
+  <div id="missingTabBanner" class="missing-tab-banner">
+    <div class="text">
+      ⚠️ The results tab <strong id="missingTabName">"…"</strong> doesn't exist yet.
+      <small>Click below to create it. Your class and student data will load right after.</small>
+    </div>
+    <button id="createTabBtn" class="btn-create-tab" type="button" onclick="createResultsTabNow()">
+      ➕ Create Results Tab
+    </button>
   </div>
 
   <div class="card-control">
-
     <div class="field-group">
       <label>🏫 SELECT CLASS</label>
-      <select id="classSelect">
-        <option value="">-- Loading classes... --</option>
-      </select>
+      <select id="classSelect"><option value="">-- Loading classes... --</option></select>
     </div>
-
     <div class="field-group">
       <label>📖 SELECT SUBJECT</label>
-      <select id="subjectSelect">
-        <option value="">-- Loading subjects... --</option>
-      </select>
+      <select id="subjectSelect"><option value="">-- Loading subjects... --</option></select>
     </div>
-
     <div class="field-group">
       <label>📅 SELECT TERM</label>
       <select id="termSelect">
@@ -423,11 +322,11 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
         <option value="Term 3">Term 3</option>
       </select>
     </div>
-
     <div class="action-group">
-      <button id="refreshBtn" class="btn-outline" type="button" onclick="loadInitialData()">🔄 Reload</button>
+      <button id="refreshBtn" class="btn-outline" type="button" onclick="loadInitialData()">
+        🔄 Reload
+      </button>
     </div>
-
   </div>
 
   <div id="statusMsg" class="status-bar">
@@ -447,9 +346,7 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr>
-          <td colspan="5" class="empty-msg">🔐 Please login to continue...</td>
-        </tr>
+        <tr><td colspan="5" class="empty-msg">🔐 Please login to continue...</td></tr>
       </tbody>
     </table>
   </div>
@@ -461,40 +358,29 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   </div>
 
   <div class="footer-note">
-    ⭐ Each school's scores go to its own
-    "<em>&lt;slug&gt; student results &lt;year&gt;</em>" tab
+    ⭐ Column A = dropdown label · Column D = actual student class.
     <br>
-    📏 <strong>Validation:</strong>
-    Test ≤ 15 | Exam ≤ 70 |
-    Type <strong>ABS</strong> for absent
+    📏 <strong>Validation:</strong> Test ≤ 15 | Exam ≤ 70 | Type <strong>ABS</strong> for absent
   </div>
-
 </div>
 
 <script>
-
 /* =========================================================
    EARLY ERROR TRACER
-   Logs any script error to the console.
 ========================================================= */
-
 window.addEventListener('error', function (event) {
   console.error('[MarksManager] Script error:', event.message, '@', event.filename + ':' + event.lineno);
 });
 
-
 /* =========================================================
    API CONFIGURATION
 ========================================================= */
-
 const API_BASE_URL =
-  'https://script.google.com/macros/s/AKfycbzA-LMq2-N5yIIIw-XwIjU4kGKdSzwYqdqAyD4wePGNe3rTVJYxFjFPXxDwAhxdY44/exec';
-
+  'https://script.google.com/macros/s/AKfycbxQyduNfOSXsWh-5UxOd3DdJjN7FDsswlR0A7NkSRzrihvaJ7DrENEoHmOaVRW91O0/exec';
 
 /* =========================================================
-   GLOBAL VARIABLES
+   STATE
 ========================================================= */
-
 let sessionToken = null;
 let userMasterTab = null;
 let userSchoolName = null;
@@ -509,208 +395,118 @@ let currentClass = '';
 let currentSubject = '';
 let currentTerm = 'Term 1';
 
-
 /* =========================================================
-   CLASS RESOLVER
+   HELPERS
+   - dropdownLabel()  → Column A value (class picker label)
+   - studentClassOf() → Column D value (actual class for filtering)
 ========================================================= */
-
-function resolveStudentClass(student) {
-
-  if (!student || typeof student !== 'object') {
-    return '';
-  }
-
-  const candidates = [
-    student.className,
-    student.class,
-    student.cls,
-    student.columnA,
-    student.classA,
-    student.class_name,
-    student.section
-  ];
-
-  for (let i = 0; i < candidates.length; i++) {
-    const value = candidates[i];
-    if (value !== null && value !== undefined && String(value).trim() !== '') {
-      return String(value).trim();
-    }
-  }
-
-  return '';
+function dropdownLabel(student) {
+  if (!student || typeof student !== 'object') return '';
+  return String(student.className || '').trim(); // column A
 }
-
+function studentClassOf(student) {
+  if (!student || typeof student !== 'object') return '';
+  return String(student.studentClass || '').trim(); // column D only
+}
 
 /* =========================================================
    API CALL
 ========================================================= */
-
 function apiCall(action, data, callback) {
-
   const parts = ['action=' + encodeURIComponent(action)];
-
   for (const k in data) {
-    if (
-      Object.prototype.hasOwnProperty.call(data, k) &&
-      data[k] !== null &&
-      data[k] !== undefined
-    ) {
-      const value = typeof data[k] === 'object'
-        ? JSON.stringify(data[k])
-        : String(data[k]);
-
+    if (Object.prototype.hasOwnProperty.call(data, k) && data[k] !== null && data[k] !== undefined) {
+      const value = typeof data[k] === 'object' ? JSON.stringify(data[k]) : String(data[k]);
       parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(value));
     }
   }
-
-  const body = parts.join('&');
 
   fetch(API_BASE_URL, {
     method: 'POST',
     mode: 'cors',
     redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: body
+    body: parts.join('&')
   })
   .then(function (response) {
-    if (!response.ok) {
-      throw new Error('Server returned HTTP ' + response.status);
-    }
+    if (!response.ok) throw new Error('Server returned HTTP ' + response.status);
     return response.text();
   })
   .then(function (text) {
     let response;
-    try {
-      response = JSON.parse(text);
-    } catch (error) {
+    try { response = JSON.parse(text); }
+    catch (e) {
       callback({ error: 'Invalid response from server: ' + text.slice(0, 200) });
       return;
     }
     callback(response);
   })
   .catch(function (error) {
-    callback({
-      error: 'Network error: ' + (error && error.message ? error.message : error)
-    });
+    callback({ error: 'Network error: ' + (error && error.message ? error.message : error) });
   });
-
 }
-
 
 /* =========================================================
-   HTML ESCAPING  (FIXED: entities were broken)
+   HTML ESCAPING
 ========================================================= */
-
 function escapeHtml(value) {
-
-  if (value === null || value === undefined) {
-    return '';
-  }
-
-  const entities = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  };
-
-  return String(value).replace(/[&<>"']/g, function (character) {
-    return entities[character];
+  if (value === null || value === undefined) return '';
+  return String(value).replace(/[&<>"']/g, function (c) {
+    const e = { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' };
+    return e[c];
   });
 }
-
 
 /* =========================================================
    STATUS
 ========================================================= */
-
 function setStatus(message, type) {
-
   const element = document.getElementById('statusMsg');
   if (!element) return;
-
   element.className = 'status-bar ' + (type || '');
-
   const span = element.querySelector('span:not(#syncStatus)');
-  if (span) {
-    span.textContent = message;
-  }
+  if (span) span.textContent = message;
 }
-
 
 /* =========================================================
    NATURAL SORT
 ========================================================= */
-
 function naturalSort(array) {
-
   return array.sort(function (a, b) {
-
-    const matchA = String(a).match(/^([A-Za-z\s-]+?)(\d*)$/);
-    const matchB = String(b).match(/^([A-Za-z\s-]+?)(\d*)$/);
-
-    const textA = matchA ? matchA[1].trim() : String(a);
-    const textB = matchB ? matchB[1].trim() : String(b);
-
-    const numberA = matchA && matchA[2] ? parseInt(matchA[2], 10) : -1;
-    const numberB = matchB && matchB[2] ? parseInt(matchB[2], 10) : -1;
-
-    if (textA === textB) {
-      return numberA - numberB;
-    }
-
-    return textA.localeCompare(textB);
+    const m = /^([A-Za-z\s-]+?)(\d*)$/;
+    const ma = String(a).match(m);
+    const mb = String(b).match(m);
+    const ta = ma ? ma[1].trim() : String(a);
+    const tb = mb ? mb[1].trim() : String(b);
+    const na = ma && ma[2] ? parseInt(ma[2], 10) : -1;
+    const nb = mb && mb[2] ? parseInt(mb[2], 10) : -1;
+    if (ta === tb) return na - nb;
+    return ta.localeCompare(tb);
   });
-
 }
-
 
 /* =========================================================
-   ABSENT HELPERS
+   ABS HELPERS
 ========================================================= */
-
 function detectAbs(value) {
-
-  if (value === null || value === undefined) {
-    return null;
-  }
-
+  if (value === null || value === undefined) return null;
   const text = String(value).trim().toUpperCase();
-
-  if (text === 'ABS' || text === 'A' || text === 'AB') {
-    return 'ABS';
-  }
-
+  if (text === 'ABS' || text === 'A' || text === 'AB') return 'ABS';
   return null;
 }
-
-
 function isAbs(value) {
   return typeof value === 'string' && value.trim().toUpperCase() === 'ABS';
 }
-
-
 function displayValue(value) {
-
-  if (isAbs(value)) {
-    return 'ABS';
-  }
-
-  if (value === 0 || value === '0' || value === '' || value === null || value === undefined) {
-    return '0';
-  }
-
+  if (isAbs(value)) return 'ABS';
+  if (value === 0 || value === '0' || value === '' || value === null || value === undefined) return '0';
   return value;
 }
-
 
 /* =========================================================
    LOGIN
 ========================================================= */
-
 function handleLogin() {
-
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value.trim();
   const errorElement = document.getElementById('loginError');
@@ -722,189 +518,211 @@ function handleLogin() {
   }
 
   const button = document.getElementById('loginBtn');
-
-  /* Ignore repeat taps while a request is already running */
-  if (button.disabled) {
-    return;
-  }
-
   button.disabled = true;
   button.innerHTML = 'Authenticating... <span class="spinner"></span>';
   errorElement.style.display = 'none';
 
-  apiCall(
-    'authenticateUser',
-    { email: email, password: password },
-    function (response) {
+  apiCall('authenticateUser', { email: email, password: password }, function (response) {
+    button.disabled = false;
+    button.innerHTML = '➡️ SIGN IN';
 
-      button.disabled = false;
-      button.innerHTML = '➡️ SIGN IN';
+    if (response && response.success) {
+      sessionToken = response.token;
+      userMasterTab = response.tabName;
+      userSchoolName = response.schoolName;
+      userYear = response.year;
 
-      if (response && response.success) {
-
-        sessionToken = response.token;
-        userMasterTab = response.tabName;
-        userSchoolName = response.schoolName;
-        userResultsTabName = response.resultsTabName;
-        userYear = response.year;
-
-        if (response.term) {
-          document.getElementById('termSelect').value = response.term;
-          currentTerm = response.term;
-          document.getElementById('saveTermLabel').textContent = response.term;
-        }
-
-        document.getElementById('userInfoDisplay').innerHTML =
-          '👤 ' + escapeHtml(response.email) +
-          ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
-          ' | 📅 Year: ' + escapeHtml(userYear) +
-          ' | 📊 Tab: "' + escapeHtml(userResultsTabName) + '"';
-
-        document.getElementById('schoolBadge').innerHTML =
-          '🏫 ' + escapeHtml(userSchoolName) +
-          ' — ' + escapeHtml(response.sessionRaw || userYear);
-
-        showApp();
-        loadInitialData();
-
-      } else {
-
-        errorElement.textContent = (response && response.error) || 'Login failed.';
-        errorElement.style.display = 'block';
-
+      if (response.term) {
+        const termSelect = document.getElementById('termSelect');
+        termSelect.value = response.term;
+        currentTerm = response.term;
+        document.getElementById('saveTermLabel').textContent = response.term;
       }
 
-    }
-  );
+      document.getElementById('userInfoDisplay').innerHTML =
+        '👤 ' + escapeHtml(response.email) +
+        ' | 🏷️ Slug: ' + escapeHtml(userMasterTab) +
+        ' | 📅 Year: ' + escapeHtml(userYear) +
+        ' | 📊 Tab: "' + escapeHtml(response.resultsTabName || 'not yet created') + '"';
 
+      document.getElementById('schoolBadge').innerHTML =
+        '🏫 ' + escapeHtml(userSchoolName) +
+        ' — ' + escapeHtml(response.sessionRaw || userYear);
+
+      showApp();
+
+      setStatus('🔍 Checking if results tab exists for ' + userYear + '...', 'warning');
+      apiCall('ensureResultsTab', { token: sessionToken }, function (provision) {
+        if (!provision || !provision.success) {
+          setStatus('⚠️ ' + ((provision && provision.error) || 'Could not check results tab.'), 'error');
+          return;
+        }
+
+        userResultsTabName = provision.name;
+
+        if (provision.exists) {
+          hideMissingTabBanner();
+          setStatus('✅ Results tab "' + provision.name + '" is ready — loading data...', 'success');
+          loadInitialData();
+        } else {
+          showMissingTabBanner(provision.name);
+          clearWorkspace('No results tab yet — click "Create Results Tab" above.');
+          setStatus('⚠️ Results tab "' + provision.name + '" not found. Click "Create Results Tab" to create it.', 'warning');
+        }
+      });
+    } else {
+      errorElement.textContent = (response && response.error) || 'Login failed.';
+      errorElement.style.display = 'block';
+    }
+  });
 }
 
+/* =========================================================
+   MISSING-TAB BANNER
+========================================================= */
+function showMissingTabBanner(name) {
+  const banner = document.getElementById('missingTabBanner');
+  document.getElementById('missingTabName').textContent = '"' + name + '"';
+  banner.classList.add('show');
+}
+function hideMissingTabBanner() {
+  document.getElementById('missingTabBanner').classList.remove('show');
+}
+function clearWorkspace(message) {
+  studentMaster = [];
+  subjectsCatalog = [];
+  marksCache = {};
+  document.getElementById('classSelect').innerHTML = '<option value="">-- Select Class --</option>';
+  document.getElementById('subjectSelect').innerHTML = '<option value="">-- Select Subject --</option>';
+  document.getElementById('tableBody').innerHTML =
+    '<tr><td colspan="5" class="empty-msg">' + escapeHtml(message) + '</td></tr>';
+}
+
+/* =========================================================
+   CREATE RESULTS TAB (button handler)
+========================================================= */
+function createResultsTabNow() {
+  const btn = document.getElementById('createTabBtn');
+  btn.disabled = true;
+  btn.innerHTML = 'Creating... <span class="spinner" style="border-color:#0a1420;border-top-color:transparent;"></span>';
+
+  apiCall('createResultsTab', { token: sessionToken }, function (response) {
+    btn.disabled = false;
+    btn.innerHTML = '➕ Create Results Tab';
+
+    if (response && response.success) {
+      userResultsTabName = response.name;
+      hideMissingTabBanner();
+
+      document.getElementById('userInfoDisplay').innerHTML =
+        document.getElementById('userInfoDisplay').innerHTML.replace(
+          /📊 Tab: "[^"]*"/,
+          '📊 Tab: "' + escapeHtml(response.name) + '"'
+        );
+
+      setStatus(
+        response.created
+          ? '✨ Created "' + response.name + '" — loading data...'
+          : '✅ Tab "' + response.name + '" already exists — loading data...',
+        'success'
+      );
+      loadInitialData();
+    } else {
+      setStatus('❌ ' + ((response && response.error) || 'Could not create results tab.'), 'error');
+    }
+  });
+}
 
 /* =========================================================
    LOGOUT
 ========================================================= */
-
 function handleLogout() {
+  sessionToken = null; userMasterTab = null; userSchoolName = null;
+  userResultsTabName = null; userYear = null;
+  studentMaster = []; subjectsCatalog = []; marksCache = {};
 
-  sessionToken = null;
-  userMasterTab = null;
-  userSchoolName = null;
-  userResultsTabName = null;
-  userYear = null;
-
-  studentMaster = [];
-  subjectsCatalog = [];
-  marksCache = {};
+  hideMissingTabBanner();
+  clearWorkspace('🔐 Please login to continue...');
 
   document.getElementById('loginFullscreen').style.display = 'flex';
   document.getElementById('appContainer').style.display = 'none';
-
   document.getElementById('loginEmail').value = '';
   document.getElementById('loginPassword').value = '';
-
-  document.getElementById('tableBody').innerHTML =
-    '<tr><td colspan="5" class="empty-msg">🔐 Please login to continue...</td></tr>';
-
 }
-
 
 function showApp() {
   document.getElementById('loginFullscreen').style.display = 'none';
   document.getElementById('appContainer').style.display = 'block';
 }
 
-
 /* =========================================================
    LOAD INITIAL DATA
 ========================================================= */
-
 function loadInitialData() {
-
   if (!userMasterTab) {
     setStatus('No school slug assigned.', 'error');
     return;
   }
 
-  setStatus('🔄 Loading data from "' + userMasterTab + '"...');
+  setStatus('🔄 Loading students from "' + userMasterTab + '"...');
 
   apiCall('getStudentData', { token: sessionToken }, function (students) {
-
     if (students && students.error) {
       setStatus(students.error, 'error');
       return;
     }
 
     studentMaster = Array.isArray(students) ? students : [];
-
-    studentMaster = studentMaster.map(function (student) {
-
-      if (!student || typeof student !== 'object') {
-        return student;
-      }
-
-      const resolved = resolveStudentClass(student);
-
-      if (resolved) {
-        student.className = resolved;
-      }
-
-      return student;
+    studentMaster = studentMaster.map(function (s) {
+      if (!s || typeof s !== 'object') return s;
+      s.className = String(s.className || '').trim();        // column A (dropdown)
+      s.studentClass = String(s.studentClass || '').trim();  // column D (real class)
+      return s;
     });
 
     apiCall('getSubjects', { token: sessionToken }, function (subjects) {
-
       if (subjects && subjects.error) {
         setStatus(subjects.error, 'error');
         return;
       }
 
       subjectsCatalog = Array.isArray(subjects) ? subjects : [];
-
       populateSubjectDropdown();
 
       apiCall('getMarksData', { token: sessionToken }, function (marks) {
-
         if (marks && marks.error) {
           setStatus(marks.error, 'error');
           return;
         }
 
         marksCache = marks || {};
-
         populateClassDropdown();
         renderTable();
 
         setStatus(
           '✅ Loaded ' + studentMaster.length + ' students, ' +
-          subjectsCatalog.length + ' subjects.',
+          subjectsCatalog.length + ' subjects from "' + userResultsTabName + '".',
           'success'
         );
-
       });
-
     });
-
   });
-
 }
 
-
 /* =========================================================
-   CLASS DROPDOWN
+   CLASS DROPDOWN — from COLUMN A only
 ========================================================= */
-
 function populateClassDropdown() {
-
   const element = document.getElementById('classSelect');
 
+  // ✅ Column A only — dropdown labels
   const classSet = new Set(
     studentMaster
-      .map(function (student) { return resolveStudentClass(student); })
-      .filter(function (value) { return value && value.trim() !== ''; })
+      .map(function (s) { return dropdownLabel(s); })
+      .filter(function (v) { return v && v.trim() !== ''; })
   );
 
   const classes = naturalSort(Array.from(classSet));
-
   element.innerHTML = '<option value="">-- Select Class --</option>';
 
   classes.forEach(function (className) {
@@ -916,24 +734,37 @@ function populateClassDropdown() {
 
   if (!classes.length) {
     setStatus(
-      '⚠️ No classes found in column A of the "' +
-      (userMasterTab || 'school') +
-      '" tab. Check that column A contains class names.',
+      '⚠️ No class labels found in column A of the "' + (userMasterTab || 'school') + '" tab.',
+      'warning'
+    );
+    return;
+  }
+
+  // Sanity check: does column D contain classes A doesn't list?
+  const dClasses = new Set();
+  studentMaster.forEach(function (s) {
+    const c = studentClassOf(s);
+    if (c) dClasses.add(c);
+  });
+  const unlisted = [];
+  dClasses.forEach(function (c) {
+    if (!classes.includes(c)) unlisted.push(c);
+  });
+  if (unlisted.length) {
+    setStatus(
+      '⚠️ Column D has class(es) not listed in column A: ' +
+      unlisted.join(', ') +
+      '. Add them to column A so they appear in the dropdown.',
       'warning'
     );
   }
-
 }
-
 
 /* =========================================================
    SUBJECT DROPDOWN
 ========================================================= */
-
 function populateSubjectDropdown() {
-
   const element = document.getElementById('subjectSelect');
-
   if (!subjectsCatalog.length) {
     element.innerHTML = '<option value="">-- No subjects found --</option>';
     currentSubject = '';
@@ -941,7 +772,6 @@ function populateSubjectDropdown() {
   }
 
   element.innerHTML = '<option value="">-- Select Subject --</option>';
-
   subjectsCatalog.forEach(function (subject) {
     const option = document.createElement('option');
     option.value = subject.id;
@@ -951,16 +781,12 @@ function populateSubjectDropdown() {
 
   element.value = subjectsCatalog[0].id;
   currentSubject = subjectsCatalog[0].id;
-
 }
 
-
 /* =========================================================
-   RENDER TABLE
+   RENDER TABLE — filter by COLUMN D
 ========================================================= */
-
 function renderTable() {
-
   const tbody = document.getElementById('tableBody');
   const className = document.getElementById('classSelect').value;
   const subjectId = document.getElementById('subjectSelect').value;
@@ -969,37 +795,31 @@ function renderTable() {
   currentClass = className;
   currentSubject = subjectId;
   currentTerm = term;
-
   document.getElementById('saveTermLabel').textContent = term;
 
   if (!className) {
-    tbody.innerHTML =
-      '<tr><td colspan="5" class="empty-msg">📌 Please select a class</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a class</td></tr>';
     return;
   }
-
   if (!subjectId) {
-    tbody.innerHTML =
-      '<tr><td colspan="5" class="empty-msg">📌 Please select a subject</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">📌 Please select a subject</td></tr>';
     return;
   }
 
-  const filteredStudents = studentMaster.filter(function (student) {
-    return resolveStudentClass(student) === className;
+  // ✅ Filter strictly by column D
+  const filteredStudents = studentMaster.filter(function (s) {
+    return studentClassOf(s) === className;
   });
 
   if (!filteredStudents.length) {
-    tbody.innerHTML =
-      '<tr><td colspan="5" class="empty-msg">🏫 No students in this class</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">🏫 No students in column D have class "' + escapeHtml(className) + '"</td></tr>';
     return;
   }
 
   tbody.innerHTML = '';
 
   filteredStudents.forEach(function (student) {
-
     let marks = { test1: 0, test2: 0, exam: 0 };
-
     if (
       marksCache[subjectId] &&
       marksCache[subjectId][className] &&
@@ -1010,283 +830,146 @@ function renderTable() {
     }
 
     const row = document.createElement('tr');
-
     row.setAttribute('data-roll', student.roll);
 
     row.innerHTML =
       '<td class="col-roll">' + escapeHtml(student.roll) + '</td>' +
-
       '<td class="col-name student-name">' + escapeHtml(student.name) + '</td>' +
-
-      '<td class="col-test1">' +
-        '<input type="text" inputmode="text" value="' +
-        escapeHtml(displayValue(marks.test1)) +
-        '" class="marks-input t1-input" placeholder="0-15/ABS">' +
-      '</td>' +
-
-      '<td class="col-test2">' +
-        '<input type="text" inputmode="text" value="' +
-        escapeHtml(displayValue(marks.test2)) +
-        '" class="marks-input t2-input" placeholder="0-15/ABS">' +
-      '</td>' +
-
-      '<td class="col-exam">' +
-        '<input type="text" inputmode="text" value="' +
-        escapeHtml(displayValue(marks.exam)) +
-        '" class="marks-input exam-input" placeholder="0-70/ABS">' +
-      '</td>';
+      '<td class="col-test1"><input type="text" inputmode="text" value="' +
+        escapeHtml(displayValue(marks.test1)) + '" class="marks-input t1-input" placeholder="0-15/ABS"></td>' +
+      '<td class="col-test2"><input type="text" inputmode="text" value="' +
+        escapeHtml(displayValue(marks.test2)) + '" class="marks-input t2-input" placeholder="0-15/ABS"></td>' +
+      '<td class="col-exam"><input type="text" inputmode="text" value="' +
+        escapeHtml(displayValue(marks.exam)) + '" class="marks-input exam-input" placeholder="0-70/ABS"></td>';
 
     tbody.appendChild(row);
 
-    Array.prototype.forEach.call(
-      row.querySelectorAll('.marks-input'),
-      function (input) {
-        if (detectAbs(input.value)) {
-          input.classList.add('abs');
-        }
-      }
-    );
-
+    Array.prototype.forEach.call(row.querySelectorAll('.marks-input'), function (input) {
+      if (detectAbs(input.value)) input.classList.add('abs');
+    });
   });
-
 }
-
 
 /* =========================================================
    VALIDATION
 ========================================================= */
-
 function validateAll() {
-
   const rows = document.querySelectorAll('#tableBody tr');
-
   let valid = true;
   let firstError = '';
 
   Array.prototype.forEach.call(rows, function (row) {
-
     const test1 = row.querySelector('.t1-input');
     const test2 = row.querySelector('.t2-input');
     const exam = row.querySelector('.exam-input');
-
-    if (!test1 || !test2 || !exam) {
-      return;
-    }
+    if (!test1 || !test2 || !exam) return;
 
     function check(input, maximum) {
-
       const raw = input.value.trim();
       const upper = raw.toUpperCase();
-
       if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
         input.classList.remove('invalid');
         input.classList.add('abs');
         return true;
       }
-
       if (raw === '') {
         input.classList.remove('invalid', 'abs');
         return true;
       }
-
       const value = parseFloat(raw);
-
       const bad = isNaN(value) || value < 0 || value > maximum;
-
       input.classList.toggle('invalid', bad);
       input.classList.remove('abs');
-
-      if (bad && !firstError) {
-        firstError = 'Value must be 0–' + maximum + ' or "ABS"';
-      }
-
+      if (bad && !firstError) firstError = 'Value must be 0–' + maximum + ' or "ABS"';
       return !bad;
     }
 
-    /* Evaluate all three so every bad cell gets highlighted */
-    const ok1 = check(test1, 15);
-    const ok2 = check(test2, 15);
-    const ok3 = check(exam, 70);
-
-    if (!ok1 || !ok2 || !ok3) {
-      valid = false;
-    }
-
+    if (!check(test1, 15) || !check(test2, 15) || !check(exam, 70)) valid = false;
   });
 
-  if (!valid) {
-    setStatus('❌ ' + firstError, 'error');
-  }
-
+  if (!valid) setStatus('❌ ' + firstError, 'error');
   return valid;
-
 }
-
 
 /* =========================================================
    SAVE MARKS
 ========================================================= */
-
 function saveMarks() {
-
   const className = document.getElementById('classSelect').value;
   const subjectId = document.getElementById('subjectSelect').value;
   const term = document.getElementById('termSelect').value;
 
-  if (!className) {
-    setStatus('⚠️ Select a class.', 'warning');
-    return;
-  }
-
-  if (!subjectId) {
-    setStatus('⚠️ Select a subject.', 'warning');
-    return;
-  }
-
-  if (!validateAll()) {
-    return;
-  }
+  if (!className) { setStatus('⚠️ Select a class.', 'warning'); return; }
+  if (!subjectId) { setStatus('⚠️ Select a subject.', 'warning'); return; }
+  if (!validateAll()) return;
 
   const updates = [];
+  Array.prototype.forEach.call(document.querySelectorAll('#tableBody tr'), function (row) {
+    const roll = row.getAttribute('data-roll');
+    if (!roll) return;
 
-  Array.prototype.forEach.call(
-    document.querySelectorAll('#tableBody tr'),
-    function (row) {
-
-      const roll = row.getAttribute('data-roll');
-
-      if (!roll) {
-        return;
-      }
-
-      function parseCell(element, maximum) {
-
-        const raw = element.value.trim();
-
-        if (detectAbs(raw)) {
-          return 'ABS';
-        }
-
-        if (raw === '') {
-          return 0;
-        }
-
-        const value = parseFloat(raw);
-
-        if (isNaN(value)) {
-          return 0;
-        }
-
-        return Math.min(maximum, Math.max(0, value));
-      }
-
-      updates.push({
-        roll: roll,
-        test1: parseCell(row.querySelector('.t1-input'), 15),
-        test2: parseCell(row.querySelector('.t2-input'), 15),
-        exam: parseCell(row.querySelector('.exam-input'), 70)
-      });
-
+    function parseCell(element, maximum) {
+      const raw = element.value.trim();
+      if (detectAbs(raw)) return 'ABS';
+      if (raw === '') return 0;
+      const value = parseFloat(raw);
+      if (isNaN(value)) return 0;
+      return Math.min(maximum, Math.max(0, value));
     }
-  );
+
+    updates.push({
+      roll: roll,
+      test1: parseCell(row.querySelector('.t1-input'), 15),
+      test2: parseCell(row.querySelector('.t2-input'), 15),
+      exam: parseCell(row.querySelector('.exam-input'), 70)
+    });
+  });
 
   const button = document.getElementById('saveBtnBottom');
-
   button.disabled = true;
   button.innerHTML = 'Saving... <span class="spinner"></span>';
 
-  apiCall(
-    'saveMarksData',
-    {
-      token: sessionToken,
-      subjectId: subjectId,
-      className: className,
-      term: term,
-      updates: updates
-    },
-    function (response) {
+  apiCall('saveMarksData', {
+    token: sessionToken, subjectId: subjectId, className: className,
+    term: term, updates: updates
+  }, function (response) {
+    button.disabled = false;
+    button.innerHTML = '💾 Save Marks for ' + escapeHtml(term);
 
-      button.disabled = false;
-      button.innerHTML = '💾 Save Marks for <span id="saveTermLabel">' + escapeHtml(term) + '</span>';
+    if (response && response.success) {
+      if (!marksCache[subjectId]) marksCache[subjectId] = {};
+      if (!marksCache[subjectId][className]) marksCache[subjectId][className] = {};
 
-      if (response && response.success) {
-
-        if (!marksCache[subjectId]) {
-          marksCache[subjectId] = {};
+      updates.forEach(function (update) {
+        const hasScore = isAbs(update.test1) || isAbs(update.test2) || isAbs(update.exam) ||
+          update.test1 !== 0 || update.test2 !== 0 || update.exam !== 0;
+        if (!hasScore) return;
+        if (!marksCache[subjectId][className][update.roll]) {
+          marksCache[subjectId][className][update.roll] = {};
         }
+        marksCache[subjectId][className][update.roll][term] = {
+          test1: update.test1, test2: update.test2, exam: update.exam
+        };
+      });
 
-        if (!marksCache[subjectId][className]) {
-          marksCache[subjectId][className] = {};
-        }
-
-        updates.forEach(function (update) {
-
-          const hasScore =
-            isAbs(update.test1) ||
-            isAbs(update.test2) ||
-            isAbs(update.exam) ||
-            update.test1 !== 0 ||
-            update.test2 !== 0 ||
-            update.exam !== 0;
-
-          if (!hasScore) {
-            return;
-          }
-
-          if (!marksCache[subjectId][className][update.roll]) {
-            marksCache[subjectId][className][update.roll] = {};
-          }
-
-          marksCache[subjectId][className][update.roll][term] = {
-            test1: update.test1,
-            test2: update.test2,
-            exam: update.exam
-          };
-
-        });
-
-        const saved = response.saved || 0;
-        const added = response.addedNew || 0;
-        const skipped = response.skippedZero || 0;
-
-        let message = '✅ Saved ' + saved + ' student(s) for ' + term;
-
-        if (added > 0) {
-          message += ' — ' + added + ' newly added';
-        }
-
-        if (skipped > 0) {
-          message += ' • Skipped ' + skipped + ' with no scores';
-        }
-
-        setStatus(message + '.', 'success');
-
-      } else {
-
-        setStatus(
-          '⚠️ ' + ((response && response.error) || 'Save failed.'),
-          'error'
-        );
-
-      }
-
+      const saved = response.saved || 0;
+      const added = response.addedNew || 0;
+      const skipped = response.skippedZero || 0;
+      let message = '✅ Saved ' + saved + ' student(s) for ' + term;
+      if (added > 0) message += ' — ' + added + ' newly added';
+      if (skipped > 0) message += ' • Skipped ' + skipped + ' with no scores';
+      setStatus(message + '.', 'success');
+    } else {
+      setStatus('⚠️ ' + ((response && response.error) || 'Save failed.'), 'error');
     }
-  );
-
+  });
 }
 
-
 /* =========================================================
-   BIND USER INTERFACE
-   Login / Logout / Reload / Save buttons use inline onclick
-   attributes, so they are NOT bound again here (that would
-   make each click fire twice).
+   BIND UI
 ========================================================= */
-
 function bindUI() {
-
   try {
-
     const passwordInput = document.getElementById('loginPassword');
     const emailInput = document.getElementById('loginEmail');
     const classSelect = document.getElementById('classSelect');
@@ -1294,125 +977,67 @@ function bindUI() {
     const termSelect = document.getElementById('termSelect');
     const tableBody = document.getElementById('tableBody');
 
-    /* ENTER KEY - PASSWORD */
-
     if (passwordInput && !passwordInput.__mmBound) {
       passwordInput.__mmBound = true;
       passwordInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          handleLogin();
-        }
+        if (event.key === 'Enter') { event.preventDefault(); handleLogin(); }
       });
     }
-
-    /* ENTER KEY - EMAIL */
-
     if (emailInput && !emailInput.__mmBound) {
       emailInput.__mmBound = true;
       emailInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          handleLogin();
-        }
+        if (event.key === 'Enter') { event.preventDefault(); handleLogin(); }
       });
     }
-
-    /* CLASS */
-
     if (classSelect && !classSelect.__mmBound) {
       classSelect.__mmBound = true;
       classSelect.addEventListener('change', renderTable);
     }
-
-    /* SUBJECT */
-
     if (subjectSelect && !subjectSelect.__mmBound) {
       subjectSelect.__mmBound = true;
       subjectSelect.addEventListener('change', renderTable);
     }
-
-    /* TERM */
-
     if (termSelect && !termSelect.__mmBound) {
       termSelect.__mmBound = true;
       termSelect.addEventListener('change', renderTable);
     }
-
-    /* MARK INPUTS */
-
-    if (tableBody && !tableBody.__mmBound) {
-
-      tableBody.__mmBound = true;
-
+    if (tableBody) {
       tableBody.addEventListener('input', function (event) {
-
         const element = event.target;
-
-        if (!element.classList || !element.classList.contains('marks-input')) {
-          return;
-        }
-
+        if (!element.classList || !element.classList.contains('marks-input')) return;
         const upper = element.value.trim().toUpperCase();
-
         if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
           element.classList.add('abs');
           element.classList.remove('invalid');
         } else {
           element.classList.remove('abs');
         }
-
       });
-
       tableBody.addEventListener('blur', function (event) {
-
         const element = event.target;
-
-        if (!element.classList || !element.classList.contains('marks-input')) {
-          return;
-        }
-
+        if (!element.classList || !element.classList.contains('marks-input')) return;
         const upper = element.value.trim().toUpperCase();
-
         if (upper === 'ABS' || upper === 'A' || upper === 'AB') {
           element.value = 'ABS';
           element.classList.add('abs');
         }
-
       }, true);
-
     }
-
   } catch (error) {
-
     console.error('[MarksManager] bindUI failed:', error);
-
   }
-
 }
-
-
-/* =========================================================
-   START APPLICATION
-========================================================= */
 
 function __mmBoot() {
-  try {
-    bindUI();
-    console.log('[MarksManager] UI bound successfully.');
-  } catch (e) {
-    console.error('[MarksManager] Boot failed:', e);
-  }
+  try { bindUI(); console.log('[MarksManager] UI bound successfully.'); }
+  catch (e) { console.error('[MarksManager] Boot failed:', e); }
 }
-
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', __mmBoot);
 } else {
   __mmBoot();
 }
-
 window.addEventListener('load', __mmBoot);
-
 </script>
 </body>
 </html>
