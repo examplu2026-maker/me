@@ -194,7 +194,7 @@
 
     <script>
       // ⚠️ REPLACE with your deployment URL
-      const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzphtHPHwesZ1r_Pxh9hRlKOHONujkyOmoQZlagbR77XkUcGLlf8uKhM7Q5Cm_kmuQKTg/exec';
+      const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbx2dDtzyC_PGCr-oMKWbIyrrKetnnx2cvJnw1NPQf2ixudyPcz1Qa0-BujDtYmVbqc/exec';
 
       let sessionToken = null;
       let currentTabName = null;   // actual master tab name (e.g. "Besa")
@@ -406,9 +406,9 @@
       function escapeHtml(str) {
         if (!str) return '';
         return String(str).replace(/[&<>]/g, function(m) {
-          if (m === '&') return '&amp;';
-          if (m === '<') return '&lt;';
-          if (m === '>') return '&gt;';
+          if (m === '&') return '&';
+          if (m === '<') return '<';
+          if (m === '>') return '>';
           return m;
         });
       }
