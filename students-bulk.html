@@ -657,7 +657,7 @@ Carol Davis"></textarea>
 
   <script>
     // ==================== CONFIGURATION ====================
-    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycby52UtEJJsdEe6-ttLx01kjXwMEwxYW-Vgz815O8FKmfmfvtSeQUQ2a_JMWXxy5jvVcUQ/exec';
+    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbz3iIe1FUF2gxTLgHzmjp_ch-ghvEO1SMjruie6W-eXIlfafCuNB97YrGzcEAAd3Q/exec';
 
     // ==================== STATE ====================
     let currentTabName = null;
@@ -800,9 +800,9 @@ Carol Davis"></textarea>
     function escapeHtml(t) {
       if (!t) return '';
       return String(t).replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
+        if (m === '&') return '&';
+        if (m === '<') return '<';
+        if (m === '>') return '>';
         return m;
       });
     }
