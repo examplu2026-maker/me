@@ -657,7 +657,7 @@
 
 <script>
   // ==================== CONFIGURATION ====================
-  const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxiMnkz4Zp_ppNj0vUcFhpy_9JTFTjAdsm4-YOfg_7HSxG0IHzBTasD8fIXZPoRY4VlCg/exec';
+  const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzHSvFIpRl8jyZX99AHMVGFTKlhBHEMbIj0d6qXHj0FgQIIe9WfTNFC_11qEcu98tI/exec';
   
   // ==================== STATE ====================
   let currentTabName = null;
@@ -729,9 +729,9 @@
   function escapeHtml(t) {
     if (!t) return '';
     return String(t).replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
+      if (m === '&') return '&';
+      if (m === '<') return '<';
+      if (m === '>') return '>';
       return m;
     });
   }
