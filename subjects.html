@@ -183,7 +183,7 @@
 
 <script>
   // ⚠️ REPLACE with your Web App URL
-  const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxNt1oCTKkSa8h7oFc1AFqvyjGHn18nu1nWhvT6iADrRzPssK8zDHcgpk8oIl3l6BL53g/exec';
+  const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwNJ1vo4fAH69Ya6s3oddB4HXCpPf4-HaY4NoV6VFtQ9VgTCAOWjfkg5on6MLeH_EE/exec';
 
   let sessionToken = null;
   let currentSlug = null;
@@ -239,9 +239,9 @@
   function escapeHtml(t) {
     if(!t) return '';
     return String(t).replace(/[&<>]/g, function(m){
-      if(m==='&') return '&amp;';
-      if(m==='<') return '&lt;';
-      if(m==='>') return '&gt;';
+      if(m==='&') return '&';
+      if(m==='<') return '<';
+      if(m==='>') return '>';
       return m;
     });
   }
