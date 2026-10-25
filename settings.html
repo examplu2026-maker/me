@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+            --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+            --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+            --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+            --green:#1a8f52;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; color: var(--text);
+               background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+               background-attachment: fixed;
+               display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+        .container { max-width: 720px; width: 100%; background: var(--card); border-radius: 20px;
+                     padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+                     border: 1px solid var(--line); }
+        .header { display: flex; justify-content: space-between; align-items: center;
+                  padding-bottom: 20px; border-bottom: 2px solid var(--line);
+                  margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
+        .header h1 { font-size: 22px; color: var(--text); }
+        .header h1 span { font-size: 13px; color: var(--gold); background: rgba(242,183,5,0.12);
+                          border: 1px solid rgba(242,183,5,0.35);
+                          padding: 4px 12px; border-radius: 20px; font-weight: 600; margin-left: 8px; }
+        .user-badge { background: rgba(242,183,5,0.12); border: 1px solid rgba(242,183,5,0.35);
+                      padding: 8px 16px; border-radius: 30px;
+                      color: var(--gold); font-weight: 600; font-size: 13px; }
+
+        .login-box { max-width: 400px; margin: 0 auto; padding: 20px 0; }
+        .login-box h2 { text-align: center; margin-bottom: 20px; color: var(--text); }
+        .login-box input { width: 100%; padding: 12px 16px; margin: 10px 0;
+                           border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+                           background: var(--card-2); color: var(--text); }
+        .login-box input::placeholder { color: #6f879e; }
+        .login-box input:focus { border-color: var(--gold); outline: none;
+                                 box-shadow: 0 0 0 3px rgba(242,183,5,0.18); }
+        .login-box button { width: 100%; padding: 14px; background: var(--gold); color: var(--on-gold);
+                            border: none; border-radius: 10px; font-size: 16px;
+                            font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .login-box button:hover:not(:disabled) { background: var(--gold-dark); }
+        .login-box button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .error-msg { color: #ff8a92; background: rgba(229,34,46,0.15);
+                     border: 1px solid rgba(229,34,46,0.5); padding: 10px;
+                     border-radius: 8px; margin: 10px 0; display: none; }
+        .error-msg.show { display: block; }
+        .hidden { display: none !important; }
+
+        .admin-card { background: var(--card-2); border: 2px solid var(--line-2);
+                      border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+        .admin-card h2 { font-size: 17px; color: var(--text); margin-bottom: 4px; }
+        .admin-card p { font-size: 12px; color: var(--muted); }
+        .admin-card .role-pill { display: inline-block; margin-top: 8px;
+                                 background: rgba(242,183,5,0.12); color: var(--gold);
+                                 border: 1px solid rgba(242,183,5,0.35);
+                                 padding: 4px 12px; border-radius: 20px; font-size: 12px;
+                                 font-weight: 600; }
+
+        .form-box { background: var(--card-2); border: 2px solid var(--line-2);
+                    border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .form-box h3 { font-size: 15px; color: var(--text); margin-bottom: 16px; font-weight: 700; }
+        .form-box h3 i { color: var(--gold); margin-right: 6px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: var(--muted);
+                            margin-bottom: 6px; font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px 16px;
+            border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+            background: var(--card); color: var(--text);
+        }
+        .form-group input::placeholder { color: #6f879e; }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--gold); outline: none;
+            box-shadow: 0 0 0 3px rgba(242,183,5,0.18);
+        }
+        .form-group select option { background: var(--card-2); color: var(--text); }
+        .form-group .hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+        .form-group .hint b { color: var(--gold); }
+        .form-group input:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .pw-wrap { position: relative; }
+        .pw-wrap input { padding-right: 46px; }
+        .pw-eye { position: absolute; top: 50%; right: 14px; transform: translateY(-50%);
+                  color: var(--muted); cursor: pointer; font-size: 14px;
+                  background: transparent; border: none; padding: 4px; }
+        .pw-eye:hover { color: var(--gold); }
+
+        .btn-submit { width: 100%; padding: 14px; background: var(--gold); color: var(--on-gold);
+                      border: none; border-radius: 10px; font-size: 15px;
+                      font-weight: 800; cursor: pointer; margin-top: 6px;
+                      display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-submit:hover:not(:disabled) { background: var(--gold-dark); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .feedback { margin-top: 14px; font-size: 13px; padding: 12px 14px;
+                    border-radius: 8px; display: none; white-space: pre-wrap; }
+        .feedback.show { display: block; }
+        .feedback.success { background: rgba(26,143,82,0.15);
+                            border: 1px solid rgba(26,143,82,0.5); color: #7ee2a8; }
+        .feedback.error { background: rgba(229,34,46,0.15);
+                          border: 1px solid rgba(229,34,46,0.5); color: #ff8a92; }
+
+        .actions { margin-top: 20px; display: flex; gap: 10px; }
+        .actions button { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600;
+                          cursor: pointer; font-size: 14px; }
+        .btn-outline { background: transparent; border: 2px solid var(--line-2); color: var(--muted); }
+        .btn-outline:hover { background: var(--line); color: var(--text); }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 24px;
+                 border-radius: 10px; color: white; font-weight: 500;
+                 box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+                 transform: translateY(100px); opacity: 0;
+                 transition: all 0.4s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--green); }
+        .toast.error { background: var(--red); }
+
+        .loading-spinner { display: inline-block; width: 18px; height: 18px;
+                           border: 3px solid rgba(10,20,32,0.25);
+                           border-top-color: var(--on-gold); border-radius: 50%;
+                           animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Role cards (3 columns) */
+        .role-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        @media (max-width: 520px) {
+            .role-cards { grid-template-columns: 1fr; }
+        }
+        .role-card { padding: 16px 10px; border-radius: 10px; border: 2px solid var(--line-2);
+                     background: var(--card); cursor: pointer; text-align: center;
+                     transition: all 0.15s; user-select: none; }
+        .role-card:hover { border-color: var(--gold); }
+        .role-card.active { border-color: var(--gold); background: rgba(242,183,5,0.12); }
+        .role-card .icon { font-size: 22px; margin-bottom: 6px; }
+        .role-card .label { font-size: 12px; font-weight: 700; color: var(--text);
+                            text-transform: uppercase; letter-spacing: 0.5px; }
+        .role-card.active .label { color: var(--gold); }
+        .role-card.admin .icon { color: #f2b705; }
+        .role-card.teacher .icon { color: #93c5fd; }
+        .role-card.bursar .icon { color: #7ee2a8; }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div class="container">
+    <div class="header">
+        <h1>🔑 Change Password <span>Admin</span></h1>
+        <div class="user-badge" id="userBadge">👤 Guest</div>
+    </div>
+
+    <!-- ============ LOGIN ============ -->
+    <div id="loginSection">
+        <div class="login-box">
+            <h2>🔐 Admin Login</h2>
+            <div id="loginError" class="error-msg"></div>
+            <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+            <button id="loginBtn">Sign In</button>
+        </div>
+    </div>
+
+    <!-- ============ DASHBOARD ============ -->
+    <div id="dashboardSection" class="hidden">
+
+        <div class="admin-card">
+            <h2 id="adminName">Admin</h2>
+            <p id="adminDetails">—</p>
+            <span class="role-pill" id="adminRolePill">ADMIN</span>
+        </div>
+
+        <div class="form-box">
+            <h3><i class="fas fa-user-edit"></i> Change Any Role's Password</h3>
+
+            <div class="form-group">
+                <label>Account Email</label>
+                <input type="email" id="accountEmail" disabled>
+                <div class="hint">The shared email for this school account.</div>
+            </div>
+
+            <div class="form-group">
+                <label>Which role's password are you changing?</label>
+                <div class="role-cards">
+                    <div class="role-card admin" data-role="admin" id="cardAdmin">
+                        <div class="icon"><i class="fas fa-user-shield"></i></div>
+                        <div class="label">Admin</div>
+                    </div>
+                    <div class="role-card teacher" data-role="teacher" id="cardTeacher">
+                        <div class="icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="label">Teacher</div>
+                    </div>
+                    <div class="role-card bursar" data-role="bursar" id="cardBursar">
+                        <div class="icon"><i class="fas fa-cash-register"></i></div>
+                        <div class="label">Bursar</div>
+                    </div>
+                </div>
+                <div class="hint" id="roleHint">Pick the role whose password you want to update.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="oldPassword">Old Password (of the selected role)</label>
+                <div class="pw-wrap">
+                    <input type="password" id="oldPassword" placeholder="Enter the CURRENT password of the selected role" autocomplete="off">
+                    <button type="button" class="pw-eye" id="toggleOldPw" title="Show/hide">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="hint" id="oldHint">Required — proves you know the current password.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <div class="pw-wrap">
+                    <input type="password" id="newPassword" placeholder="Enter new password" autocomplete="new-password">
+                    <button type="button" class="pw-eye" id="toggleNewPw" title="Show/hide">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <div class="pw-wrap">
+                    <input type="password" id="confirmPassword" placeholder="Re-enter new password" autocomplete="new-password">
+                    <button type="button" class="pw-eye" id="toggleConfirmPw" title="Show/hide">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="hint" id="matchHint"></div>
+            </div>
+
+            <button class="btn-submit" id="updateBtn">
+                <i class="fas fa-save"></i> Update Password
+            </button>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-outline" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// PASTE YOUR SCRIPT URL BETWEEN THE QUOTES
+// ============================================================
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4mimmN7eQfiQptXaRSKD4-MhLRKoit5dFP1uv_ggJzkUBejBp7SXG4cAKPoFVcQs/exec';
+
+var currentUser = null;
+var selectedRole = null;
+var $ = function(id) { return document.getElementById(id); };
+
+var loginSection = $('loginSection');
+var dashboardSection = $('dashboardSection');
+var loginEmail = $('loginEmail');
+var loginPassword = $('loginPassword');
+var loginBtn = $('loginBtn');
+var loginError = $('loginError');
+var logoutBtn = $('logoutBtn');
+var userBadge = $('userBadge');
+var adminName = $('adminName');
+var adminDetails = $('adminDetails');
+var adminRolePill = $('adminRolePill');
+
+var accountEmail = $('accountEmail');
+var cardAdmin = $('cardAdmin');
+var cardTeacher = $('cardTeacher');
+var cardBursar = $('cardBursar');
+var roleHint = $('roleHint');
+var oldPassword = $('oldPassword');
+var oldHint = $('oldHint');
+var newPassword = $('newPassword');
+var confirmPassword = $('confirmPassword');
+var updateBtn = $('updateBtn');
+var feedback = $('feedback');
+var matchHint = $('matchHint');
+
+/* ------------------ UTIL ------------------ */
+function showToast(msg, type) {
+    var t = document.querySelector('.toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(t._timeout);
+    t._timeout = setTimeout(function() { t.classList.remove('show'); }, 4000);
+}
+function showFeedback(msg, type) {
+    feedback.textContent = msg;
+    feedback.className = 'feedback show ' + type;
+    clearTimeout(feedback._timeout);
+    feedback._timeout = setTimeout(function() {
+        feedback.className = 'feedback';
+    }, 8000);
+}
+function apiCall(action, data, callback) {
+    var url = SCRIPT_URL + '?action=' + encodeURIComponent(action);
+    for (var k in data) {
+        if (data.hasOwnProperty(k) && data[k] !== null && data[k] !== undefined) {
+            var v = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k];
+            url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(v);
+        }
+    }
+    var ctrl = new AbortController();
+    var to = setTimeout(function() { ctrl.abort(); }, 25000);
+    fetch(url, { method: 'GET', signal: ctrl.signal })
+        .then(function(r) {
+            clearTimeout(to);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .then(function(d) { callback(d); })
+        .catch(function(e) { clearTimeout(to); callback({ error: 'Network error: ' + e.message }); });
+}
+
+/* ------------------ PASSWORD TOGGLES ------------------ */
+function attachToggle(btnId, inputId) {
+    var btn = $(btnId);
+    var inp = $(inputId);
+    if (!btn || !inp) return;
+    btn.addEventListener('click', function() {
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            inp.type = 'password';
+            btn.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    });
+}
+attachToggle('toggleOldPw', 'oldPassword');
+attachToggle('toggleNewPw', 'newPassword');
+attachToggle('toggleConfirmPw', 'confirmPassword');
+
+/* ------------------ ROLE CARDS ------------------ */
+function clearRoleCards() {
+    cardAdmin.classList.remove('active');
+    cardTeacher.classList.remove('active');
+    cardBursar.classList.remove('active');
+}
+function selectRole(role) {
+    selectedRole = role;
+    clearRoleCards();
+    if (role === 'admin')   cardAdmin.classList.add('active');
+    if (role === 'teacher') cardTeacher.classList.add('active');
+    if (role === 'bursar')  cardBursar.classList.add('active');
+
+    roleHint.innerHTML = 'Changing the <b>' + role + '</b> password.';
+    oldHint.innerHTML = 'Enter the <b>current ' + role + ' password</b> below.';
+    oldPassword.placeholder = 'Enter the CURRENT ' + role + ' password';
+    oldPassword.value = '';
+    oldPassword.focus();
+}
+cardAdmin.addEventListener('click',   function() { selectRole('admin'); });
+cardTeacher.addEventListener('click', function() { selectRole('teacher'); });
+cardBursar.addEventListener('click',  function() { selectRole('bursar'); });
+
+/* ------------------ PASSWORD MATCH HINT ------------------ */
+function updateMatchHint() {
+    var a = newPassword.value;
+    var b = confirmPassword.value;
+    if (!a && !b) { matchHint.textContent = ''; matchHint.style.color = ''; return; }
+    if (a && b) {
+        if (a === b) { matchHint.textContent = '✅ Passwords match'; matchHint.style.color = '#7ee2a8'; }
+        else { matchHint.textContent = '❌ Passwords do not match'; matchHint.style.color = '#ff8a92'; }
+    } else {
+        matchHint.textContent = ''; matchHint.style.color = '';
+    }
+}
+newPassword.addEventListener('input', updateMatchHint);
+confirmPassword.addEventListener('input', updateMatchHint);
+
+/* ------------------ LOGIN ------------------ */
+function login() {
+    var email = loginEmail.value.trim();
+    var password = loginPassword.value.trim();
+    if (!email || !password) {
+        loginError.textContent = 'Please enter email and password';
+        loginError.className = 'error-msg show';
+        return;
+    }
+    loginBtn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
+    loginBtn.disabled = true;
+    loginError.className = 'error-msg';
+
+    apiCall('validateLogin', { email: email, password: password }, function(result) {
+        loginBtn.innerHTML = 'Sign In';
+        loginBtn.disabled = false;
+
+        if (!result || !result.authenticated) {
+            loginError.textContent = (result && result.error) ? result.error : 'Invalid credentials';
+            loginError.className = 'error-msg show';
+            return;
+        }
+        if ((result.role || '').toLowerCase() !== 'admin') {
+            loginError.textContent = 'Access denied. Only admin accounts can login.';
+            loginError.className = 'error-msg show';
+            return;
+        }
+
+        currentUser = result;
+        loginSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
+
+        userBadge.textContent = '👤 ' + currentUser.email;
+        adminName.textContent = currentUser.schoolName || 'Admin';
+        adminDetails.textContent = currentUser.email + (currentUser.address ? ' • ' + currentUser.address : '');
+        adminRolePill.textContent = (currentUser.role || 'admin').toUpperCase();
+        accountEmail.value = currentUser.email;
+
+        // Reset form
+        selectedRole = null;
+        clearRoleCards();
+        roleHint.innerHTML = 'Pick the role whose password you want to update.';
+        oldPassword.value = '';
+        oldPassword.placeholder = 'Enter the current password of the selected role';
+        oldHint.innerHTML = 'Required — proves you know the current password.';
+        newPassword.value = '';
+        confirmPassword.value = '';
+        feedback.className = 'feedback';
+        matchHint.textContent = '';
+        matchHint.style.color = '';
+
+        showToast('Welcome ' + currentUser.email + '!', 'success');
+    });
+}
+
+/* ------------------ UPDATE PASSWORD ------------------ */
+function updatePassword() {
+    if (!selectedRole) {
+        showFeedback('Please choose a role first (Admin, Teacher, or Bursar)', 'error');
+        return;
+    }
+    var oldPw = oldPassword.value;
+    var newPw = newPassword.value;
+    var confirmPw = confirmPassword.value;
+
+    if (!oldPw) { showFeedback('Please enter the OLD ' + selectedRole + ' password', 'error'); oldPassword.focus(); return; }
+    if (!newPw) { showFeedback('Please enter the new password', 'error'); newPassword.focus(); return; }
+    if (newPw.length < 4) { showFeedback('New password must be at least 4 characters', 'error'); newPassword.focus(); return; }
+    if (newPw !== confirmPw) { showFeedback('New password and confirmation do not match', 'error'); confirmPassword.focus(); return; }
+    if (!currentUser || !currentUser.email) { showFeedback('Please login again', 'error'); return; }
+
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<span class="loading-spinner"></span> Updating...';
+
+    apiCall('changePassword', {
+        email: currentUser.email,
+        targetRole: selectedRole,
+        oldPassword: oldPw,
+        newPassword: newPw
+    }, function(result) {
+        updateBtn.disabled = false;
+        updateBtn.innerHTML = '<i class="fas fa-save"></i> Update Password';
+
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to update password';
+            showFeedback(msg, 'error');
+            showToast(msg, 'error');
+            return;
+        }
+
+        showFeedback(result.message || 'Password updated successfully', 'success');
+        showToast('Password updated for ' + selectedRole + '!', 'success');
+
+        // Clear password fields but keep role selected so they can do another role
+        oldPassword.value = '';
+        newPassword.value = '';
+        confirmPassword.value = '';
+        matchHint.textContent = '';
+        matchHint.style.color = '';
+        oldPassword.focus();
+    });
+}
+
+/* ------------------ LOGOUT ------------------ */
+function logout() {
+    currentUser = null;
+    selectedRole = null;
+    loginSection.classList.remove('hidden');
+    dashboardSection.classList.add('hidden');
+    userBadge.textContent = '👤 Guest';
+    loginEmail.value = '';
+    loginPassword.value = '';
+    feedback.className = 'feedback';
+    showToast('Logged out', 'success');
+}
+
+/* ------------------ WIRING ------------------ */
+loginBtn.addEventListener('click', login);
+logoutBtn.addEventListener('click', logout);
+updateBtn.addEventListener('click', updatePassword);
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !loginSection.classList.contains('hidden')) login();
+});
+
+[oldPassword, newPassword, confirmPassword].forEach(function(el) {
+    el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); updatePassword(); }
+    });
+});
+</script>
+</body>
+</html>
