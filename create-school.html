@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperSchools Admin · User Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #f7f9fc;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  /* ---------- Shared card ---------- */
+  .card {
+    background: #fff;
+    width: 100%;
+    border-radius: 32px;
+    padding: 2.5rem 2.25rem;
+    box-shadow: 0 20px 35px -8px rgba(0, 20, 30, 0.15), 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f6;
+    display: none;                 /* hidden by default */
+  }
+  .card.active { display: block; } /* only one card is visible at a time */
+
+  /* Login card is narrower */
+  #loginCard  { max-width: 430px; }
+  #addUserCard { max-width: 680px; }
+
+  /* ---------- Login view ---------- */
+  .logo { text-align: center; margin-bottom: 1.25rem; }
+  .logo-icon { font-size: 2.5rem; margin-bottom: 0.4rem; }
+
+  h1.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0b2b3b;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    text-align: center;
+    color: #6b7f8d;
+    font-size: 0.88rem;
+    margin-top: 0.35rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ---------- Form fields ---------- */
+  .field { margin-bottom: 1.15rem; }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a3b4e;
+    margin-bottom: 0.45rem;
+  }
+  label .badge {
+    background: #e4edf3;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.15rem 0.6rem;
+    color: #2b5e7a;
+    margin-left: 0.35rem;
+  }
+  input {
+    width: 100%;
+    padding: 0.9rem 1.15rem;
+    border-radius: 16px;
+    border: 1.5px solid #d9e3ea;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #fff;
+    transition: 0.2s;
+    outline: none;
+    color: #0c2b3b;
+  }
+  input:focus {
+    border-color: #2d9cdb;
+    box-shadow: 0 0 0 4px rgba(45, 156, 219, 0.12);
+  }
+  input::placeholder { color: #9fb0be; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    border: none;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 1rem 1.6rem;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.18s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .btn-primary {
+    background: #1a5a7a;
+    color: #fff;
+    width: 100%;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #0f445e;
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: #fff;
+    border: 1.5px solid #cfdde8;
+    color: #335f77;
+  }
+  .btn-secondary:hover { background: #f6fafd; border-color: #a7c1d4; }
+
+  .btn-logout {
+    background: #fff;
+    border: 1.5px solid #d9e3ea;
+    color: #b33f3f;
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .btn-logout:hover { background: #ffeeee; border-color: #d65a5a; }
+
+  /* ---------- Add-user header row ---------- */
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .top-row h1 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #0b2b3b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .subhead {
+    font-size: 0.92rem;
+    color: #5c6f7e;
+    margin-bottom: 2rem;
+    border-left: 4px solid #2d9cdb;
+    background: #f0f7fe;
+    border-radius: 0 12px 12px 0;
+    padding: 0.75rem 1rem;
+  }
+  .subhead code {
+    background: #ffffffc0;
+    padding: 0.15rem 0.45rem;
+    border-radius: 30px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #1a5a7a;
+    border: 1px solid #cde3f0;
+  }
+
+  /* ---------- Status messages ---------- */
+  .status {
+    margin-top: 1.4rem;
+    padding: 0.9rem 1.2rem;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .status.show { display: flex; }
+  .status.info    { background: #f0f7fe; color: #0b4b6b; border-left: 4px solid #2d9cdb; }
+  .status.error   { background: #ffeeee; color: #b33f3f; border-left: 4px solid #d65a5a; }
+  .status.success { background: #e6f7ec; color: #1a6e3b; border-left: 4px solid #2e9e5b; }
+
+  /* ---------- Loader ---------- */
+  .loader {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Add-user grid & actions ---------- */
+  .form-grid { display: flex; flex-direction: column; gap: 1.25rem; }
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .action-buttons .btn-primary { flex: 1 1 auto; }
+  .action-buttons .btn-secondary { flex: 0 0 auto; }
+
+  .note {
+    margin-top: 1.2rem;
+    font-size: 0.78rem;
+    color: #839aa8;
+    text-align: center;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 480px) {
+    .card { padding: 1.75rem 1.25rem; }
+    .top-row h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ LOGIN VIEW ============ -->
+  <div class="card active" id="loginCard">
+    <div class="logo">
+      <div class="logo-icon">🏫</div>
+      <h1 class="title">SuperSchools Admin</h1>
+      <p class="subtitle">Restricted access · SUPERSCHOOLS role only</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="you@superschools.com" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
+    </form>
+
+    <div id="loginStatus" class="status"></div>
+  </div>
+
+  <!-- ============ ADD-USER VIEW ============ -->
+  <div class="card" id="addUserCard">
+    <div class="top-row">
+      <h1>👥 User Manager</h1>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+    <div class="subhead">
+      Logged in as <strong id="whoami">—</strong> · <code>Users</code> sheet · columns: email, password, role, slug
+    </div>
+
+    <form id="userForm" class="form-grid">
+      <div class="field">
+        <label for="email">📧 Email <span class="badge">column A</span></label>
+        <input type="email" id="email" placeholder="user@example.com" required>
+      </div>
+      <div class="field">
+        <label for="password">🔒 Password <span class="badge">column B</span></label>
+        <input type="text" id="password" placeholder="••••••••" required>
+      </div>
+      <div class="field">
+        <label for="role">🎭 Role <span class="badge">column C</span></label>
+        <input type="text" id="role" placeholder="admin, editor, viewer..." required>
+      </div>
+      <div class="field">
+        <label for="slug">🔗 Slug <span class="badge">column D</span></label>
+        <input type="text" id="slug" placeholder="john-doe" required>
+      </div>
+
+      <div class="action-buttons">
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <span>➕ Add user</span>
+        </button>
+        <button type="reset" class="btn btn-secondary">Clear</button>
+      </div>
+    </form>
+
+    <div id="userStatus" class="status"></div>
+    <div class="note">Data is appended to the connected Google Sheet.</div>
+  </div>
+
+<script>
+  // ⚠️ Replace with your deployed Apps Script Web App URL
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydlLXb-bXsztDbziTl0sorCeWyIsfbZ-CU68VankMRNA50nhrLVS0illPpEcQXF38/exec';
+
+  // ============================================================
+  //  ELEMENTS
+  // ============================================================
+  const loginCard   = document.getElementById('loginCard');
+  const addUserCard = document.getElementById('addUserCard');
+
+  const loginForm     = document.getElementById('loginForm');
+  const loginEmail    = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginBtn      = document.getElementById('loginBtn');
+  const loginStatus   = document.getElementById('loginStatus');
+
+  const userForm    = document.getElementById('userForm');
+  const submitBtn   = document.getElementById('submitBtn');
+  const userStatus  = document.getElementById('userStatus');
+  const whoami      = document.getElementById('whoami');
+  const logoutBtn   = document.getElementById('logoutBtn');
+
+  let currentUser = null;
+  let loginStatusTimer, userStatusTimer;
+
+  // ============================================================
+  //  HELPERS
+  // ============================================================
+  function showStatus(el, msg, type = 'info') {
+    el.textContent = msg;
+    el.className = 'status show ' + type;
+  }
+  function hideStatusLater(el, timerRef) {
+    if (timerRef) clearTimeout(timerRef);
+    return setTimeout(() => el.classList.remove('show'), 6000);
+  }
+  function setLoginLoading(loading) {
+    loginBtn.disabled = loading;
+    loginBtn.innerHTML = loading
+      ? '<span class="loader"></span> Signing in...'
+      : 'Sign In';
+  }
+  function setAddLoading(loading) {
+    submitBtn.disabled = loading;
+    submitBtn.innerHTML = loading
+      ? '<span class="loader"></span> Adding...'
+      : '<span>➕ Add user</span>';
+  }
+
+  // ============================================================
+  //  VIEW SWITCHING
+  // ============================================================
+  function showLogin() {
+    addUserCard.classList.remove('active');
+    loginCard.classList.add('active');
+    loginForm.reset();
+    loginStatus.classList.remove('show');
+    loginEmail.focus();
+  }
+  function showAddUser(user) {
+    currentUser = user;
+    whoami.textContent = user.email + ' (' + user.role + ')';
+    loginCard.classList.remove('active');
+    addUserCard.classList.add('active');
+    userForm.reset();
+    userStatus.classList.remove('show');
+    document.getElementById('email').focus();
+  }
+
+  // ============================================================
+  //  LOGIN
+  // ============================================================
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email    = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
+
+    if (!email || !password) {
+      showStatus(loginStatus, 'Please enter email and password', 'error');
+      return;
+    }
+
+    setLoginLoading(true);
+    showStatus(loginStatus, 'Verifying credentials...', 'info');
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'login', email, password })
+      });
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        showStatus(loginStatus, '✅ Login successful! Loading form...', 'success');
+        setTimeout(() => showAddUser(data.user), 600);
+      } else {
+        showStatus(loginStatus, '❌ ' + data.message, 'error');
+        hideStatusLater(loginStatus, loginStatusTimer);
+      }
+    } catch (err) {
+      showStatus(loginStatus, '❌ Network error: ' + err.message, 'error');
+    } finally {
+      setLoginLoading(false);
+    }
+  });
+
+  // ============================================================
+  //  LOGOUT
+  // ============================================================
+  logoutBtn.addEventListener('click', () => {
+    currentUser = null;
+    showLogin();
+  });
+
+  // ============================================================
+  //  ADD USER
+  // ============================================================
+  userForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!currentUser || currentUser.role.toUpperCase() !== 'SUPERSCHOOLS') {
+      showStatus(userStatus, 'Session expired. Please log in again.', 'error');
+      setTimeout(showLogin, 800);
+      return;
+    }
+
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const role     = document.getElementById('role').value.trim();
+    const slug     = document.getElementById('slug').value.trim();
+
+    if (!email || !password || !role || !slug) {
+      showStatus(userStatus, 'Please fill in all fields.', 'error');
+      hideStatusLater(userStatus, userStatusTimer);
+      return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      showStatus(userStatus, 'Please enter a valid email address.', 'error');
+      hideStatusLater(userStatus, userStatusTimer);
+      return;
+    }
+
+    const payload = {
+      action: 'addUser',
+      email, password, role, slug,
+      requesterRole: currentUser.role   // server-side enforcement
+    };
+
+    setAddLoading(true);
+    showStatus(userStatus, 'Sending data to Google Sheet...', 'info');
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        showStatus(userStatus, '✅ ' + data.message, 'success');
+        userForm.reset();
+        document.getElementById('email').focus();
+      } else {
+        showStatus(userStatus, '❌ ' + data.message, 'error');
+      }
+    } catch (err) {
+      showStatus(userStatus, '❌ Network error: ' + err.message, 'error');
+    } finally {
+      setAddLoading(false);
+      hideStatusLater(userStatus, userStatusTimer);
+    }
+  });
+
+  // Focus email on first load
+  window.addEventListener('load', () => loginEmail.focus());
+</script>
+</body>
+</html>
