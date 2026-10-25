@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Class — School Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+            --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+            --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+            --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+            --green:#1a8f52;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; color: var(--text);
+               background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+               background-attachment: fixed;
+               display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+        .container { max-width: 760px; width: 100%; background: var(--card); border-radius: 20px;
+                     padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+                     border: 1px solid var(--line); }
+        .header { display: flex; justify-content: space-between; align-items: center;
+                  padding-bottom: 20px; border-bottom: 2px solid var(--line);
+                  margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
+        .header h1 { font-size: 22px; color: var(--text); }
+        .header h1 span { font-size: 13px; color: var(--gold); background: rgba(242,183,5,0.12);
+                          border: 1px solid rgba(242,183,5,0.35);
+                          padding: 4px 12px; border-radius: 20px; font-weight: 600; margin-left: 8px; }
+        .user-badge { background: rgba(242,183,5,0.12); border: 1px solid rgba(242,183,5,0.35);
+                      padding: 8px 16px; border-radius: 30px;
+                      color: var(--gold); font-weight: 600; font-size: 13px; }
+
+        .login-box { max-width: 400px; margin: 0 auto; padding: 20px 0; }
+        .login-box h2 { text-align: center; margin-bottom: 20px; color: var(--text); }
+        .login-box input { width: 100%; padding: 12px 16px; margin: 10px 0;
+                           border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+                           background: var(--card-2); color: var(--text); }
+        .login-box input::placeholder { color: #6f879e; }
+        .login-box input:focus { border-color: var(--gold); outline: none;
+                                 box-shadow: 0 0 0 3px rgba(242,183,5,0.18); }
+        .login-box button { width: 100%; padding: 14px; background: var(--gold); color: var(--on-gold);
+                            border: none; border-radius: 10px; font-size: 16px;
+                            font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .login-box button:hover:not(:disabled) { background: var(--gold-dark); }
+        .login-box button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .error-msg { color: #ff8a92; background: rgba(229,34,46,0.15);
+                     border: 1px solid rgba(229,34,46,0.5); padding: 10px;
+                     border-radius: 8px; margin: 10px 0; display: none; }
+        .error-msg.show { display: block; }
+        .hidden { display: none !important; }
+
+        .school-card { background: var(--card-2); border: 2px solid var(--line-2);
+                       border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+        .school-card h2 { font-size: 18px; color: var(--text); margin-bottom: 4px; }
+        .school-card p { font-size: 12px; color: var(--muted); }
+        .school-card .tab-pill { display: inline-block; margin-top: 8px;
+                                 background: rgba(242,183,5,0.12); color: var(--gold);
+                                 border: 1px solid rgba(242,183,5,0.35);
+                                 padding: 4px 12px; border-radius: 20px; font-size: 12px;
+                                 font-weight: 600; }
+
+        /* Mode toggle */
+        .mode-toggle { display: flex; gap: 8px; background: var(--card-2);
+                       border: 1px solid var(--line); padding: 5px;
+                       border-radius: 12px; margin-bottom: 16px; }
+        .mode-btn { flex: 1; padding: 10px 14px; border: none; border-radius: 8px;
+                    background: transparent; color: var(--muted); font-weight: 700;
+                    font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .mode-btn:hover { background: var(--line); color: var(--text); }
+        .mode-btn.active { background: var(--gold); color: var(--on-gold); }
+
+        .add-box { background: var(--card-2); border: 2px dashed var(--line-2);
+                   border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .add-box h3 { font-size: 15px; color: var(--text); margin-bottom: 14px; font-weight: 700; }
+        .add-box h3 i { color: var(--gold); margin-right: 6px; }
+        .row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .row input { flex: 1; min-width: 200px; padding: 12px 16px;
+                     border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+                     background: var(--card); color: var(--text); }
+        .row input::placeholder { color: #6f879e; }
+        .row input:focus { border-color: var(--gold); outline: none;
+                           box-shadow: 0 0 0 3px rgba(242,183,5,0.18); }
+        .row textarea { flex: 1; width: 100%; min-height: 140px; padding: 12px 16px;
+                        border: 2px solid var(--line-2); border-radius: 10px; font-size: 14px;
+                        background: var(--card); color: var(--text); resize: vertical;
+                        font-family: 'Courier New', monospace; line-height: 1.5; }
+        .row textarea::placeholder { color: #6f879e; }
+        .row textarea:focus { border-color: var(--gold); outline: none;
+                              box-shadow: 0 0 0 3px rgba(242,183,5,0.18); }
+        .row button { padding: 12px 22px; border: none; border-radius: 10px;
+                      background: var(--gold); color: var(--on-gold);
+                      font-weight: 800; cursor: pointer; font-size: 14px; white-space: nowrap; }
+        .row button:hover:not(:disabled) { background: var(--gold-dark); }
+        .row button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .bulk-footer { display: flex; justify-content: space-between; align-items: center;
+                       margin-top: 12px; flex-wrap: wrap; gap: 10px; }
+        .bulk-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .bulk-actions button { padding: 8px 14px; border: 1px solid var(--line-2);
+                               border-radius: 8px; background: transparent; color: var(--muted);
+                               font-size: 12px; font-weight: 600; cursor: pointer; }
+        .bulk-actions button:hover { background: var(--line); color: var(--text); }
+        .bulk-count { font-size: 12px; color: var(--gold); font-weight: 700; }
+
+        .hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+        .hint b { color: var(--gold); }
+
+        .feedback { margin-top: 12px; font-size: 13px; padding: 10px 14px;
+                    border-radius: 8px; display: none; white-space: pre-wrap; }
+        .feedback.show { display: block; }
+        .feedback.success { background: rgba(26,143,82,0.15);
+                            border: 1px solid rgba(26,143,82,0.5); color: #7ee2a8; }
+        .feedback.error { background: rgba(229,34,46,0.15);
+                          border: 1px solid rgba(229,34,46,0.5); color: #ff8a92; }
+
+        .class-list-box { background: var(--card-2); border: 2px solid var(--line-2);
+                          border-radius: 12px; padding: 18px 20px; }
+        .class-list-box .top { display: flex; justify-content: space-between;
+                               align-items: center; margin-bottom: 12px; }
+        .class-list-box .top h3 { font-size: 15px; color: var(--text); font-weight: 700; }
+        .class-list-box .top h3 i { color: var(--gold); margin-right: 6px; }
+        .class-count { background: rgba(242,183,5,0.12); color: var(--gold);
+                       border: 1px solid rgba(242,183,5,0.35);
+                       padding: 3px 12px; border-radius: 20px; font-size: 12px;
+                       font-weight: 600; }
+        .class-list { display: flex; flex-direction: column; gap: 8px; max-height: 400px;
+                      overflow-y: auto; }
+        .class-item { display: flex; justify-content: space-between; align-items: center;
+                      padding: 12px 16px; background: var(--card); border: 1px solid var(--line);
+                      border-radius: 8px; }
+        .class-item .name { font-weight: 600; color: var(--text); }
+        .class-item .row-tag { font-size: 12px; color: var(--muted); }
+        .empty { padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
+
+        .actions { margin-top: 20px; display: flex; gap: 10px; }
+        .actions button { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600;
+                          cursor: pointer; font-size: 14px; }
+        .btn-outline { background: transparent; border: 2px solid var(--line-2); color: var(--muted); }
+        .btn-outline:hover { background: var(--line); color: var(--text); }
+        .btn-refresh { background: var(--gold); color: var(--on-gold); border: none; font-weight: 800; }
+        .btn-refresh:hover:not(:disabled) { background: var(--gold-dark); }
+        .btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 24px;
+                 border-radius: 10px; color: white; font-weight: 500;
+                 box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+                 transform: translateY(100px); opacity: 0;
+                 transition: all 0.4s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--green); }
+        .toast.error { background: var(--red); }
+
+        .loading-spinner { display: inline-block; width: 18px; height: 18px;
+                           border: 3px solid rgba(10,20,32,0.25);
+                           border-top-color: var(--on-gold); border-radius: 50%;
+                           animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div class="container">
+    <div class="header">
+        <h1>📚 Add Class <span>Admin</span></h1>
+        <div class="user-badge" id="userBadge">👤 Guest</div>
+    </div>
+
+    <!-- ============ LOGIN ============ -->
+    <div id="loginSection">
+        <div class="login-box">
+            <h2>🔐 Admin Login</h2>
+            <div id="loginError" class="error-msg"></div>
+            <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+            <button id="loginBtn">Sign In</button>
+        </div>
+    </div>
+
+    <!-- ============ DASHBOARD ============ -->
+    <div id="dashboardSection" class="hidden">
+
+        <div class="school-card">
+            <h2 id="schoolName">School Name</h2>
+            <p id="schoolDetails">Address • Contact</p>
+            <span class="tab-pill" id="tabPill">📄 Sheet: —</span>
+        </div>
+
+        <!-- Mode toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" id="modeSingle" data-mode="single">
+                <i class="fas fa-plus"></i> Single Add
+            </button>
+            <button class="mode-btn" id="modeBulk" data-mode="bulk">
+                <i class="fas fa-layer-group"></i> Bulk Add
+            </button>
+        </div>
+
+        <!-- ADD BOX -->
+        <div class="add-box">
+            <h3 id="addBoxTitle"><i class="fas fa-plus-circle"></i> Add Single Class</h3>
+
+            <!-- SINGLE MODE -->
+            <div id="singleMode">
+                <div class="row">
+                    <input type="text" id="newClassName" placeholder="e.g. Primary 5A" maxlength="60" autocomplete="off">
+                    <button id="addClassBtn"><i class="fas fa-save"></i> Add Class</button>
+                </div>
+                <div class="hint">
+                    Writes to the first empty row in <b>column A</b>, starting at <b>A4</b>, of sheet
+                    <b id="hintSheet">—</b>.
+                </div>
+            </div>
+
+            <!-- BULK MODE -->
+            <div id="bulkMode" class="hidden">
+                <div class="row">
+                    <textarea id="bulkInput" placeholder="Paste classes here — one per line:
+Primary 1A
+Primary 1B
+Primary 2A
+Primary 2B
+
+(commas or semicolons also work)"></textarea>
+                </div>
+                <div class="bulk-footer">
+                    <div class="bulk-actions">
+                        <button id="sampleBtn" type="button"><i class="fas fa-lightbulb"></i> Load Sample</button>
+                        <button id="clearBtn" type="button"><i class="fas fa-eraser"></i> Clear</button>
+                    </div>
+                    <span class="bulk-count" id="bulkCount">0 classes detected</span>
+                </div>
+                <div class="row" style="margin-top:12px;">
+                    <button id="bulkAddBtn" style="flex:1;"><i class="fas fa-layer-group"></i> Add All Classes</button>
+                </div>
+                <div class="hint">
+                    Each line becomes one class in <b>column A</b>, starting at <b>A4</b>, of sheet
+                    <b id="hintSheet2">—</b>. Duplicates (case-insensitive) are skipped automatically.
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="class-list-box">
+            <div class="top">
+                <h3><i class="fas fa-list"></i> Current Classes (Column A)</h3>
+                <span class="class-count" id="classCount">0</span>
+            </div>
+            <div class="class-list" id="classList">
+                <div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-refresh" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh List
+            </button>
+            <button class="btn-outline" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// PASTE YOUR SCRIPT URL BETWEEN THE QUOTES
+// ============================================================
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2CGVTy58RQM7Ub_lf4BT9JhCLv_3eQsmWDx2SDFTZNaOH09RkuZkEsbv3gGGWjg/exec';
+
+var currentUser = null;
+var mode = 'single';
+var $ = function(id) { return document.getElementById(id); };
+
+var loginSection = $('loginSection');
+var dashboardSection = $('dashboardSection');
+var loginEmail = $('loginEmail');
+var loginPassword = $('loginPassword');
+var loginBtn = $('loginBtn');
+var loginError = $('loginError');
+var logoutBtn = $('logoutBtn');
+var userBadge = $('userBadge');
+var schoolName = $('schoolName');
+var schoolDetails = $('schoolDetails');
+var tabPill = $('tabPill');
+var hintSheet = $('hintSheet');
+var hintSheet2 = $('hintSheet2');
+
+var modeSingle = $('modeSingle');
+var modeBulk = $('modeBulk');
+var addBoxTitle = $('addBoxTitle');
+var singleMode = $('singleMode');
+var bulkMode = $('bulkMode');
+
+var newClassName = $('newClassName');
+var addClassBtn = $('addClassBtn');
+var feedback = $('feedback');
+var classList = $('classList');
+var classCount = $('classCount');
+var refreshBtn = $('refreshBtn');
+
+var bulkInput = $('bulkInput');
+var bulkAddBtn = $('bulkAddBtn');
+var bulkCount = $('bulkCount');
+var sampleBtn = $('sampleBtn');
+var clearBtn = $('clearBtn');
+
+/* ------------------ UTIL ------------------ */
+function showToast(msg, type) {
+    var t = document.querySelector('.toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(t._timeout);
+    t._timeout = setTimeout(function() { t.classList.remove('show'); }, 4000);
+}
+function escapeHtml(text) {
+    if (!text) return '';
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+}
+function showFeedback(msg, type) {
+    feedback.textContent = msg;
+    feedback.className = 'feedback show ' + type;
+    clearTimeout(feedback._timeout);
+    feedback._timeout = setTimeout(function() {
+        feedback.className = 'feedback';
+    }, 6000);
+}
+
+function apiCall(action, data, callback) {
+    var url = SCRIPT_URL + '?action=' + encodeURIComponent(action);
+    for (var k in data) {
+        if (data.hasOwnProperty(k) && data[k] !== null && data[k] !== undefined) {
+            var v = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k];
+            url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(v);
+        }
+    }
+    var ctrl = new AbortController();
+    var to = setTimeout(function() { ctrl.abort(); }, 40000);
+    fetch(url, { method: 'GET', signal: ctrl.signal })
+        .then(function(r) {
+            clearTimeout(to);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .then(function(d) { callback(d); })
+        .catch(function(e) { clearTimeout(to); callback({ error: 'Network error: ' + e.message }); });
+}
+
+/* ------------------ MODE TOGGLE ------------------ */
+function setMode(m) {
+    mode = m;
+    modeSingle.classList.toggle('active', m === 'single');
+    modeBulk.classList.toggle('active', m === 'bulk');
+    singleMode.classList.toggle('hidden', m !== 'single');
+    bulkMode.classList.toggle('hidden', m !== 'bulk');
+    addBoxTitle.innerHTML = m === 'single'
+        ? '<i class="fas fa-plus-circle"></i> Add Single Class'
+        : '<i class="fas fa-layer-group"></i> Bulk Add Classes';
+    feedback.className = 'feedback';
+    if (m === 'single') newClassName.focus();
+    else bulkInput.focus();
+}
+modeSingle.addEventListener('click', function() { setMode('single'); });
+modeBulk.addEventListener('click', function() { setMode('bulk'); });
+
+/* ------------------ BULK COUNT ------------------ */
+function parseBulkInput() {
+    var raw = bulkInput.value || '';
+    var parts = raw.split(/[\n\r,;]+/);
+    var cleaned = [];
+    var seen = {};
+    for (var i = 0; i < parts.length; i++) {
+        var c = (parts[i] || '').trim();
+        if (!c) continue;
+        if (c.length > 60) continue;
+        var key = c.toLowerCase();
+        if (seen[key]) continue;
+        seen[key] = true;
+        cleaned.push(c);
+    }
+    return cleaned;
+}
+function updateBulkCount() {
+    var list = parseBulkInput();
+    bulkCount.textContent = list.length + ' class' + (list.length === 1 ? '' : 'es') + ' detected';
+}
+bulkInput.addEventListener('input', updateBulkCount);
+
+sampleBtn.addEventListener('click', function() {
+    bulkInput.value = 'Primary 1A\nPrimary 1B\nPrimary 2A\nPrimary 2B\nPrimary 3A\nPrimary 3B';
+    updateBulkCount();
+});
+clearBtn.addEventListener('click', function() {
+    bulkInput.value = '';
+    updateBulkCount();
+});
+
+/* ------------------ LOGIN ------------------ */
+function login() {
+    var email = loginEmail.value.trim();
+    var password = loginPassword.value.trim();
+    if (!email || !password) {
+        loginError.textContent = 'Please enter email and password';
+        loginError.className = 'error-msg show';
+        return;
+    }
+    loginBtn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
+    loginBtn.disabled = true;
+    loginError.className = 'error-msg';
+
+    apiCall('validateLogin', { email: email, password: password }, function(result) {
+        loginBtn.innerHTML = 'Sign In';
+        loginBtn.disabled = false;
+
+        if (!result || !result.authenticated) {
+            loginError.textContent = (result && result.error) ? result.error : 'Invalid credentials';
+            loginError.className = 'error-msg show';
+            return;
+        }
+        if ((result.role || '').toLowerCase() !== 'admin') {
+            loginError.textContent = 'Access denied. Only admin accounts can login.';
+            loginError.className = 'error-msg show';
+            return;
+        }
+
+        currentUser = result;
+        loginSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
+
+        userBadge.textContent = '👤 ' + currentUser.email;
+        schoolName.textContent = currentUser.schoolName || 'School';
+        schoolDetails.textContent = (currentUser.address || '') + ' • ' + (currentUser.contact || '');
+        tabPill.textContent = '📄 Sheet: ' + (currentUser.schoolTab || '—');
+        hintSheet.textContent = currentUser.schoolTab || '—';
+        hintSheet2.textContent = currentUser.schoolTab || '—';
+
+        loadClasses();
+        showToast('Welcome ' + currentUser.email + '!', 'success');
+    });
+}
+
+/* ------------------ LOAD CLASSES ------------------ */
+function loadClasses() {
+    if (!currentUser || !currentUser.schoolTab) return;
+
+    classList.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    classCount.textContent = '0';
+
+    apiCall('getClassesFromSchoolTab', { schoolTab: currentUser.schoolTab }, function(result) {
+        if (result && result.error) {
+            classList.innerHTML = '<div class="empty">Error: ' + escapeHtml(result.error) + '</div>';
+            showToast('Error: ' + result.error, 'error');
+            return;
+        }
+        var classes = Array.isArray(result) ? result : [];
+        classCount.textContent = classes.length;
+
+        if (!classes.length) {
+            classList.innerHTML = '<div class="empty">No classes yet. Add one above.</div>';
+            return;
+        }
+
+        var html = '';
+        classes.forEach(function(c, i) {
+            html += '<div class="class-item">' +
+                        '<span class="name">' + escapeHtml(c) + '</span>' +
+                        '<span class="row-tag">A' + (4 + i) + '</span>' +
+                    '</div>';
+        });
+        classList.innerHTML = html;
+    });
+}
+
+/* ------------------ ADD SINGLE ------------------ */
+function addClass() {
+    var name = newClassName.value.trim();
+    if (!name) {
+        showFeedback('Please enter a class name', 'error');
+        newClassName.focus();
+        return;
+    }
+    if (!currentUser || !currentUser.schoolTab) {
+        showFeedback('Please login again', 'error');
+        return;
+    }
+
+    addClassBtn.disabled = true;
+    addClassBtn.innerHTML = '<span class="loading-spinner"></span> Adding...';
+
+    apiCall('addClassToSchoolTab', {
+        schoolTab: currentUser.schoolTab,
+        className: name
+    }, function(result) {
+        addClassBtn.disabled = false;
+        addClassBtn.innerHTML = '<i class="fas fa-save"></i> Add Class';
+
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to add class';
+            showFeedback(msg, 'error');
+            showToast(msg, 'error');
+            return;
+        }
+
+        showFeedback(result.message || 'Class added!', 'success');
+        showToast('Class added: ' + name, 'success');
+        newClassName.value = '';
+        newClassName.focus();
+        loadClasses();
+    });
+}
+
+/* ------------------ ADD BULK ------------------ */
+function addClassesBulk() {
+    if (!currentUser || !currentUser.schoolTab) {
+        showFeedback('Please login again', 'error');
+        return;
+    }
+    var list = parseBulkInput();
+    if (!list.length) {
+        showFeedback('Please paste at least one class name', 'error');
+        bulkInput.focus();
+        return;
+    }
+
+    bulkAddBtn.disabled = true;
+    bulkAddBtn.innerHTML = '<span class="loading-spinner"></span> Adding ' + list.length + ' classes...';
+
+    apiCall('addClassesBulkToSchoolTab', {
+        schoolTab: currentUser.schoolTab,
+        classNames: JSON.stringify(list)
+    }, function(result) {
+        bulkAddBtn.disabled = false;
+        bulkAddBtn.innerHTML = '<i class="fas fa-layer-group"></i> Add All Classes';
+
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to add classes';
+            showFeedback(msg, 'error');
+            showToast(msg, 'error');
+            return;
+        }
+
+        var msg2 = '';
+        if (result.added > 0) {
+            msg2 += '✅ Added ' + result.added + ' class(es)';
+        }
+        if (result.skipped && result.skipped.length) {
+            msg2 += (msg2 ? '\n' : '') + '⚠️ Skipped ' + result.skipped.length + ' duplicate(s): ' +
+                    result.skipped.join(', ');
+        }
+        if (!msg2) msg2 = 'No changes.';
+
+        showFeedback(msg2, result.added > 0 ? 'success' : 'error');
+        showToast(
+            result.added > 0 ? 'Added ' + result.added + ' class(es)' : 'No new classes added',
+            result.added > 0 ? 'success' : 'error'
+        );
+
+        if (result.added > 0) {
+            bulkInput.value = '';
+            updateBulkCount();
+        }
+        loadClasses();
+    });
+}
+
+/* ------------------ LOGOUT ------------------ */
+function logout() {
+    currentUser = null;
+    loginSection.classList.remove('hidden');
+    dashboardSection.classList.add('hidden');
+    userBadge.textContent = '👤 Guest';
+    loginEmail.value = '';
+    loginPassword.value = '';
+    classList.innerHTML = '<div class="empty">—</div>';
+    classCount.textContent = '0';
+    feedback.className = 'feedback';
+    showToast('Logged out', 'success');
+}
+
+/* ------------------ WIRING ------------------ */
+loginBtn.addEventListener('click', login);
+logoutBtn.addEventListener('click', logout);
+addClassBtn.addEventListener('click', addClass);
+bulkAddBtn.addEventListener('click', addClassesBulk);
+refreshBtn.addEventListener('click', loadClasses);
+
+newClassName.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addClass();
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !loginSection.classList.contains('hidden')) login();
+});
+
+updateBulkCount();
+</script>
+</body>
+</html>
