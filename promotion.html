@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Promotion — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy-1:#0a1f33; --navy-2:#12324d; --navy-3:#2a4d6b;
+            --card:#06101c; --card-2:#0b1a2b; --line:#1c2f44; --line-2:#26405a;
+            --gold:#f2b705; --gold-dark:#d9a304; --on-gold:#0a1420;
+            --text:#ffffff; --muted:#9fb3c8; --red:#e5222e;
+            --green:#1a8f52;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; color: var(--text);
+               background: linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+               background-attachment: fixed;
+               display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+        .container { max-width: 960px; width: 100%; background: var(--card); border-radius: 20px;
+                     padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+                     border: 1px solid var(--line); }
+        .header { display: flex; justify-content: space-between; align-items: center;
+                  padding-bottom: 20px; border-bottom: 2px solid var(--line);
+                  margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
+        .header h1 { font-size: 22px; color: var(--text); }
+        .header h1 span { font-size: 13px; color: var(--gold); background: rgba(242,183,5,0.12);
+                          border: 1px solid rgba(242,183,5,0.35);
+                          padding: 4px 12px; border-radius: 20px; font-weight: 600; margin-left: 8px; }
+        .user-badge { background: rgba(242,183,5,0.12); border: 1px solid rgba(242,183,5,0.35);
+                      padding: 8px 16px; border-radius: 30px;
+                      color: var(--gold); font-weight: 600; font-size: 13px; }
+
+        .login-box { max-width: 400px; margin: 0 auto; padding: 20px 0; }
+        .login-box h2 { text-align: center; margin-bottom: 20px; color: var(--text); }
+        .login-box input { width: 100%; padding: 12px 16px; margin: 10px 0;
+                           border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+                           background: var(--card-2); color: var(--text); }
+        .login-box input::placeholder { color: #6f879e; }
+        .login-box input:focus { border-color: var(--gold); outline: none;
+                                 box-shadow: 0 0 0 3px rgba(242,183,5,0.18); }
+        .login-box button { width: 100%; padding: 14px; background: var(--gold); color: var(--on-gold);
+                            border: none; border-radius: 10px; font-size: 16px;
+                            font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .login-box button:hover:not(:disabled) { background: var(--gold-dark); }
+        .login-box button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .error-msg { color: #ff8a92; background: rgba(229,34,46,0.15);
+                     border: 1px solid rgba(229,34,46,0.5); padding: 10px;
+                     border-radius: 8px; margin: 10px 0; display: none; }
+        .error-msg.show { display: block; }
+        .hidden { display: none !important; }
+
+        .admin-card { background: var(--card-2); border: 2px solid var(--line-2);
+                      border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+        .admin-card h2 { font-size: 17px; color: var(--text); margin-bottom: 4px; }
+        .admin-card p { font-size: 12px; color: var(--muted); }
+        .admin-card .role-pill { display: inline-block; margin-top: 8px;
+                                 background: rgba(242,183,5,0.12); color: var(--gold);
+                                 border: 1px solid rgba(242,183,5,0.35);
+                                 padding: 4px 12px; border-radius: 20px; font-size: 12px;
+                                 font-weight: 600; }
+
+        .form-box { background: var(--card-2); border: 2px solid var(--line-2);
+                    border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .form-box h3 { font-size: 15px; color: var(--text); margin-bottom: 16px; font-weight: 700; }
+        .form-box h3 i { color: var(--gold); margin-right: 6px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: var(--muted);
+                            margin-bottom: 6px; font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px 16px;
+            border: 2px solid var(--line-2); border-radius: 10px; font-size: 15px;
+            background: var(--card); color: var(--text);
+        }
+        .form-group select option { background: var(--card-2); color: var(--text); }
+        .form-group input::placeholder { color: #6f879e; }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--gold); outline: none;
+            box-shadow: 0 0 0 3px rgba(242,183,5,0.18);
+        }
+        .form-group .hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+        .form-group .hint b { color: var(--gold); }
+        .form-group .hint code { background: rgba(242,183,5,0.12); color: var(--gold);
+                                 padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+
+        .btn { padding: 12px 22px; border: none; border-radius: 10px;
+               background: var(--gold); color: var(--on-gold);
+               font-weight: 800; cursor: pointer; font-size: 14px;
+               display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover:not(:disabled) { background: var(--gold-dark); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-block { width: 100%; }
+
+        .feedback { margin-top: 14px; font-size: 13px; padding: 12px 14px;
+                    border-radius: 8px; display: none; white-space: pre-wrap; }
+        .feedback.show { display: block; }
+        .feedback.success { background: rgba(26,143,82,0.15);
+                            border: 1px solid rgba(26,143,82,0.5); color: #7ee2a8; }
+        .feedback.error { background: rgba(229,34,46,0.15);
+                          border: 1px solid rgba(229,34,46,0.5); color: #ff8a92; }
+
+        .list-box { background: var(--card-2); border: 2px solid var(--line-2);
+                    border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+        .list-top { display: flex; justify-content: space-between; align-items: center;
+                    margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+        .list-top h3 { font-size: 15px; color: var(--text); font-weight: 700; }
+        .list-top h3 i { color: var(--gold); margin-right: 6px; }
+        .list-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-sm { padding: 8px 14px; font-size: 12px; font-weight: 700;
+                  border-radius: 8px; cursor: pointer; border: none;
+                  display: inline-flex; align-items: center; gap: 6px; }
+        .btn-sm.gold { background: var(--gold); color: var(--on-gold); }
+        .btn-sm.gold:hover:not(:disabled) { background: var(--gold-dark); }
+        .btn-sm.ghost { background: transparent; border: 1px solid var(--line-2); color: var(--muted); }
+        .btn-sm.ghost:hover { background: var(--line); color: var(--text); }
+        .btn-sm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .student-list { max-height: 480px; overflow-y: auto;
+                        display: flex; flex-direction: column; gap: 6px; }
+        .student-item { display: grid;
+                        grid-template-columns: 34px 120px 1fr 150px 150px;
+                        align-items: center; gap: 10px;
+                        padding: 10px 14px; background: var(--card);
+                        border: 1px solid var(--line); border-radius: 8px;
+                        font-size: 13px; }
+        .student-item.header-row { background: var(--line);
+                                   font-weight: 700; font-size: 11px;
+                                   text-transform: uppercase; letter-spacing: 0.5px;
+                                   color: var(--muted); position: sticky; top: 0; z-index: 2;
+                                   cursor: default; }
+        .student-item.header-row .header-check-wrap {
+            display: flex; align-items: center; justify-content: center;
+        }
+        .student-item input[type="checkbox"] { width: 18px; height: 18px;
+                                               accent-color: var(--gold); cursor: pointer; }
+        .student-item .adm { color: var(--gold); font-weight: 700; font-family: 'Courier New', monospace; }
+        .student-item .name { color: var(--text); font-weight: 600; }
+        .student-item .from-class { color: var(--muted); text-align: right; }
+        .student-item .to-class { color: var(--gold); font-weight: 700; text-align: right; }
+        .student-item .to-class.graduated { color: #7ee2a8; }
+        @media (max-width: 700px) {
+            .student-item { grid-template-columns: 30px 1fr; }
+            .student-item .adm, .student-item .from-class, .student-item .to-class {
+                display: none;
+            }
+            .student-item.header-row { display: none; }
+        }
+
+        .empty { padding: 30px; text-align: center; color: var(--muted); font-size: 13px; }
+        .empty i { font-size: 32px; display: block; margin-bottom: 10px; color: var(--gold); }
+
+        .count-badge { display: inline-block;
+                       background: rgba(242,183,5,0.12); color: var(--gold);
+                       border: 1px solid rgba(242,183,5,0.35);
+                       padding: 3px 12px; border-radius: 20px; font-size: 12px;
+                       font-weight: 700; margin-left: 8px; }
+
+        .actions { margin-top: 20px; display: flex; gap: 10px; }
+        .actions button { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600;
+                          cursor: pointer; font-size: 14px; }
+        .btn-outline { background: transparent; border: 2px solid var(--line-2); color: var(--muted); }
+        .btn-outline:hover { background: var(--line); color: var(--text); }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 24px;
+                 border-radius: 10px; color: white; font-weight: 500;
+                 box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+                 transform: translateY(100px); opacity: 0;
+                 transition: all 0.4s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--green); }
+        .toast.error { background: var(--red); }
+
+        .loading-spinner { display: inline-block; width: 16px; height: 16px;
+                           border: 3px solid rgba(10,20,32,0.25);
+                           border-top-color: var(--on-gold); border-radius: 50%;
+                           animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div class="container">
+    <div class="header">
+        <h1>🎓 Student Promotion <span>Admin</span></h1>
+        <div class="user-badge" id="userBadge">👤 Guest</div>
+    </div>
+
+    <div id="loginSection">
+        <div class="login-box">
+            <h2>🔐 Admin Login</h2>
+            <div id="loginError" class="error-msg"></div>
+            <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+            <button id="loginBtn" type="button">Sign In</button>
+        </div>
+    </div>
+
+    <div id="dashboardSection" class="hidden">
+
+        <div class="admin-card">
+            <h2 id="adminName">Admin</h2>
+            <p id="adminDetails">—</p>
+            <span class="role-pill" id="adminRolePill">ADMIN</span>
+        </div>
+
+        <div class="form-box">
+            <h3><i class="fas fa-cogs"></i> Step 1 — Pick source, target, and class</h3>
+
+            <div class="form-group">
+                <label for="sourceSheet">Source sheet (with student results)</label>
+                <input type="text" id="sourceSheet" placeholder="e.g. BESA2026/2027 student results 2026/2027">
+                <div class="hint">Format: <code><schoolTab><year>/<nextYear> student results <year>/<nextYear></code></div>
+            </div>
+
+            <div class="form-group">
+                <label for="targetSheet">Target sheet (new promoted class sheet)</label>
+                <input type="text" id="targetSheet" placeholder="e.g. BESA2027/2028">
+                <div class="hint">Backend derives this from the <b>source year</b> (never the target field's year). Data starts at <b>row 4</b>, headers on <b>row 3</b>.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="classSelect">Class to promote</label>
+                <select id="classSelect" disabled>
+                    <option value="">— load classes first —</option>
+                </select>
+                <div class="hint">Only students in the selected class will be listed below.</div>
+            </div>
+
+            <button class="btn btn-block" id="loadStudentsBtn" type="button">
+                <i class="fas fa-users"></i> Load Classes & Students
+            </button>
+
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <div class="list-box">
+            <div class="list-top">
+                <h3>
+                    <i class="fas fa-list-check"></i> Step 2 — Select students to promote
+                    <span class="count-badge" id="studentCount">0</span>
+                    <span class="count-badge" id="selectedCount" style="color:#0a1420;background:#f2b705;border-color:#f2b705;">0 selected</span>
+                </h3>
+                <div class="list-actions">
+                    <button class="btn-sm ghost" id="checkAllBtn" type="button"><i class="fas fa-check-double"></i> Tick all</button>
+                    <button class="btn-sm ghost" id="uncheckAllBtn" type="button"><i class="fas fa-xmark"></i> Untick all</button>
+                </div>
+            </div>
+
+            <div class="student-list" id="studentList">
+                <div class="empty">
+                    <i class="fas fa-inbox"></i>
+                    Select a class, then load students
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-block" id="promoteBtn" type="button" style="padding:16px;font-size:15px;">
+            <i class="fas fa-arrow-up-right-from-square"></i> Promote Selected Students
+        </button>
+
+        <div class="feedback" id="feedback2"></div>
+
+        <div class="actions">
+            <button class="btn-outline" id="logoutBtn" type="button">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// PASTE YOUR SCRIPT URL BETWEEN THE QUOTES
+// ============================================================
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWD6X_WIl72VjvrcWXFuIZri0V-uEUsmokSVRjMk2XInvBdWQft8_Uttj_7JKGJSQ/exec';
+
+var currentUser = null;
+var students = [];
+var $ = function(id) { return document.getElementById(id); };
+
+var loginSection = $('loginSection');
+var dashboardSection = $('dashboardSection');
+var loginEmail = $('loginEmail');
+var loginPassword = $('loginPassword');
+var loginBtn = $('loginBtn');
+var loginError = $('loginError');
+var logoutBtn = $('logoutBtn');
+var userBadge = $('userBadge');
+var adminName = $('adminName');
+var adminDetails = $('adminDetails');
+var adminRolePill = $('adminRolePill');
+
+var sourceSheet = $('sourceSheet');
+var targetSheet = $('targetSheet');
+var classSelect = $('classSelect');
+var loadStudentsBtn = $('loadStudentsBtn');
+var feedback1 = $('feedback1');
+var feedback2 = $('feedback2');
+var studentList = $('studentList');
+var studentCount = $('studentCount');
+var selectedCount = $('selectedCount');
+var checkAllBtn = $('checkAllBtn');
+var uncheckAllBtn = $('uncheckAllBtn');
+var promoteBtn = $('promoteBtn');
+
+/* ------------------ UTIL ------------------ */
+function showToast(msg, type) {
+    var t = document.querySelector('.toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(t._timeout);
+    t._timeout = setTimeout(function() { t.classList.remove('show'); }, 4500);
+}
+function escapeHtml(text) {
+    if (!text) return '';
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+}
+function showFeedback(el, msg, type) {
+    el.textContent = msg;
+    el.className = 'feedback show ' + type;
+    clearTimeout(el._timeout);
+    el._timeout = setTimeout(function() { el.className = 'feedback'; }, 12000);
+}
+function apiCall(action, data, callback) {
+    var url = SCRIPT_URL + '?action=' + encodeURIComponent(action);
+    for (var k in data) {
+        if (data.hasOwnProperty(k) && data[k] !== null && data[k] !== undefined) {
+            var v = typeof data[k] === 'object' ? JSON.stringify(data[k]) : data[k];
+            url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(v);
+        }
+    }
+    var ctrl = new AbortController();
+    var to = setTimeout(function() { ctrl.abort(); }, 45000);
+    fetch(url, { method: 'GET', signal: ctrl.signal })
+        .then(function(r) {
+            clearTimeout(to);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .then(function(d) { callback(d); })
+        .catch(function(e) { clearTimeout(to); callback({ error: 'Network error: ' + e.message }); });
+}
+
+/* ------------------ YEAR HELPERS ------------------ */
+function extractYearRange(raw) {
+    if (!raw) return '';
+    var s = raw.toString().trim();
+    var m = s.match(/(\d{4})\s*[\/\-]\s*(\d{4})/);
+    if (m) return m[1] + '/' + m[2];
+    m = s.match(/(\d{4})/);
+    if (m) {
+        var y = parseInt(m[1], 10);
+        return y + '/' + (y + 1);
+    }
+    return '';
+}
+function nextYearRange(yearRange) {
+    if (!yearRange) return '';
+    var m = yearRange.match(/(\d{4})\s*[\/\-]\s*(\d{4})/);
+    if (m) {
+        var a = parseInt(m[1], 10) + 1;
+        var b = parseInt(m[2], 10) + 1;
+        return a + '/' + b;
+    }
+    var single = yearRange.match(/(\d{4})/);
+    if (single) {
+        var y = parseInt(single[1], 10);
+        return y + '/' + (y + 1);
+    }
+    return '';
+}
+function stripYears(str) {
+    if (!str) return '';
+    return str.toString()
+        .replace(/\d{4}\s*[\/\-]\s*\d{4}/g, '')
+        .replace(/\d{4}/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/* ------------------ LOGIN ------------------ */
+function login() {
+    var email = loginEmail.value.trim();
+    var password = loginPassword.value.trim();
+    if (!email || !password) {
+        loginError.textContent = 'Please enter email and password';
+        loginError.className = 'error-msg show';
+        return;
+    }
+    loginBtn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
+    loginBtn.disabled = true;
+    loginError.className = 'error-msg';
+
+    apiCall('validateLogin', { email: email, password: password }, function(result) {
+        loginBtn.innerHTML = 'Sign In';
+        loginBtn.disabled = false;
+
+        if (!result || !result.authenticated) {
+            loginError.textContent = (result && result.error) ? result.error : 'Invalid credentials';
+            loginError.className = 'error-msg show';
+            return;
+        }
+        if ((result.role || '').toLowerCase() !== 'admin') {
+            loginError.textContent = 'Access denied. Only admin accounts can login.';
+            loginError.className = 'error-msg show';
+            return;
+        }
+
+        currentUser = result;
+        loginSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
+
+        userBadge.textContent = '👤 ' + currentUser.email;
+        adminName.textContent = currentUser.schoolName || 'Admin';
+        adminDetails.textContent = currentUser.email + (currentUser.address ? ' • ' + currentUser.address : '');
+        adminRolePill.textContent = (currentUser.role || 'admin').toUpperCase();
+
+        var currentYearRange = extractYearRange(currentUser.term);
+        var nextYearRangeVal = nextYearRange(currentYearRange);
+        var schoolPrefix     = stripYears(currentUser.schoolTab || '');
+
+        if (schoolPrefix && currentYearRange) {
+            sourceSheet.value = schoolPrefix + currentYearRange + ' student results ' + currentYearRange;
+        }
+        if (schoolPrefix && nextYearRangeVal) {
+            targetSheet.value = schoolPrefix + nextYearRangeVal;
+        }
+
+        classSelect.innerHTML = '<option value="">— load classes first —</option>';
+        classSelect.disabled = true;
+
+        showToast('Welcome ' + currentUser.email + '!', 'success');
+    });
+}
+
+/* ------------------ LOAD CLASSES + STUDENTS ------------------ */
+function loadAll() {
+    var src = sourceSheet.value.trim();
+    if (!src) {
+        showFeedback(feedback1, 'Please enter the source sheet name', 'error');
+        sourceSheet.focus();
+        return;
+    }
+
+    loadStudentsBtn.disabled = true;
+    loadStudentsBtn.innerHTML = '<span class="loading-spinner"></span> Loading classes...';
+    classSelect.disabled = true;
+    studentList.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading classes...</div>';
+    studentCount.textContent = '0';
+    selectedCount.textContent = '0 selected';
+
+    apiCall('getClassesForPromotion', { sourceSheet: src }, function(result) {
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to load classes';
+            showFeedback(feedback1, msg, 'error');
+            showToast(msg, 'error');
+            classSelect.innerHTML = '<option value="">— no classes —</option>';
+            classSelect.disabled = true;
+            loadStudentsBtn.disabled = false;
+            loadStudentsBtn.innerHTML = '<i class="fas fa-users"></i> Load Classes & Students';
+            studentList.innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i> ' + escapeHtml(msg) + '</div>';
+            return;
+        }
+
+        var classes = Array.isArray(result.classes) ? result.classes : [];
+        if (!classes.length) {
+            classSelect.innerHTML = '<option value="">— no classes in source —</option>';
+            classSelect.disabled = true;
+            loadStudentsBtn.disabled = false;
+            loadStudentsBtn.innerHTML = '<i class="fas fa-users"></i> Load Classes & Students';
+            showFeedback(feedback1, 'No classes found in column C of "' + result.sourceSheet + '"', 'error');
+            showToast('No classes found', 'error');
+            return;
+        }
+
+        var opts = '<option value="">— select a class —</option>';
+        classes.forEach(function(c) {
+            opts += '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
+        });
+        classSelect.innerHTML = opts;
+        classSelect.disabled = false;
+
+        classSelect.value = classes[0];
+        loadStudentsBtn.disabled = false;
+        loadStudentsBtn.innerHTML = '<i class="fas fa-users"></i> Load Classes & Students';
+        showFeedback(feedback1, 'Loaded ' + classes.length + ' class(es) from "' + result.sourceSheet + '" — now selecting ' + classes[0], 'success');
+
+        loadStudentsForClass(classes[0]);
+    });
+}
+
+/* ------------------ LOAD STUDENTS FOR CLASS ------------------ */
+function loadStudentsForClass(className) {
+    if (!className) {
+        students = [];
+        renderStudents();
+        return;
+    }
+    var src = sourceSheet.value.trim();
+    if (!src) return;
+
+    studentList.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> Loading students...</div>';
+    studentCount.textContent = '0';
+    selectedCount.textContent = '0 selected';
+
+    apiCall('getStudentsForPromotion', { sourceSheet: src, className: className }, function(result) {
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to load students';
+            showFeedback(feedback1, msg, 'error');
+            showToast(msg, 'error');
+            students = [];
+            studentList.innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i> ' + escapeHtml(msg) + '</div>';
+            return;
+        }
+
+        students = Array.isArray(result.students) ? result.students : [];
+        studentCount.textContent = students.length + ' student' + (students.length === 1 ? '' : 's');
+        showFeedback(
+            feedback1,
+            'Loaded ' + students.length + ' student(s) in "' + className + '"',
+            'success'
+        );
+        renderStudents();
+    });
+}
+
+/* ------------------ RENDER STUDENTS ------------------ */
+function renderStudents() {
+    if (!students.length) {
+        studentList.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i> No students in this class.</div>';
+        selectedCount.textContent = '0 selected';
+        return;
+    }
+
+    var html = '';
+
+    // Header row — NOT a label, no checkbox per row. Has a master "tick all" checkbox.
+    html += '<div class="student-item header-row">' +
+                '<div class="header-check-wrap">' +
+                    '<input type="checkbox" id="masterCheck" title="Tick all / Untick all">' +
+                '</div>' +
+                '<div>ADM No</div>' +
+                '<div>Student Name</div>' +
+                '<div style="text-align:right;">From Class</div>' +
+                '<div style="text-align:right;">Promoted To</div>' +
+            '</div>';
+
+    students.forEach(function(s, i) {
+        var isGrad = (s.promotedClass || '').toString().toUpperCase().indexOf('GRADUATED') === 0;
+        html += '<label class="student-item" style="cursor:pointer;">' +
+                    '<input type="checkbox" data-index="' + i + '" class="stu-check">' +
+                    '<div class="adm">' + escapeHtml(s.adm || '—') + '</div>' +
+                    '<div class="name">' + escapeHtml(s.name || '—') + '</div>' +
+                    '<div class="from-class">' + escapeHtml(s.class || '—') + '</div>' +
+                    '<div class="to-class' + (isGrad ? ' graduated' : '') + '">' + escapeHtml(s.promotedClass || '—') + '</div>' +
+                '</label>';
+    });
+
+    studentList.innerHTML = html;
+
+    document.querySelectorAll('.stu-check').forEach(function(cb) {
+        cb.addEventListener('change', updateSelectedCount);
+    });
+
+    var master = $('masterCheck');
+    if (master) {
+        master.addEventListener('change', function() {
+            var isChecked = this.checked;
+            document.querySelectorAll('.stu-check').forEach(function(cb) {
+                cb.checked = isChecked;
+            });
+            updateSelectedCount();
+        });
+    }
+
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    var boxes = document.querySelectorAll('.stu-check');
+    var n = document.querySelectorAll('.stu-check:checked').length;
+    selectedCount.textContent = n + ' selected';
+
+    var master = $('masterCheck');
+    if (master) {
+        if (n === 0) {
+            master.checked = false;
+            master.indeterminate = false;
+        } else if (n === boxes.length) {
+            master.checked = true;
+            master.indeterminate = false;
+        } else {
+            master.checked = false;
+            master.indeterminate = true;
+        }
+    }
+}
+
+/* ------------------ BUTTON: TICK ALL / UNTICK ALL ------------------ */
+checkAllBtn.addEventListener('click', function() {
+    document.querySelectorAll('.stu-check').forEach(function(cb) { cb.checked = true; });
+    updateSelectedCount();
+});
+uncheckAllBtn.addEventListener('click', function() {
+    document.querySelectorAll('.stu-check').forEach(function(cb) { cb.checked = false; });
+    updateSelectedCount();
+});
+
+/* ------------------ CLASS CHANGE ------------------ */
+classSelect.addEventListener('change', function() {
+    loadStudentsForClass(this.value);
+});
+
+/* ------------------ LOAD BUTTON ------------------ */
+loadStudentsBtn.addEventListener('click', loadAll);
+
+/* ------------------ PROMOTE ------------------ */
+function promote() {
+    var tgt = targetSheet.value.trim();
+    if (!tgt) {
+        showFeedback(feedback2, 'Please enter the target sheet name (e.g. BESA2027/2028)', 'error');
+        targetSheet.focus();
+        return;
+    }
+
+    var checked = document.querySelectorAll('.stu-check:checked');
+    if (!checked.length) {
+        showFeedback(feedback2, 'Please tick at least one student to promote', 'error');
+        return;
+    }
+
+    var selected = [];
+    checked.forEach(function(cb) {
+        var idx = parseInt(cb.dataset.index);
+        if (!isNaN(idx) && students[idx]) selected.push(students[idx]);
+    });
+
+    if (!selected.length) {
+        showFeedback(feedback2, 'No valid students selected', 'error');
+        return;
+    }
+
+    // Extract the source year from the source sheet name
+    var srcYear = extractYearRange(sourceSheet.value.trim());
+    if (!srcYear) {
+        showFeedback(feedback2, 'Could not determine the year in the source sheet name', 'error');
+        return;
+    }
+
+    promoteBtn.disabled = true;
+    promoteBtn.innerHTML = '<span class="loading-spinner"></span> Promoting ' + selected.length + '...';
+
+    apiCall('promoteStudents', {
+        targetSheet: tgt,
+        sourceYear: srcYear,
+        studentsJson: JSON.stringify(selected)
+    }, function(result) {
+        promoteBtn.disabled = false;
+        promoteBtn.innerHTML = '<i class="fas fa-arrow-up-right-from-square"></i> Promote Selected Students';
+
+        if (!result || result.error) {
+            var msg = result && result.error ? result.error : 'Failed to promote';
+            showFeedback(feedback2, msg, 'error');
+            showToast(msg, 'error');
+            return;
+        }
+
+        var fb = '';
+        if (result.added > 0) fb += '✅ ' + result.added + ' student(s) promoted to "' + result.targetSheet + '"';
+        if (result.skipped && result.skipped.length) {
+            fb += (fb ? '\n' : '') + '⚠️ ' + result.skipped.length + ' skipped (duplicate ADM or already in target)';
+        }
+        if (!fb) fb = 'No changes.';
+        showFeedback(feedback2, fb, result.added > 0 ? 'success' : 'error');
+        showToast(
+            result.added > 0 ? 'Promoted ' + result.added + ' student(s) to ' + result.targetSheet : 'No new students added',
+            result.added > 0 ? 'success' : 'error'
+        );
+
+        if (result.added > 0) {
+            document.querySelectorAll('.stu-check').forEach(function(cb) { cb.checked = false; });
+            updateSelectedCount();
+            if (result.targetSheet) targetSheet.value = result.targetSheet;
+        }
+    });
+}
+
+/* ------------------ LOGOUT ------------------ */
+function logout() {
+    currentUser = null;
+    students = [];
+    loginSection.classList.remove('hidden');
+    dashboardSection.classList.add('hidden');
+    userBadge.textContent = '👤 Guest';
+    loginEmail.value = '';
+    loginPassword.value = '';
+    classSelect.innerHTML = '<option value="">— load classes first —</option>';
+    classSelect.disabled = true;
+    studentList.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i> Select a class, then load students</div>';
+    studentCount.textContent = '0';
+    selectedCount.textContent = '0 selected';
+    feedback1.className = 'feedback';
+    feedback2.className = 'feedback';
+    showToast('Logged out', 'success');
+}
+
+/* ------------------ WIRING ------------------ */
+loginBtn.addEventListener('click', login);
+logoutBtn.addEventListener('click', logout);
+promoteBtn.addEventListener('click', promote);
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !loginSection.classList.contains('hidden')) login();
+});
+
+sourceSheet.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); loadAll(); }
+});
+</script>
+</body>
+</html>
