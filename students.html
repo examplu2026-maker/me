@@ -209,7 +209,7 @@
         <span>🔒</span>
         <input type="password" id="password" placeholder="Password">
       </div>
-      <button id="loginBtn" type="button">→ Sign in ←</button>
+      <button id="loginBtn" type="button" onclick="doLogin()">→ Sign in ←</button>
       <div id="loginError" class="error"></div>
     </div>
   </div>
@@ -354,7 +354,7 @@
         if (script.parentNode) script.remove();
         console.warn("[API/JSONP] TIMEOUT for", action);
         callback({ success: false, error: 'Request timeout' });
-      }, 25000);
+      }, 10000);
 
       window[callbackName] = function(response) {
         if (timedOut) return;
@@ -416,14 +416,16 @@
       setTimeout(() => { mDiv.style.display = "none"; }, 5000);
     }
 
+    // \u0026 escapes stop GitHub/editors from decoding the entities
     function escapeHtml(t) {
       if (t === null || t === undefined) return '';
-      return String(t)
-        .replace(/&/g, '&')
-        .replace(/</g, '<')
-        .replace(/>/g, '>')
-        .replace(/"/g, '"')
-        .replace(/'/g, ''');
+      var map = {};
+      map['&'] = '\u0026amp;';
+      map['<'] = '\u0026lt;';
+      map['>'] = '\u0026gt;';
+      map['"'] = '\u0026quot;';
+      map["'"] = '\u0026#39;';
+      return String(t).replace(/[&<>"']/g, function(c) { return map[c]; });
     }
 
     /* ---------------- auth ---------------- */
@@ -526,7 +528,7 @@
 
       apiCallWithCallback('getDistinctClassesFromColumnA', { tabName: currentTabName }, function(classes) {
         if (!classes) { select.innerHTML = '<option value="">❌ No response from server</option>'; return; }
-        if (classes.error) { select.innerHTML = '<option value="">❌ ' + classes.error + '</option>'; return; }
+        if (classes.error) { select.innerHTML = '<option value="">❌ ' + escapeHtml(classes.error) + '</option>'; return; }
         if (classes.length === 0) { select.innerHTML = '<option value="">📭 No classes found</option>'; return; }
         select.innerHTML = '<option value="">-- Select Class --</option>';
         classes.forEach(function(c) {
@@ -543,7 +545,7 @@
       apiCallWithCallback('getDistinctClassesFromColumnA', { tabName: currentTabName }, function(classes) {
         let options = '<option value="ALL">🏫 All Classes</option>';
         if (!classes) { select.innerHTML = options + '<option value="">❌ No response from server</option>'; return; }
-        if (classes.error) { select.innerHTML = options + '<option value="">❌ ' + classes.error + '</option>'; return; }
+        if (classes.error) { select.innerHTML = options + '<option value="">❌ ' + escapeHtml(classes.error) + '</option>'; return; }
         if (classes.length === 0) { select.innerHTML = options + '<option value="">📭 No classes found</option>'; return; }
         classes.forEach(function(c) {
           options += '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>';
@@ -927,21 +929,12 @@
     }
 
     /* ---------------- wiring ---------------- */
+    // NOTE: the Sign in button uses onclick="doLogin()" in the HTML,
+    // so it is NOT wired again here (that would fire login twice).
 
     window.addEventListener('load', function() {
       document.getElementById('appSection').style.display = 'none';
       document.getElementById('loginOverlay').classList.add('active');
-
-      const loginBtn = document.getElementById('loginBtn');
-      if (loginBtn) {
-        loginBtn.addEventListener('click', function(ev) {
-          ev.preventDefault();
-          doLogin();
-        });
-        console.log("[BOOT] Login button wired");
-      } else {
-        console.error("[BOOT] #loginBtn not found in DOM");
-      }
 
       const pw = document.getElementById('password');
       if (pw) {
