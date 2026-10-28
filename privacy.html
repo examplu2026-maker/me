@@ -186,7 +186,7 @@
       <div style="margin-top: 16px; text-align: center; color: #94a3b8; font-size: 0.9rem;">— OR —</div>
 
       <label for="fileUpload" class="file-input-label">
-        <span>📁</span> Upload an image
+        <span>📁</span> Choose photo (tap "Camera" in the picker)
       </label>
       <input type="file" id="fileUpload" accept="image/*">
 
@@ -314,7 +314,13 @@
     }
 
     function showCameraError(msg) {
-      cameraError.textContent = msg;
+      const ua = navigator.userAgent || '';
+      const inApp = /FBAN|FBAV|Instagram|WhatsApp|Telegram|Line\/|; wv\)|GitHub/i.test(ua);
+      let extra = `\n\n[Page: ${location.protocol}//${location.host || '(local file)'} | Secure: ${window.isSecureContext ? 'yes' : 'NO'}]`;
+      if (inApp) extra += '\n⚠️ This looks like an in-app browser. Open the link in Chrome or Firefox.';
+      if (location.protocol === 'file:') extra += '\n⚠️ Opened as a local file. Use your GitHub Pages https:// link.';
+      cameraError.style.whiteSpace = 'pre-line';
+      cameraError.textContent = msg + extra;
       cameraError.style.display = 'block';
     }
 
