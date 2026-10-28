@@ -31,11 +31,14 @@
     }
     .subhead {
       color: #475569; margin-bottom: 28px; font-size: 1rem;
-      border-left: 4px solid #2563eb; padding-left: 16px;
+      border-left: 4px solid #2563eb; padding: 10px 16px;
       background: #f1f5f9; border-radius: 0 12px 12px 0; line-height: 1.4;
     }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      .two-col { grid-template-columns: 1fr; }
+      .container { padding: 22px 16px; border-radius: 28px; }
+    }
     .card {
       background: #ffffff; border-radius: 28px; padding: 22px;
       box-shadow: 0 8px 20px -6px rgba(0,0,0,0.1);
@@ -45,6 +48,7 @@
       font-weight: 600; font-size: 1.2rem; color: #0f172a;
       margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
     }
+    .label-small { font-size: 0.9rem; color: #475569; font-weight: 500; }
     .video-preview {
       position: relative; width: 100%; background: #0b1120;
       border-radius: 24px; overflow: hidden; aspect-ratio: 1 / 1;
@@ -93,7 +97,8 @@
       position: relative;
     }
     .bg-swatch.custom-swatch input[type="color"] {
-      opacity: 0; position: absolute; inset: 0; cursor: pointer; border: none;
+      opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%;
+      cursor: pointer; border: none;
     }
     .download-btn {
       background: #0f172a; border-color: #0f172a; color: white;
@@ -105,7 +110,7 @@
       font-size: 0.9rem; color: #334155; border: 1px dashed #cbd5e1;
       margin-top: 18px; display: flex; gap: 12px; align-items: center;
     }
-    .size-note i { font-size: 1.6rem; color: #2563eb; }
+    .size-note i { font-size: 1.6rem; color: #2563eb; font-style: normal; }
     .file-input-label {
       display: flex; align-items: center; justify-content: center; gap: 8px;
       background: #f1f5f9; border-radius: 60px; padding: 10px 18px;
@@ -113,6 +118,9 @@
       color: #1e293b; transition: 0.15s; width: 100%; margin-top: 12px;
     }
     .file-input-label:hover { background: #e2e8f0; border-color: #64748b; }
+    .file-input-label.camera-native {
+      background: #eff6ff; border-color: #2563eb; border-style: solid; color: #1d4ed8;
+    }
     input[type="file"] { display: none; }
     .status-msg {
       font-size: 0.9rem; color: #475569; margin-top: 12px;
@@ -149,7 +157,7 @@
   </h1>
   <div class="subhead">
     Capture or upload a photo. Auto‑crops to <strong>passport size (600×600)</strong> and replaces the background instantly using AI segmentation.
-    <br><small style="color:#64748b;">⚠️ Camera requires HTTPS or localhost. If blocked, use the upload option below.</small>
+    <br><small style="color:#64748b;">⚠️ Live camera needs HTTPS (e.g. GitHub Pages) or localhost. If blocked, use the "Take photo with phone camera" button.</small>
   </div>
 
   <div class="two-col">
@@ -157,7 +165,7 @@
     <div class="card">
       <div class="card-title"><span>📷</span> Camera / Upload</div>
 
-      <div class="video-preview" id="videoContainer" style="position:relative;">
+      <div class="video-preview" id="videoContainer">
         <video id="video" autoplay playsinline muted></video>
       </div>
 
@@ -166,7 +174,14 @@
       <div class="controls">
         <button id="startCameraBtn" class="primary">▶ Start Camera</button>
         <button id="captureBtn" class="primary" disabled>📸 Capture</button>
+        <button id="flipBtn">🔄 Flip</button>
       </div>
+
+      <!-- Native phone camera (works even when live camera is blocked) -->
+      <label for="nativeCamera" class="file-input-label camera-native">
+        <span>🤳</span> Take photo with phone camera
+      </label>
+      <input type="file" id="nativeCamera" accept="image/*" capture="user">
 
       <div style="margin-top: 16px; text-align: center; color: #94a3b8; font-size: 0.9rem;">— OR —</div>
 
@@ -182,7 +197,7 @@
     <div class="card">
       <div class="card-title"><span>🎨</span> Result & Download</div>
 
-      <div class="video-preview" style="background:#e2e8f0; position:relative;">
+      <div class="video-preview" style="background:#e2e8f0;">
         <canvas id="resultCanvas" width="600" height="600" class="canvas-preview"></canvas>
         <div id="processingOverlay" class="loading-overlay hidden">
           <div class="spinner"></div>
@@ -225,7 +240,9 @@
     const video = document.getElementById('video');
     const startCameraBtn = document.getElementById('startCameraBtn');
     const captureBtn = document.getElementById('captureBtn');
+    const flipBtn = document.getElementById('flipBtn');
     const fileUpload = document.getElementById('fileUpload');
+    const nativeCamera = document.getElementById('nativeCamera');
     const captureCanvas = document.getElementById('captureCanvas');
     const resultCanvas = document.getElementById('resultCanvas');
     const downloadBtn = document.getElementById('downloadBtn');
@@ -237,57 +254,55 @@
 
     // ========== State ==========
     let stream = null;
+    let facingMode = 'user';          // 'user' = front, 'environment' = back
     let currentBgColor = '#ffffff';
-    let sourceImage = null;           // Original captured/uploaded image (HTMLImageElement or ImageBitmap)
-    let segmentationReady = false;
-    let pendingSegmentation = false;
+    let sourceImage = null;
     const TARGET_SIZE = 600;
 
     // ========== MediaPipe Selfie Segmentation ==========
-    const selfieSegmentation = new SelfieSegmentation({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
-    });
-    selfieSegmentation.setOptions({
-      modelSelection: 1,           // 1 = landscape model, better quality
-      selfieMode: false,
-    });
+    let selfieSegmentation = null;
+    try {
+      selfieSegmentation = new SelfieSegmentation({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+      });
+      selfieSegmentation.setOptions({
+        modelSelection: 1,
+        selfieMode: false,
+      });
 
-    selfieSegmentation.onResults((results) => {
-      // results.segmentationMask: canvas with white = person, black = background
-      const mask = results.segmentationMask;
-      const image = results.image;  // the input image
+      selfieSegmentation.onResults((results) => {
+        const mask = results.segmentationMask;
+        const image = results.image;
 
-      // Compose: draw background color, then draw person using mask
-      const ctx = resultCanvas.getContext('2d');
-      ctx.clearRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+        const ctx = resultCanvas.getContext('2d');
+        ctx.clearRect(0, 0, TARGET_SIZE, TARGET_SIZE);
 
-      // 1) Fill with chosen background color
-      ctx.fillStyle = currentBgColor;
-      ctx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+        // 1) Background color
+        ctx.fillStyle = currentBgColor;
+        ctx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
 
-      // 2) Create a temporary canvas to hold the person (original image masked by segmentation)
-      const personCanvas = document.createElement('canvas');
-      personCanvas.width = TARGET_SIZE;
-      personCanvas.height = TARGET_SIZE;
-      const pCtx = personCanvas.getContext('2d');
+        // 2) Person cut-out via mask
+        const personCanvas = document.createElement('canvas');
+        personCanvas.width = TARGET_SIZE;
+        personCanvas.height = TARGET_SIZE;
+        const pCtx = personCanvas.getContext('2d');
+        pCtx.drawImage(image, 0, 0, TARGET_SIZE, TARGET_SIZE);
+        pCtx.globalCompositeOperation = 'destination-in';
+        pCtx.drawImage(mask, 0, 0, TARGET_SIZE, TARGET_SIZE);
+        pCtx.globalCompositeOperation = 'source-over';
 
-      // Draw original image
-      pCtx.drawImage(image, 0, 0, TARGET_SIZE, TARGET_SIZE);
+        // 3) Person on background
+        ctx.drawImage(personCanvas, 0, 0);
 
-      // Use mask to keep only the person (destination-in keeps pixels where mask is opaque)
-      pCtx.globalCompositeOperation = 'destination-in';
-      pCtx.drawImage(mask, 0, 0, TARGET_SIZE, TARGET_SIZE);
-      pCtx.globalCompositeOperation = 'source-over';
+        downloadBtn.disabled = false;
+        processingOverlay.classList.add('hidden');
+        setStatus(`Background replaced with ${currentBgColor}.`);
+      });
+    } catch (e) {
+      console.error('MediaPipe failed to load:', e);
+    }
 
-      // 3) Draw the masked person onto the background
-      ctx.drawImage(personCanvas, 0, 0);
-
-      downloadBtn.disabled = false;
-      processingOverlay.classList.add('hidden');
-      setStatus(`Background replaced with ${currentBgColor}.`);
-    });
-
-    // ========== Helper: set status ==========
+    // ========== Helpers ==========
     function setStatus(text, isError = false) {
       statusMsg.textContent = text;
       statusMsg.classList.toggle('error', isError);
@@ -298,65 +313,72 @@
       cameraError.style.display = 'none';
     }
 
+    function showCameraError(msg) {
+      cameraError.textContent = msg;
+      cameraError.style.display = 'block';
+    }
+
     // ========== 1. Camera ==========
     async function startCamera() {
       clearCameraError();
-      const isSecure = location.protocol === 'https:' ||
+      const isSecure = window.isSecureContext ||
+                       location.protocol === 'https:' ||
                        location.hostname === 'localhost' ||
-                       location.hostname === '127.0.0.1' ||
-                       location.hostname === '';
+                       location.hostname === '127.0.0.1';
 
       if (!isSecure) {
-        cameraError.textContent = '⚠️ Camera requires HTTPS or localhost. Upload an image instead, or serve this page via "python -m http.server" and open http://localhost:8000.';
-        cameraError.style.display = 'block';
+        showCameraError('⚠️ Live camera needs HTTPS or localhost. Use "Take photo with phone camera" below, or open this page through GitHub Pages.');
         captureBtn.disabled = true;
-        startCameraBtn.disabled = true;
         return;
       }
-      if (!navigator.mediaDevices?.getUserMedia) {
-        cameraError.textContent = '⚠️ Your browser does not support camera access. Please upload an image instead.';
-        cameraError.style.display = 'block';
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showCameraError('⚠️ This browser does not support live camera. Use "Take photo with phone camera" below.');
         return;
       }
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user', width: { ideal: 600 }, height: { ideal: 600 } },
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 1280 }
+          },
           audio: false
         });
         video.srcObject = stream;
+        // Mirror only the front camera
+        video.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'none';
         video.style.display = 'block';
+        await video.play().catch(() => {});
         captureBtn.disabled = false;
         startCameraBtn.textContent = '⏹ Stop Camera';
-        setStatus('Camera ready. Align your face and click Capture.');
+        setStatus('Camera ready. Align your face and tap Capture.');
       } catch (err) {
         console.error('Camera error:', err);
+        stream = null;
         captureBtn.disabled = true;
         startCameraBtn.textContent = '▶ Start Camera';
-        video.style.display = 'none';
         let msg = '⚠️ Could not access camera. ';
         switch (err.name) {
           case 'NotAllowedError':
           case 'PermissionDeniedError':
-            msg += 'Permission denied. Click the 🔒 lock icon and allow camera, then refresh. Or upload an image.';
+            msg += 'Permission denied. Allow camera access in your browser/site settings, then reload. Or use "Take photo with phone camera".';
             break;
           case 'NotFoundError':
-            msg += 'No camera found. Please upload an image instead.';
+            msg += 'No camera found. Use "Take photo with phone camera" or upload an image.';
             break;
           case 'NotReadableError':
-            msg += 'Camera is in use by another app. Close it and try again, or upload an image.';
+            msg += 'Camera is in use by another app. Close it and try again.';
             break;
           default:
-            msg += `(${err.name}) Upload an image instead.`;
+            msg += `(${err.name}) Use "Take photo with phone camera" instead.`;
         }
-        cameraError.textContent = msg;
-        cameraError.style.display = 'block';
+        showCameraError(msg);
       }
     }
 
     function stopCamera() {
       if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
       video.srcObject = null;
-      video.style.display = 'block';
       captureBtn.disabled = true;
       startCameraBtn.textContent = '▶ Start Camera';
       setStatus('');
@@ -366,15 +388,29 @@
       if (stream) stopCamera(); else startCamera();
     });
 
-    // ========== 2. Capture ==========
+    flipBtn.addEventListener('click', async () => {
+      facingMode = facingMode === 'user' ? 'environment' : 'user';
+      // Keep native camera button in sync
+      nativeCamera.setAttribute('capture', facingMode);
+      if (stream) {
+        stopCamera();
+        await startCamera();
+      } else {
+        setStatus(facingMode === 'user' ? 'Front camera selected.' : 'Back camera selected.');
+      }
+    });
+
+    // ========== 2. Capture from live video ==========
     function captureFromVideo() {
       if (!stream) { setStatus('Camera not active.', true); return; }
       const ctx = captureCanvas.getContext('2d');
       const vw = video.videoWidth;
       const vh = video.videoHeight;
+      if (!vw || !vh) { setStatus('Camera is still starting, try again.', true); return; }
       const size = Math.min(vw, vh);
       const sx = (vw - size) / 2;
       const sy = (vh - size) / 2;
+      ctx.clearRect(0, 0, TARGET_SIZE, TARGET_SIZE);
       ctx.drawImage(video, sx, sy, size, size, 0, 0, TARGET_SIZE, TARGET_SIZE);
 
       const img = new Image();
@@ -383,24 +419,26 @@
     }
     captureBtn.addEventListener('click', captureFromVideo);
 
-    // ========== 3. Upload ==========
-    fileUpload.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const img = new Image();
-        img.onload = () => processImage(img);
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-      fileUpload.value = '';
-      clearCameraError();
+    // ========== 3. Upload / native camera (shared handler) ==========
+    [fileUpload, nativeCamera].forEach(input => {
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => processImage(img);
+          img.onerror = () => setStatus('Could not read that image.', true);
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+        input.value = '';
+        clearCameraError();
+      });
     });
 
-    // ========== 4. Process image: crop to 600x600, then segment ==========
+    // ========== 4. Crop to 600x600, then segment ==========
     function processImage(img) {
-      // Cover-crop into 600x600
       const ctx = captureCanvas.getContext('2d');
       ctx.clearRect(0, 0, TARGET_SIZE, TARGET_SIZE);
       const scale = Math.max(TARGET_SIZE / img.width, TARGET_SIZE / img.height);
@@ -410,7 +448,6 @@
       const y = (TARGET_SIZE - h) / 2;
       ctx.drawImage(img, x, y, w, h);
 
-      // Convert back to image for segmentation
       const cropped = new Image();
       cropped.onload = () => {
         sourceImage = cropped;
@@ -419,9 +456,22 @@
       cropped.src = captureCanvas.toDataURL('image/png');
     }
 
-    // ========== 5. Run AI segmentation & compose ==========
+    // ========== 5. AI segmentation & compose ==========
+    function fallbackFill() {
+      const ctx = resultCanvas.getContext('2d');
+      ctx.fillStyle = currentBgColor;
+      ctx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+      ctx.drawImage(sourceImage, 0, 0, TARGET_SIZE, TARGET_SIZE);
+      downloadBtn.disabled = false;
+    }
+
     async function runSegmentation() {
       if (!sourceImage) return;
+      if (!selfieSegmentation) {
+        setStatus('AI model could not load (check internet). Showing photo without background removal.', true);
+        fallbackFill();
+        return;
+      }
       processingOverlay.classList.remove('hidden');
       setStatus('Removing background with AI…');
       try {
@@ -429,13 +479,8 @@
       } catch (err) {
         console.error('Segmentation error:', err);
         processingOverlay.classList.add('hidden');
-        setStatus('AI segmentation failed. Using fallback fill.', true);
-        // Fallback: draw original on background without mask
-        const ctx = resultCanvas.getContext('2d');
-        ctx.fillStyle = currentBgColor;
-        ctx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
-        ctx.drawImage(sourceImage, 0, 0, TARGET_SIZE, TARGET_SIZE);
-        downloadBtn.disabled = false;
+        setStatus('AI segmentation failed. Showing photo without background removal.', true);
+        fallbackFill();
       }
     }
 
@@ -443,6 +488,7 @@
     bgSwatches.forEach(swatch => {
       swatch.addEventListener('click', () => {
         bgSwatches.forEach(s => s.classList.remove('active'));
+        document.querySelector('.custom-swatch').classList.remove('active');
         swatch.classList.add('active');
         currentBgColor = swatch.dataset.color;
         if (sourceImage) runSegmentation();
@@ -464,12 +510,13 @@
       const link = document.createElement('a');
       link.download = `passport-photo-${Date.now()}.png`;
       link.href = resultCanvas.toDataURL('image/png');
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       setStatus('Download started.');
     });
 
     // ========== 8. Init ==========
-    video.style.display = 'block';
     const rCtx = resultCanvas.getContext('2d');
     rCtx.fillStyle = '#e2e8f0';
     rCtx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
