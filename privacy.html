@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passport Photo Capture + AI Background Changer</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background: linear-gradient(145deg, #f5f7fa 0%, #e9eef3 100%);
+      min-height: 100vh; margin: 0;
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .container {
+      max-width: 900px; width: 100%;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+      padding: 30px 28px;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    h1 {
+      font-size: 1.9rem; font-weight: 600; margin: 0 0 6px;
+      color: #1e293b; letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    h1 span {
+      background: #2563eb; color: white; font-size: 1rem;
+      padding: 6px 14px; border-radius: 100px; font-weight: 500;
+    }
+    .subhead {
+      color: #475569; margin-bottom: 28px; font-size: 1rem;
+      border-left: 4px solid #2563eb; padding-left: 16px;
+      background: #f1f5f9; border-radius: 0 12px 12px 0; line-height: 1.4;
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+    .card {
+      background: #ffffff; border-radius: 28px; padding: 22px;
+      box-shadow: 0 8px 20px -6px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .card-title {
+      font-weight: 600; font-size: 1.2rem; color: #0f172a;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+    }
+    .video-preview {
+      position: relative; width: 100%; background: #0b1120;
+      border-radius: 24px; overflow: hidden; aspect-ratio: 1 / 1;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); margin-bottom: 16px;
+    }
+    video {
+      display: block; width: 100%; height: 100%;
+      object-fit: cover; transform: scaleX(-1);
+    }
+    .canvas-preview {
+      display: block; width: 100%; height: 100%;
+      object-fit: cover; background: #f1f5f9;
+    }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+    button {
+      background: white; border: 1.5px solid #cbd5e1;
+      padding: 10px 18px; border-radius: 60px;
+      font-weight: 500; font-size: 0.95rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; transition: 0.15s; color: #1e293b;
+      flex: 1 0 auto; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    button:hover { background: #f8fafc; border-color: #94a3b8; }
+    button.primary {
+      background: #2563eb; border-color: #2563eb; color: white;
+      box-shadow: 0 4px 10px -2px rgba(37,99,235,0.3);
+    }
+    button.primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+    button:disabled { opacity: 0.5; pointer-events: none; filter: grayscale(0.3); }
+    .bg-options { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0 12px; align-items: center; }
+    .bg-swatch {
+      width: 46px; height: 46px; border-radius: 50%;
+      border: 2px solid #e2e8f0; cursor: pointer; transition: 0.15s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .bg-swatch:hover { transform: scale(1.08); border-color: #94a3b8; }
+    .bg-swatch.active { border: 3px solid #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.2); }
+    .bg-swatch.white { background: #ffffff; border: 2px solid #cbd5e1; }
+    .bg-swatch.blue { background: #1e3a8a; }
+    .bg-swatch.lightblue { background: #dbeafe; }
+    .bg-swatch.gray { background: #e2e8f0; }
+    .bg-swatch.green { background: #166534; }
+    .bg-swatch.red { background: #991b1b; }
+    .bg-swatch.custom-swatch {
+      background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+      position: relative;
+    }
+    .bg-swatch.custom-swatch input[type="color"] {
+      opacity: 0; position: absolute; inset: 0; cursor: pointer; border: none;
+    }
+    .download-btn {
+      background: #0f172a; border-color: #0f172a; color: white;
+      margin-top: 12px; width: 100%;
+    }
+    .download-btn:hover { background: #1e293b; }
+    .size-note {
+      background: #f8fafc; border-radius: 16px; padding: 12px 16px;
+      font-size: 0.9rem; color: #334155; border: 1px dashed #cbd5e1;
+      margin-top: 18px; display: flex; gap: 12px; align-items: center;
+    }
+    .size-note i { font-size: 1.6rem; color: #2563eb; }
+    .file-input-label {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #f1f5f9; border-radius: 60px; padding: 10px 18px;
+      font-weight: 500; cursor: pointer; border: 1.5px dashed #94a3b8;
+      color: #1e293b; transition: 0.15s; width: 100%; margin-top: 12px;
+    }
+    .file-input-label:hover { background: #e2e8f0; border-color: #64748b; }
+    input[type="file"] { display: none; }
+    .status-msg {
+      font-size: 0.9rem; color: #475569; margin-top: 12px;
+      text-align: center; min-height: 1.5em;
+    }
+    .error {
+      color: #b91c1c; background: #fef2f2; padding: 10px 14px;
+      border-radius: 12px; border-left: 4px solid #b91c1c;
+      text-align: left; line-height: 1.45;
+    }
+    .loading-overlay {
+      position: absolute; inset: 0;
+      background: rgba(15,23,42,0.85); color: white;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; font-weight: 500;
+      backdrop-filter: blur(4px); border-radius: 24px;
+      z-index: 10;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: #2563eb; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>
+    📸 Passport Photo
+    <span>AI background remover</span>
+  </h1>
+  <div class="subhead">
+    Capture or upload a photo. Auto‑crops to <strong>passport size (600×600)</strong> and replaces the background instantly using AI segmentation.
+    <br><small style="color:#64748b;">⚠️ Camera requires HTTPS or localhost. If blocked, use the upload option below.</small>
+  </div>
+
+  <div class="two-col">
+    <!-- LEFT: camera / upload -->
+    <div class="card">
+      <div class="card-title"><span>📷</span> Camera / Upload</div>
+
+      <div class="video-preview" id="videoContainer" style="position:relative;">
+        <video id="video" autoplay playsinline muted></video>
+      </div>
+
+      <canvas id="captureCanvas" width="600" height="600" style="display:none;"></canvas>
+
+      <div class="controls">
+        <button id="startCameraBtn" class="primary">▶ Start Camera</button>
+        <button id="captureBtn" class="primary" disabled>📸 Capture</button>
+      </div>
+
+      <div style="margin-top: 16px; text-align: center; color: #94a3b8; font-size: 0.9rem;">— OR —</div>
+
+      <label for="fileUpload" class="file-input-label">
+        <span>📁</span> Upload an image
+      </label>
+      <input type="file" id="fileUpload" accept="image/*">
+
+      <div id="cameraError" class="status-msg error" style="display:none;"></div>
+    </div>
+
+    <!-- RIGHT: preview & background -->
+    <div class="card">
+      <div class="card-title"><span>🎨</span> Result & Download</div>
+
+      <div class="video-preview" style="background:#e2e8f0; position:relative;">
+        <canvas id="resultCanvas" width="600" height="600" class="canvas-preview"></canvas>
+        <div id="processingOverlay" class="loading-overlay hidden">
+          <div class="spinner"></div>
+          <div>Removing background…</div>
+        </div>
+      </div>
+
+      <div class="label-small">Background color</div>
+      <div class="bg-options" id="bgSwatches">
+        <div class="bg-swatch white active" data-color="#ffffff" title="White"></div>
+        <div class="bg-swatch blue" data-color="#1e3a8a" title="Deep blue"></div>
+        <div class="bg-swatch lightblue" data-color="#dbeafe" title="Light blue"></div>
+        <div class="bg-swatch gray" data-color="#e2e8f0" title="Light gray"></div>
+        <div class="bg-swatch green" data-color="#166534" title="Green"></div>
+        <div class="bg-swatch red" data-color="#991b1b" title="Red"></div>
+        <div class="bg-swatch custom-swatch" title="Custom color">
+          <input type="color" id="customColorPicker" value="#2563eb">
+        </div>
+      </div>
+
+      <button id="downloadBtn" class="download-btn" disabled>
+        ⬇ Download passport photo (600×600)
+      </button>
+
+      <div class="size-note">
+        <i>📐</i>
+        <span><strong>2×2 inch</strong> at 300 DPI — pixel perfect 600×600</span>
+      </div>
+      <div id="statusMsg" class="status-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MediaPipe Selfie Segmentation (AI person segmentation) -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
+
+<script>
+  (function() {
+    // ========== DOM ==========
+    const video = document.getElementById('video');
+    const startCameraBtn = document.getElementById('startCameraBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const fileUpload = document.getElementById('fileUpload');
+    const captureCanvas = document.getElementById('captureCanvas');
+    const resultCanvas = document.getElementById('resultCanvas');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const bgSwatches = document.querySelectorAll('.bg-swatch[data-color]');
+    const customColorPicker = document.getElementById('customColorPicker');
+    const statusMsg = document.getElementById('statusMsg');
+    const cameraError = document.getElementById('cameraError');
+    const processingOverlay = document.getElementById('processingOverlay');
+
+    // ========== State ==========
+    let stream = null;
+    let currentBgColor = '#ffffff';
+    let sourceImage = null;           // Original captured/uploaded image (HTMLImageElement or ImageBitmap)
+    let segmentationReady = false;
+    let pendingSegmentation = false;
+    const TARGET_SIZE = 600;
+
+    // ========== MediaPipe Selfie Segmentation ==========
+    const selfieSegmentation = new SelfieSegmentation({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+    });
+    selfieSegmentation.setOptions({
+      modelSelection: 1,           // 1 = landscape model, better quality
+      selfieMode: false,
+    });
+
+    selfieSegmentation.onResults((results) => {
+      // results.segmentationMask: canvas with white = person, black = background
+      const mask = results.segmentationMask;
+      const image = results.image;  // the input image
+
+      // Compose: draw background color, then draw person using mask
+      const ctx = resultCanvas.getContext('2d');
+      ctx.clearRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+
+      // 1) Fill with chosen background color
+      ctx.fillStyle = currentBgColor;
+      ctx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+
+      // 2) Create a temporary canvas to hold the person (original image masked by segmentation)
+      const personCanvas = document.createElement('canvas');
+      personCanvas.width = TARGET_SIZE;
+      personCanvas.height = TARGET_SIZE;
+      const pCtx = personCanvas.getContext('2d');
+
+      // Draw original image
+      pCtx.drawImage(image, 0, 0, TARGET_SIZE, TARGET_SIZE);
+
+      // Use mask to keep only the person (destination-in keeps pixels where mask is opaque)
+      pCtx.globalCompositeOperation = 'destination-in';
+      pCtx.drawImage(mask, 0, 0, TARGET_SIZE, TARGET_SIZE);
+      pCtx.globalCompositeOperation = 'source-over';
+
+      // 3) Draw the masked person onto the background
+      ctx.drawImage(personCanvas, 0, 0);
+
+      downloadBtn.disabled = false;
+      processingOverlay.classList.add('hidden');
+      setStatus(`Background replaced with ${currentBgColor}.`);
+    });
+
+    // ========== Helper: set status ==========
+    function setStatus(text, isError = false) {
+      statusMsg.textContent = text;
+      statusMsg.classList.toggle('error', isError);
+    }
+
+    function clearCameraError() {
+      cameraError.textContent = '';
+      cameraError.style.display = 'none';
+    }
+
+    // ========== 1. Camera ==========
+    async function startCamera() {
+      clearCameraError();
+      const isSecure = location.protocol === 'https:' ||
+                       location.hostname === 'localhost' ||
+                       location.hostname === '127.0.0.1' ||
+                       location.hostname === '';
+
+      if (!isSecure) {
+        cameraError.textContent = '⚠️ Camera requires HTTPS or localhost. Upload an image instead, or serve this page via "python -m http.server" and open http://localhost:8000.';
+        cameraError.style.display = 'block';
+        captureBtn.disabled = true;
+        startCameraBtn.disabled = true;
+        return;
+      }
+      if (!navigator.mediaDevices?.getUserMedia) {
+        cameraError.textContent = '⚠️ Your browser does not support camera access. Please upload an image instead.';
+        cameraError.style.display = 'block';
+        return;
+      }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 600 }, height: { ideal: 600 } },
+          audio: false
+        });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        captureBtn.disabled = false;
+        startCameraBtn.textContent = '⏹ Stop Camera';
+        setStatus('Camera ready. Align your face and click Capture.');
+      } catch (err) {
+        console.error('Camera error:', err);
+        captureBtn.disabled = true;
+        startCameraBtn.textContent = '▶ Start Camera';
+        video.style.display = 'none';
+        let msg = '⚠️ Could not access camera. ';
+        switch (err.name) {
+          case 'NotAllowedError':
+          case 'PermissionDeniedError':
+            msg += 'Permission denied. Click the 🔒 lock icon and allow camera, then refresh. Or upload an image.';
+            break;
+          case 'NotFoundError':
+            msg += 'No camera found. Please upload an image instead.';
+            break;
+          case 'NotReadableError':
+            msg += 'Camera is in use by another app. Close it and try again, or upload an image.';
+            break;
+          default:
+            msg += `(${err.name}) Upload an image instead.`;
+        }
+        cameraError.textContent = msg;
+        cameraError.style.display = 'block';
+      }
+    }
+
+    function stopCamera() {
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+      video.srcObject = null;
+      video.style.display = 'block';
+      captureBtn.disabled = true;
+      startCameraBtn.textContent = '▶ Start Camera';
+      setStatus('');
+    }
+
+    startCameraBtn.addEventListener('click', () => {
+      if (stream) stopCamera(); else startCamera();
+    });
+
+    // ========== 2. Capture ==========
+    function captureFromVideo() {
+      if (!stream) { setStatus('Camera not active.', true); return; }
+      const ctx = captureCanvas.getContext('2d');
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      const size = Math.min(vw, vh);
+      const sx = (vw - size) / 2;
+      const sy = (vh - size) / 2;
+      ctx.drawImage(video, sx, sy, size, size, 0, 0, TARGET_SIZE, TARGET_SIZE);
+
+      const img = new Image();
+      img.onload = () => processImage(img);
+      img.src = captureCanvas.toDataURL('image/png');
+    }
+    captureBtn.addEventListener('click', captureFromVideo);
+
+    // ========== 3. Upload ==========
+    fileUpload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => processImage(img);
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+      fileUpload.value = '';
+      clearCameraError();
+    });
+
+    // ========== 4. Process image: crop to 600x600, then segment ==========
+    function processImage(img) {
+      // Cover-crop into 600x600
+      const ctx = captureCanvas.getContext('2d');
+      ctx.clearRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+      const scale = Math.max(TARGET_SIZE / img.width, TARGET_SIZE / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const x = (TARGET_SIZE - w) / 2;
+      const y = (TARGET_SIZE - h) / 2;
+      ctx.drawImage(img, x, y, w, h);
+
+      // Convert back to image for segmentation
+      const cropped = new Image();
+      cropped.onload = () => {
+        sourceImage = cropped;
+        runSegmentation();
+      };
+      cropped.src = captureCanvas.toDataURL('image/png');
+    }
+
+    // ========== 5. Run AI segmentation & compose ==========
+    async function runSegmentation() {
+      if (!sourceImage) return;
+      processingOverlay.classList.remove('hidden');
+      setStatus('Removing background with AI…');
+      try {
+        await selfieSegmentation.send({ image: sourceImage });
+      } catch (err) {
+        console.error('Segmentation error:', err);
+        processingOverlay.classList.add('hidden');
+        setStatus('AI segmentation failed. Using fallback fill.', true);
+        // Fallback: draw original on background without mask
+        const ctx = resultCanvas.getContext('2d');
+        ctx.fillStyle = currentBgColor;
+        ctx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+        ctx.drawImage(sourceImage, 0, 0, TARGET_SIZE, TARGET_SIZE);
+        downloadBtn.disabled = false;
+      }
+    }
+
+    // ========== 6. Background swatches ==========
+    bgSwatches.forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        bgSwatches.forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        currentBgColor = swatch.dataset.color;
+        if (sourceImage) runSegmentation();
+        setStatus(`Selected ${currentBgColor}.`);
+      });
+    });
+
+    customColorPicker.addEventListener('input', (e) => {
+      bgSwatches.forEach(s => s.classList.remove('active'));
+      document.querySelector('.custom-swatch').classList.add('active');
+      currentBgColor = e.target.value;
+      if (sourceImage) runSegmentation();
+      setStatus(`Selected ${currentBgColor}.`);
+    });
+
+    // ========== 7. Download ==========
+    downloadBtn.addEventListener('click', () => {
+      if (!sourceImage) { setStatus('Nothing to download.', true); return; }
+      const link = document.createElement('a');
+      link.download = `passport-photo-${Date.now()}.png`;
+      link.href = resultCanvas.toDataURL('image/png');
+      link.click();
+      setStatus('Download started.');
+    });
+
+    // ========== 8. Init ==========
+    video.style.display = 'block';
+    const rCtx = resultCanvas.getContext('2d');
+    rCtx.fillStyle = '#e2e8f0';
+    rCtx.fillRect(0, 0, TARGET_SIZE, TARGET_SIZE);
+    rCtx.font = '24px system-ui';
+    rCtx.fillStyle = '#64748b';
+    rCtx.textAlign = 'center';
+    rCtx.fillText('Your photo preview', 300, 300);
+
+    downloadBtn.disabled = true;
+
+    window.addEventListener('beforeunload', () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+    });
+  })();
+</script>
+</body>
+</html>
