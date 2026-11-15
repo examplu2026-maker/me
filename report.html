@@ -178,7 +178,7 @@
   <script>
     (function() {
       'use strict';
-      const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyv_UxALq88KzBEhlD8KU7mwOSSTsdGlA5ogQ-F4wVyBiYIltOnq9HxjZciF8c5fAk/exec';
+      const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyewyamTCi1ulzFgng5D9GD-On_JIIHp9GcavtYGXh86M30N7YjcDDlhpi4gB-MrNU/exec';
 
       document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
       document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
@@ -327,6 +327,8 @@
       }
 
       /* ---------- PRINT via hidden iframe ---------- */
+      // Waits for images inside the iframe to fully load before opening
+      // the print dialog. Prevents "photo missing on print" issues.
       function printHtml(fullHtml) {
         const frame = document.getElementById('printFrame');
         const doc = frame.contentWindow.document;
@@ -334,16 +336,33 @@
         doc.write(fullHtml);
         doc.close();
 
-        // Wait for images, then print
-        setTimeout(function() {
+        let waited = 0;
+        const maxWait = 8000;
+        const step = 200;
+
+        function tryPrint() {
           try {
+            const imgs = frame.contentWindow.document.images;
+            let pending = 0;
+            for (let i = 0; i < imgs.length; i++) {
+              if (!imgs[i].complete || imgs[i].naturalWidth === 0) pending++;
+            }
+            if (pending === 0 || waited >= maxWait) {
+              frame.contentWindow.focus();
+              frame.contentWindow.print();
+              return;
+            }
+          } catch (e) {
+            // Can't inspect (cross-origin) — print anyway
             frame.contentWindow.focus();
             frame.contentWindow.print();
-          } catch (e) {
-            console.error('print error:', e);
-            showToast('⚠️ Print failed. Try downloading PDF instead.');
+            return;
           }
-        }, 1200);
+          waited += step;
+          setTimeout(tryPrint, step);
+        }
+
+        setTimeout(tryPrint, 300);
       }
 
       /* ---------- SINGLE PDF (download) ---------- */
@@ -365,24 +384,34 @@
 
           showLoading(true, 'Loading images...');
           updateProgress(25);
+
+          // Wait for every image, including ones with no naturalWidth
+          // (which means it failed to load, not that it's still loading).
           const images = reportElement.querySelectorAll('img');
           for (let i = 0; i < images.length; i++) {
             const img = images[i];
-            if (!img.complete) {
-              await new Promise(resolve => {
-                img.onload = resolve;
-                img.onerror = () => resolve();
-                setTimeout(resolve, 2000);
-              });
-            }
+            if (img.complete && img.naturalWidth > 0) continue;
+            await new Promise(resolve => {
+              let done = false;
+              const finish = () => { if (!done) { done = true; resolve(); } };
+              img.onload  = finish;
+              img.onerror = finish;
+              setTimeout(finish, 5000); // wait up to 5s per image
+            });
           }
+
           updateProgress(40);
           showLoading(true, 'Capturing report card...');
           if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
 
+          // allowTaint: true — important so cross-origin photos
+          // (like lh3.googleusercontent.com) are included in the capture.
           const canvas = await html2canvas(reportElement, {
-            scale: 2, backgroundColor: '#ffffff', logging: false,
-            useCORS: true, allowTaint: false
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true,
+            allowTaint: true
           });
           updateProgress(65);
           showLoading(true, 'Generating PDF...');
